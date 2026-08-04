@@ -16,19 +16,15 @@ export default function AccessoriesCard({
   producto,
   setProducto,
 }: Props) {
-
-console.log(producto.accesorios);
-
   function actualizarAccesorio(
-    id: string,
+    indice: number,
     cambios: Partial<Accesorio>
   ) {
     setProducto((productoActual) => ({
       ...productoActual,
-
       accesorios: productoActual.accesorios.map(
-        (accesorio) =>
-          accesorio.id === id
+        (accesorio, indiceActual) =>
+          indiceActual === indice
             ? {
                 ...accesorio,
                 ...cambios,
@@ -60,16 +56,16 @@ console.log(producto.accesorios);
             <span>Cantidad</span>
           </div>
 
-          {producto.accesorios.map((accesorio) => (
+          {producto.accesorios.map((accesorio, indice) => (
             <div
-              key={accesorio.id}
+              key={`${accesorio.id}-${indice}`}
               className="grid grid-cols-[70px_1fr_180px_140px] items-center gap-4 border-t border-[#2b2b2b] px-4 py-4"
             >
               <input
                 type="checkbox"
                 checked={accesorio.activo}
                 onChange={(evento) =>
-                  actualizarAccesorio(accesorio.id, {
+                  actualizarAccesorio(indice, {
                     activo: evento.target.checked,
                   })
                 }
@@ -90,9 +86,8 @@ console.log(producto.accesorios);
                 value={accesorio.modo}
                 disabled={!accesorio.activo}
                 onChange={(evento) =>
-                  actualizarAccesorio(accesorio.id, {
-                    modo: evento.target
-                      .value as ModoAccesorio,
+                  actualizarAccesorio(indice, {
+                    modo: evento.target.value as ModoAccesorio,
                   })
                 }
                 className="
@@ -124,7 +119,7 @@ console.log(producto.accesorios);
                 value={accesorio.cantidad}
                 disabled={!accesorio.activo}
                 onChange={(evento) =>
-                  actualizarAccesorio(accesorio.id, {
+                  actualizarAccesorio(indice, {
                     cantidad: evento.target.value,
                   })
                 }
