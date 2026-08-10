@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import PageHeader from "@/app/components/PageHeader";
 import FairForm from "@/app/components/fairs/FairForm";
 import FairCard from "@/app/components/fairs/FairCard";
+import { obtenerConfiguracion } from "@/lib/settings-service";
 
 import {
   editarFeria,
@@ -219,6 +220,8 @@ export default function FeriasPage() {
               <FairCard
                 key={feria.id}
                 feria={feria}
+                productos={productos}
+                horasImpresionDia={obtenerConfiguracion().horasImpresionDia}
                 onEditar={abrirEdicion}
                 onEliminar={eliminar}
               />

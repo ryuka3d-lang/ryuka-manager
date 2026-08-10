@@ -12,6 +12,7 @@ export type ProductoFeria = {
   codigo: string;
   nombre: string;
   cantidadObjetivo: number;
+  cantidadPreparada: number;
 };
 
 export type FeriaGuardada = {
@@ -60,6 +61,8 @@ function normalizarFeria(
           nombre: producto.nombre || "",
           cantidadObjetivo:
             Number(producto.cantidadObjetivo) || 0,
+          cantidadPreparada:
+            Math.max(0, Number(producto.cantidadPreparada) || 0),
         }))
       : [],
     creadoEn: feria.creadoEn || ahora,
@@ -170,4 +173,99 @@ export function totalUnidadesFeria(
       total + producto.cantidadObjetivo,
     0
   );
+}
+
+
+export type PlanProduccionFeria = {
+  unidadesObjetivo: number;
+  unidadesPreparadas: number;
+  unidadesPendientes: number;
+  camasNecesarias: number;
+  gramosFilamento: number;
+  minutosImpresion: number;
+  diasHastaFeria: number | null;
+  horasDisponibles: number | null;
+  llegaATiempo: boolean | null;
+  horasMargen: number | null;
+  productosSinReceta: string[];
+};
+
+export function calcularPlanProduccionFeria(
+  feria: FeriaGuardada,
+  productosCatalogo: Array<{
+    id: string;
+    cantidadPorCama: string;
+    pesoPorCama: string;
+    horas: string;
+    minutos: string;
+  }>,
+  horasImpresionDia: number,
+  fechaReferencia = new Date()
+): PlanProduccionFeria {
+  let unidadesObjetivo = 0;
+  let unidadesPreparadas = 0;
+  let unidadesPendientes = 0;
+  let camasNecesarias = 0;
+  let gramosFilamento = 0;
+  let minutosImpresion = 0;
+  const productosSinReceta: string[] = [];
+
+  for (const item of feria.productos) {
+    const objetivo = Math.max(0, Number(item.cantidadObjetivo) || 0);
+    const preparada = Math.min(objetivo, Math.max(0, Number(item.cantidadPreparada) || 0));
+    const pendiente = Math.max(0, objetivo - preparada);
+
+    unidadesObjetivo += objetivo;
+    unidadesPreparadas += preparada;
+    unidadesPendientes += pendiente;
+
+    if (pendiente <= 0) continue;
+
+    const receta = productosCatalogo.find((producto) => producto.id === item.productId);
+    const porCama = Number(receta?.cantidadPorCama) || 0;
+
+    if (!receta || porCama <= 0) {
+      productosSinReceta.push(item.nombre);
+      continue;
+    }
+
+    const camas = Math.ceil(pendiente / porCama);
+    const minutosCama = (Number(receta.horas) || 0) * 60 + (Number(receta.minutos) || 0);
+    const gramosCama = Number(receta.pesoPorCama) || 0;
+
+    camasNecesarias += camas;
+    minutosImpresion += camas * minutosCama;
+    gramosFilamento += camas * gramosCama;
+  }
+
+  let diasHastaFeria: number | null = null;
+  let horasDisponibles: number | null = null;
+  let llegaATiempo: boolean | null = null;
+  let horasMargen: number | null = null;
+
+  if (feria.fecha) {
+    const hoy = new Date(fechaReferencia);
+    hoy.setHours(0, 0, 0, 0);
+    const fechaFeria = new Date(`${feria.fecha}T00:00:00`);
+    const diferencia = fechaFeria.getTime() - hoy.getTime();
+    diasHastaFeria = Math.max(0, Math.ceil(diferencia / 86400000));
+    horasDisponibles = diasHastaFeria * Math.max(0, horasImpresionDia);
+    const horasNecesarias = minutosImpresion / 60;
+    horasMargen = horasDisponibles - horasNecesarias;
+    llegaATiempo = productosSinReceta.length === 0 && horasMargen >= 0;
+  }
+
+  return {
+    unidadesObjetivo,
+    unidadesPreparadas,
+    unidadesPendientes,
+    camasNecesarias,
+    gramosFilamento,
+    minutosImpresion,
+    diasHastaFeria,
+    horasDisponibles,
+    llegaATiempo,
+    horasMargen,
+    productosSinReceta,
+  };
 }

@@ -137,6 +137,7 @@ export default function FairForm({
           codigo: productoSeleccionado.codigo,
           nombre: productoSeleccionado.nombre,
           cantidadObjetivo: cantidadNumero,
+          cantidadPreparada: 0,
         },
       ];
     });
@@ -399,8 +400,32 @@ export default function FairForm({
                     </p>
 
                     <p className="mt-1 text-sm text-zinc-400">
-                      {producto.cantidadObjetivo} unidades
+                      Objetivo: {producto.cantidadObjetivo} · Faltan: {Math.max(0, producto.cantidadObjetivo - producto.cantidadPreparada)}
                     </p>
+
+                    <label className="mt-3 block text-xs text-zinc-500">
+                      Ya preparados
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      max={producto.cantidadObjetivo}
+                      value={producto.cantidadPreparada}
+                      onChange={(evento) => {
+                        const preparada = Math.min(
+                          producto.cantidadObjetivo,
+                          Math.max(0, Number(evento.target.value) || 0)
+                        );
+                        setProductosFeria((actuales) =>
+                          actuales.map((item, index) =>
+                            index === indice
+                              ? { ...item, cantidadPreparada: preparada }
+                              : item
+                          )
+                        );
+                      }}
+                      className="mt-1 w-28 rounded-lg border border-[#353535] bg-[#151515] px-3 py-2 text-sm outline-none focus:border-[#810404]"
+                    />
                   </div>
 
                   <button

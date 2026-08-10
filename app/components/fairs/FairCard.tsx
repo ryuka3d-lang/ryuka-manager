@@ -4,15 +4,21 @@ import {
   totalUnidadesFeria,
   type FeriaGuardada,
 } from "@/lib/fair-service";
+import type { ProductoGuardado } from "@/lib/product-service";
+import FairProductionPlan from "./FairProductionPlan";
 
 type Props = {
   feria: FeriaGuardada;
+  productos: ProductoGuardado[];
+  horasImpresionDia: number;
   onEditar: (feria: FeriaGuardada) => void;
   onEliminar: (feria: FeriaGuardada) => void;
 };
 
 export default function FairCard({
   feria,
+  productos,
+  horasImpresionDia,
   onEditar,
   onEliminar,
 }: Props) {
@@ -105,6 +111,12 @@ export default function FairCard({
           )}
         </div>
       )}
+
+      <FairProductionPlan
+        feria={feria}
+        productos={productos}
+        horasImpresionDia={horasImpresionDia}
+      />
 
       <div className="mt-5 flex gap-3 border-t border-[#303030] pt-5">
         <button
