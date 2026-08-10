@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import type { FeriaGuardada, ProductoFeria } from "@/lib/fair-service";
 import type { ProductoGuardado } from "@/lib/product-service";
 import FairProductAssistant from "./FairProductAssistant";
+import FairCandidates from "./FairCandidates";
 
 type Props = {
   productos: ProductoGuardado[];
@@ -463,6 +464,10 @@ export default function FairForm({
         tipo={tipo}
         publicoEstimado={Number(publicoEstimado) || 0}
         productos={productos}
+      />
+
+      <FairCandidates
+        feriaId={feriaInicial?.id}
       />
     </div>
   );
