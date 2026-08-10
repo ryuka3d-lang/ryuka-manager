@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import type { PresupuestoGuardado } from "../../../lib/budget-service";
 import { convertBudgetToOrder } from "../../../lib/workflows/budget-to-order.workflow";
 import type { SaleType } from "../../../lib/domain/order";
@@ -16,19 +17,29 @@ export default function SavedBudgetsCard({
   onEliminar,
 }: Props) {
   const [workspaceId, setWorkspaceId] = useState("");
-  const [presupuestosConvertidos, setPresupuestosConvertidos] = useState<
-    string[]
-  >([]);
-  const [presupuestoSeleccionado, setPresupuestoSeleccionado] =
-    useState<PresupuestoGuardado | null>(null);
+
+  const [
+    presupuestosConvertidos,
+    setPresupuestosConvertidos,
+  ] = useState<string[]>([]);
+
+  const [
+    presupuestoSeleccionado,
+    setPresupuestoSeleccionado,
+  ] = useState<PresupuestoGuardado | null>(null);
 
   useEffect(() => {
     async function cargarWorkspace() {
       try {
-        const workspace = await obtenerWorkspaceId();
+        const workspace =
+          await obtenerWorkspaceId();
+
         setWorkspaceId(workspace);
       } catch (error) {
-        console.error("No se pudo obtener el workspace:", error);
+        console.error(
+          "No se pudo obtener el workspace:",
+          error
+        );
       }
     }
 
@@ -38,7 +49,10 @@ export default function SavedBudgetsCard({
   useEffect(() => {
     setPresupuestosConvertidos(
       presupuestos
-        .filter((presupuesto) => presupuesto.estado === "aceptado")
+        .filter(
+          (presupuesto) =>
+            presupuesto.estado === "aceptado"
+        )
         .map((presupuesto) => presupuesto.id)
     );
   }, [presupuestos]);
@@ -49,7 +63,9 @@ export default function SavedBudgetsCard({
     totalPersonalizado?: number
   ): Promise<void> {
     if (!workspaceId) {
-      alert("No se pudo identificar el espacio de trabajo.");
+      alert(
+        "No se pudo identificar el espacio de trabajo."
+      );
       return;
     }
 
@@ -59,18 +75,24 @@ export default function SavedBudgetsCard({
         budgetCode: presupuesto.id,
         saleType: tipoVenta,
         customTotal:
-          tipoVenta === "custom" ? totalPersonalizado : undefined,
+          tipoVenta === "custom"
+            ? totalPersonalizado
+            : undefined,
       });
 
-      setPresupuestosConvertidos((actuales) =>
-        actuales.includes(presupuesto.id)
-          ? actuales
-          : [...actuales, presupuesto.id]
+      setPresupuestosConvertidos(
+        (actuales) =>
+          actuales.includes(presupuesto.id)
+            ? actuales
+            : [...actuales, presupuesto.id]
       );
 
       setPresupuestoSeleccionado(null);
     } catch (error) {
-      console.error("Error al crear el pedido:", error);
+      console.error(
+        "Error al crear el pedido:",
+        error
+      );
 
       alert(
         error instanceof Error
@@ -83,10 +105,13 @@ export default function SavedBudgetsCard({
   return (
     <section className="mt-8 rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
       <div>
-        <h2 className="text-xl font-bold">Presupuestos guardados</h2>
+        <h2 className="text-xl font-bold">
+          Presupuestos guardados
+        </h2>
+
         <p className="mt-2 text-sm text-gray-400">
-          Convertí un presupuesto en pedido y elegí el precio acordado con el
-          cliente.
+          Cada presupuesto puede incluir uno o varios
+          productos.
         </p>
       </div>
 
@@ -98,89 +123,124 @@ export default function SavedBudgetsCard({
         </div>
       ) : (
         <div className="mt-6 grid grid-cols-1 gap-5 xl:grid-cols-2">
-          {[...presupuestos].reverse().map((presupuesto) => {
-            const yaConvertido = presupuestosConvertidos.includes(
-              presupuesto.id
-            );
+          {[...presupuestos]
+            .reverse()
+            .map((presupuesto) => {
+              const yaConvertido =
+                presupuestosConvertidos.includes(
+                  presupuesto.id
+                );
 
-            return (
-              <article
-                key={presupuesto.id}
-                className="rounded-xl border border-[#303030] bg-[#151515] p-5"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-semibold text-red-300">
-                      {presupuesto.id}
-                    </p>
-                    <h3 className="mt-1 text-xl font-bold">
-                      {presupuesto.productoNombre}
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-400">
-                      Cliente: {presupuesto.cliente}
-                    </p>
+              return (
+                <article
+                  key={presupuesto.id}
+                  className="rounded-xl border border-[#303030] bg-[#151515] p-5"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-semibold text-red-300">
+                        {presupuesto.id}
+                      </p>
+
+                      <h3 className="mt-1 text-xl font-bold">
+                        {presupuesto.cliente}
+                      </h3>
+
+                      <p className="mt-1 text-sm text-gray-400">
+                        {presupuesto.items.length}{" "}
+                        {presupuesto.items.length === 1
+                          ? "producto"
+                          : "productos"}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onEliminar(presupuesto.id)
+                      }
+                      className="rounded-lg border border-red-900 px-3 py-2 text-sm text-red-300 transition hover:bg-red-950/30"
+                    >
+                      Eliminar
+                    </button>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => onEliminar(presupuesto.id)}
-                    className="rounded-lg border border-red-900 px-3 py-2 text-sm text-red-300 transition hover:bg-red-950/30"
-                  >
-                    Eliminar
-                  </button>
-                </div>
+                  <div className="mt-5 space-y-2">
+                    {presupuesto.items.map(
+                      (item, indice) => (
+                        <div
+                          key={`${item.productId}-${indice}`}
+                          className="flex items-center justify-between gap-4 rounded-lg bg-white/[0.03] px-3 py-2 text-sm"
+                        >
+                          <span className="min-w-0 truncate">
+                            {item.productName}
+                          </span>
 
-                <div className="mt-5 space-y-3">
-                  <FilaDato
-                    titulo="Cantidad"
-                    valor={`${presupuesto.cantidad} unidades`}
-                  />
-                  <FilaDato
-                    titulo="Mayorista"
-                    valor={formatearDinero(
-                      presupuesto.precioMayoristaTotal
+                          <strong className="shrink-0">
+                            × {item.quantity}
+                          </strong>
+                        </div>
+                      )
                     )}
-                  />
-                  <FilaDato
-                    titulo="Minorista"
-                    valor={formatearDinero(
-                      presupuesto.precioMinoristaTotal
-                    )}
-                  />
-                  <FilaDato
-                    titulo="Fecha"
-                    valor={formatearFecha(presupuesto.creadoEn)}
-                  />
-                </div>
+                  </div>
 
-                <div className="mt-5 border-t border-[#303030] pt-5">
-                  <button
-                    type="button"
-                    disabled={yaConvertido}
-                    onClick={() =>
-                      setPresupuestoSeleccionado(presupuesto)
-                    }
-                    className={`w-full rounded-xl px-4 py-3 text-sm font-semibold transition ${
-                      yaConvertido
-                        ? "cursor-not-allowed border border-emerald-900 bg-emerald-950/20 text-emerald-300"
-                        : "bg-[#810404] text-white hover:bg-[#a00808]"
-                    }`}
-                  >
-                    {yaConvertido
-                      ? "Pedido creado ✓"
-                      : "Convertir en pedido"}
-                  </button>
-                </div>
-              </article>
-            );
-          })}
+                  <div className="mt-5 space-y-3">
+                    <FilaDato
+                      titulo="Mayorista"
+                      valor={formatearDinero(
+                        presupuesto.precioMayoristaTotal
+                      )}
+                    />
+
+                    <FilaDato
+                      titulo="Minorista"
+                      valor={formatearDinero(
+                        presupuesto.precioMinoristaTotal
+                      )}
+                    />
+
+                    <FilaDato
+                      titulo="Fecha"
+                      valor={formatearFecha(
+                        presupuesto.creadoEn
+                      )}
+                    />
+                  </div>
+
+                  <div className="mt-5 border-t border-[#303030] pt-5">
+                    <button
+                      type="button"
+                      disabled={yaConvertido}
+                      onClick={() =>
+                        setPresupuestoSeleccionado(
+                          presupuesto
+                        )
+                      }
+                      className={`w-full rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                        yaConvertido
+                          ? "cursor-not-allowed border border-emerald-900 bg-emerald-950/20 text-emerald-300"
+                          : "bg-[#810404] text-white hover:bg-[#a00808]"
+                      }`}
+                    >
+                      {yaConvertido
+                        ? "Pedido creado ✓"
+                        : "Convertir en pedido"}
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
         </div>
       )}
 
       {presupuestoSeleccionado && (
         <CrearPedidoModal
-          presupuesto={presupuestoSeleccionado}
-          onClose={() => setPresupuestoSeleccionado(null)}
+          presupuesto={
+            presupuestoSeleccionado
+          }
+          onClose={() =>
+            setPresupuestoSeleccionado(null)
+          }
           onConfirm={crearPedido}
         />
       )}
@@ -201,9 +261,14 @@ function CrearPedidoModal({
     totalPersonalizado?: number
   ) => Promise<void>;
 }) {
-  const [tipo, setTipo] = useState<SaleType>("wholesale");
-  const [personalizado, setPersonalizado] = useState("");
-  const [guardando, setGuardando] = useState(false);
+  const [tipo, setTipo] =
+    useState<SaleType>("wholesale");
+
+  const [personalizado, setPersonalizado] =
+    useState("");
+
+  const [guardando, setGuardando] =
+    useState(false);
 
   const total =
     tipo === "retail"
@@ -218,7 +283,11 @@ function CrearPedidoModal({
     setGuardando(true);
 
     try {
-      await onConfirm(presupuesto, tipo, total);
+      await onConfirm(
+        presupuesto,
+        tipo,
+        total
+      );
     } finally {
       setGuardando(false);
     }
@@ -232,9 +301,16 @@ function CrearPedidoModal({
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">
               Nuevo pedido
             </p>
+
             <h2 className="mt-2 text-2xl font-bold">
               Elegí el precio acordado
             </h2>
+
+            <p className="mt-2 text-sm text-zinc-400">
+              Se convertirán los{" "}
+              {presupuesto.items.length} productos
+              del presupuesto.
+            </p>
           </div>
 
           <button
@@ -254,7 +330,9 @@ function CrearPedidoModal({
             valor={formatearDinero(
               presupuesto.precioMayoristaTotal
             )}
-            onClick={() => setTipo("wholesale")}
+            onClick={() =>
+              setTipo("wholesale")
+            }
             disabled={guardando}
           />
 
@@ -264,7 +342,9 @@ function CrearPedidoModal({
             valor={formatearDinero(
               presupuesto.precioMinoristaTotal
             )}
-            onClick={() => setTipo("retail")}
+            onClick={() =>
+              setTipo("retail")
+            }
             disabled={guardando}
           />
 
@@ -290,7 +370,9 @@ function CrearPedidoModal({
               value={personalizado}
               disabled={guardando}
               onChange={(evento) => {
-                setPersonalizado(evento.target.value);
+                setPersonalizado(
+                  evento.target.value
+                );
                 setTipo("custom");
               }}
               placeholder="$"
@@ -300,7 +382,10 @@ function CrearPedidoModal({
         </div>
 
         <div className="mt-6 rounded-2xl bg-white/[0.04] p-4">
-          <p className="text-sm text-zinc-400">Total del pedido</p>
+          <p className="text-sm text-zinc-400">
+            Total del pedido
+          </p>
+
           <strong className="mt-1 block text-2xl">
             {formatearDinero(total)}
           </strong>
@@ -318,11 +403,15 @@ function CrearPedidoModal({
 
           <button
             type="button"
-            disabled={guardando || total <= 0}
+            disabled={
+              guardando || total <= 0
+            }
             onClick={() => void confirmar()}
             className="rounded-xl bg-[#810404] px-6 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {guardando ? "Creando..." : "Crear pedido"}
+            {guardando
+              ? "Creando..."
+              : "Crear pedido"}
           </button>
         </div>
       </div>
@@ -354,7 +443,10 @@ function OpcionPrecio({
           : "border-white/10 bg-[#121212]"
       }`}
     >
-      <span className="font-semibold">{titulo}</span>
+      <span className="font-semibold">
+        {titulo}
+      </span>
+
       <strong>{valor}</strong>
     </button>
   );
@@ -369,8 +461,13 @@ function FilaDato({
 }) {
   return (
     <div className="flex items-center justify-between gap-4 text-sm">
-      <span className="text-gray-400">{titulo}</span>
-      <strong className="text-right">{valor}</strong>
+      <span className="text-gray-400">
+        {titulo}
+      </span>
+
+      <strong className="text-right">
+        {valor}
+      </strong>
     </div>
   );
 }
@@ -384,5 +481,7 @@ function formatearDinero(valor: number) {
 }
 
 function formatearFecha(fecha: string) {
-  return new Intl.DateTimeFormat("es-AR").format(new Date(fecha));
+  return new Intl.DateTimeFormat(
+    "es-AR"
+  ).format(new Date(fecha));
 }

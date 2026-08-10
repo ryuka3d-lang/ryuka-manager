@@ -9,6 +9,8 @@ export type RyukaConfig = {
 
   sueldoMensual: number;
   monotributo: number;
+  reinversionPorcentaje: number;
+  electricidadAReponer: number;
 
   costoArgolla: number;
   costoSticker: number;
@@ -20,6 +22,7 @@ export type RyukaConfig = {
 };
 
 const STORAGE_KEY = "ryuka-config";
+const FINANCE_MIGRATION_KEY = "ryuka-finance-config-v1";
 
 export const DEFAULT_RYUKA_CONFIG: RyukaConfig = {
   precioKgFilamento: 0,
@@ -30,8 +33,10 @@ export const DEFAULT_RYUKA_CONFIG: RyukaConfig = {
   horasProductivas: 140,
   horasImpresionDia: 12,
 
-  sueldoMensual: 0,
-  monotributo: 0,
+  sueldoMensual: 500000,
+  monotributo: 52000,
+  reinversionPorcentaje: 15,
+  electricidadAReponer: 0,
 
   costoArgolla: 0,
   costoSticker: 0,
@@ -92,6 +97,25 @@ function normalizarConfiguracion(
       DEFAULT_RYUKA_CONFIG.monotributo
     ),
 
+    reinversionPorcentaje: Math.min(
+      100,
+      Math.max(
+        0,
+        convertirNumero(
+          datos.reinversionPorcentaje,
+          DEFAULT_RYUKA_CONFIG.reinversionPorcentaje
+        )
+      )
+    ),
+
+    electricidadAReponer: Math.max(
+      0,
+      convertirNumero(
+        datos.electricidadAReponer,
+        DEFAULT_RYUKA_CONFIG.electricidadAReponer
+      )
+    ),
+
     costoArgolla: convertirNumero(
       datos.costoArgolla,
       DEFAULT_RYUKA_CONFIG.costoArgolla
@@ -141,9 +165,32 @@ export function obtenerConfiguracion(): RyukaConfig {
       datosGuardados
     ) as Record<string, unknown>;
 
-    return normalizarConfiguracion(
-      datosParseados
+    // Primera migración del Centro Financiero:
+    // aplica una sola vez los valores definidos para Ryuka
+    // sin tocar el resto de la configuración existente.
+    if (
+      localStorage.getItem(FINANCE_MIGRATION_KEY) !== "1"
+    ) {
+      datosParseados.sueldoMensual = 500000;
+      datosParseados.monotributo = 52000;
+      datosParseados.reinversionPorcentaje = 15;
+      datosParseados.electricidadAReponer = 0;
+
+      localStorage.setItem(
+        FINANCE_MIGRATION_KEY,
+        "1"
+      );
+    }
+
+    const normalizada =
+      normalizarConfiguracion(datosParseados);
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(normalizada)
     );
+
+    return normalizada;
   } catch {
     console.error(
       "No se pudo cargar la configuración guardada."
@@ -171,6 +218,10 @@ export function guardarConfiguracion(
         configuracionNormalizada
       )
     );
+
+    window.dispatchEvent(
+      new CustomEvent("ryuka-config-updated")
+    );
   }
 
   return configuracionNormalizada;
@@ -180,6 +231,10 @@ export function restaurarConfiguracion():
   RyukaConfig {
   if (typeof window !== "undefined") {
     localStorage.removeItem(STORAGE_KEY);
+
+    window.dispatchEvent(
+      new CustomEvent("ryuka-config-updated")
+    );
   }
 
   return DEFAULT_RYUKA_CONFIG;

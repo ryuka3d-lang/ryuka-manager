@@ -4,12 +4,15 @@ import { useEffect, useMemo, useState } from "react";
 import {
   editarMovimientoCaja,
   eliminarMovimientoCaja,
+  obtenerCentroFinanciero,
   obtenerMovimientosCaja,
   obtenerResumenCaja,
   registrarMovimientoCaja,
   type MovimientoCaja,
   type TipoMovimientoCaja,
 } from "@/lib/finance-service";
+import { obtenerConfiguracion } from "@/lib/settings-service";
+import FinancialHealthCard from "@/app/components/finance/FinancialHealthCard";
 
 const categoriasIngreso = [
   "Venta",
@@ -25,6 +28,8 @@ const categoriasEgreso = [
   "Envíos",
   "Servicios",
   "Monotributo",
+  "Electricidad",
+  "Reinversión",
   "Mantenimiento",
   "Herramientas",
   "Retiro de sueldo",
@@ -60,6 +65,19 @@ export default function FinanzasPage() {
   }, []);
 
   const resumen = useMemo(() => obtenerResumenCaja(movimientos), [movimientos]);
+
+  const config = useMemo(() => obtenerConfiguracion(), [movimientos]);
+
+  const centroFinanciero = useMemo(
+    () =>
+      obtenerCentroFinanciero(movimientos, {
+        sueldoMensual: config.sueldoMensual,
+        monotributo: config.monotributo,
+        reinversionPorcentaje: config.reinversionPorcentaje,
+        electricidadAReponer: config.electricidadAReponer,
+      }),
+    [movimientos, config]
+  );
 
   const filtrados = useMemo(() => {
     const texto = busqueda.trim().toLowerCase();
@@ -132,6 +150,11 @@ export default function FinanzasPage() {
             </div>
           </div>
         </header>
+
+        <FinancialHealthCard
+          centro={centroFinanciero}
+          reinversionPorcentaje={config.reinversionPorcentaje}
+        />
 
         <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Resumen titulo="Saldo total" valor={moneda(resumen.saldo)} destacado />

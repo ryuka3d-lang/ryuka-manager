@@ -269,3 +269,261 @@ export function obtenerResumenCaja(
     resultadoMes: ingresosMes - egresosMes,
   };
 }
+
+
+export type EstadoObjetivoFinanciero = {
+  objetivo: number;
+  cubierto: number;
+  faltante: number;
+  porcentaje: number;
+  completo: boolean;
+};
+
+export type CentroFinanciero = {
+  saldoCaja: number;
+  ingresosMes: number;
+  egresosMes: number;
+  disponibleParaRetirar: number;
+  totalAReservar: number;
+  mensajePrincipal: string;
+
+  sueldo: EstadoObjetivoFinanciero;
+  monotributo: EstadoObjetivoFinanciero;
+  electricidad: EstadoObjetivoFinanciero;
+  reinversion: EstadoObjetivoFinanciero;
+
+  sueldoPagadoMes: number;
+  monotributoPagadoMes: number;
+  electricidadPagadaMes: number;
+  reinversionUsadaMes: number;
+};
+
+function sumarEgresosCategoriaMes(
+  movimientos: MovimientoCaja[],
+  categorias: string[],
+  fechaReferencia: Date
+) {
+  const mes = fechaReferencia.getMonth();
+  const anio = fechaReferencia.getFullYear();
+  const categoriasNormalizadas = categorias.map((categoria) =>
+    categoria.trim().toLocaleLowerCase("es-AR")
+  );
+
+  return movimientos.reduce((total, movimiento) => {
+    if (movimiento.tipo !== "egreso") return total;
+
+    const fecha = new Date(`${movimiento.fecha}T12:00:00`);
+    const esMes =
+      fecha.getMonth() === mes &&
+      fecha.getFullYear() === anio;
+
+    const coincideCategoria =
+      categoriasNormalizadas.includes(
+        movimiento.categoria
+          .trim()
+          .toLocaleLowerCase("es-AR")
+      );
+
+    return esMes && coincideCategoria
+      ? total + Math.abs(Number(movimiento.monto) || 0)
+      : total;
+  }, 0);
+}
+
+function crearEstadoObjetivo(
+  objetivo: number,
+  yaCubierto: number,
+  disponibleParaReservar: number
+): {
+  estado: EstadoObjetivoFinanciero;
+  restanteDisponible: number;
+} {
+  const objetivoSeguro = Math.max(0, objetivo);
+  const cubiertoPreviamente = Math.min(
+    objetivoSeguro,
+    Math.max(0, yaCubierto)
+  );
+  const pendiente = Math.max(
+    0,
+    objetivoSeguro - cubiertoPreviamente
+  );
+  const reservadoAhora = Math.min(
+    pendiente,
+    Math.max(0, disponibleParaReservar)
+  );
+  const cubierto = cubiertoPreviamente + reservadoAhora;
+  const faltante = Math.max(0, objetivoSeguro - cubierto);
+
+  return {
+    estado: {
+      objetivo: objetivoSeguro,
+      cubierto,
+      faltante,
+      porcentaje:
+        objetivoSeguro <= 0
+          ? 100
+          : Math.min(
+              100,
+              (cubierto / objetivoSeguro) * 100
+            ),
+      completo: faltante <= 0.01,
+    },
+    restanteDisponible: Math.max(
+      0,
+      disponibleParaReservar - reservadoAhora
+    ),
+  };
+}
+
+export function obtenerCentroFinanciero(
+  movimientos = obtenerMovimientosCaja(),
+  configuracion?: {
+    sueldoMensual: number;
+    monotributo: number;
+    reinversionPorcentaje: number;
+    electricidadAReponer: number;
+  },
+  fechaReferencia = new Date()
+): CentroFinanciero {
+  const config =
+    configuracion ??
+    ({
+      sueldoMensual: 500000,
+      monotributo: 52000,
+      reinversionPorcentaje: 15,
+      electricidadAReponer: 0,
+    } as const);
+
+  const resumen = obtenerResumenCaja(
+    movimientos,
+    fechaReferencia
+  );
+
+  const sueldoPagadoMes = sumarEgresosCategoriaMes(
+    movimientos,
+    ["Retiro de sueldo"],
+    fechaReferencia
+  );
+
+  const monotributoPagadoMes =
+    sumarEgresosCategoriaMes(
+      movimientos,
+      ["Monotributo"],
+      fechaReferencia
+    );
+
+  const electricidadPagadaMes =
+    sumarEgresosCategoriaMes(
+      movimientos,
+      ["Electricidad"],
+      fechaReferencia
+    );
+
+  const reinversionUsadaMes =
+    sumarEgresosCategoriaMes(
+      movimientos,
+      ["Reinversión", "Reinversion"],
+      fechaReferencia
+    );
+
+  const reinversionObjetivo = Math.max(
+    0,
+    resumen.ingresosMes *
+      (Math.max(
+        0,
+        Math.min(100, config.reinversionPorcentaje)
+      ) /
+        100)
+  );
+
+  let disponible = Math.max(0, resumen.saldo);
+
+  // Priorizamos obligaciones que no conviene postergar.
+  const monotributo = crearEstadoObjetivo(
+    config.monotributo,
+    monotributoPagadoMes,
+    disponible
+  );
+  disponible = monotributo.restanteDisponible;
+
+  const electricidad = crearEstadoObjetivo(
+    config.electricidadAReponer,
+    electricidadPagadaMes,
+    disponible
+  );
+  disponible = electricidad.restanteDisponible;
+
+  const sueldo = crearEstadoObjetivo(
+    config.sueldoMensual,
+    sueldoPagadoMes,
+    disponible
+  );
+  disponible = sueldo.restanteDisponible;
+
+  const reinversion = crearEstadoObjetivo(
+    reinversionObjetivo,
+    reinversionUsadaMes,
+    disponible
+  );
+  disponible = reinversion.restanteDisponible;
+
+  const totalAReservar =
+    monotributo.estado.faltante +
+    electricidad.estado.faltante +
+    sueldo.estado.faltante +
+    reinversion.estado.faltante;
+
+  const todosCubiertos =
+    sueldo.estado.completo &&
+    monotributo.estado.completo &&
+    electricidad.estado.completo &&
+    reinversion.estado.completo;
+
+  let mensajePrincipal =
+    "Todavía no conviene retirar dinero.";
+
+  if (todosCubiertos && disponible > 0) {
+    mensajePrincipal =
+      "Ya podés retirar este monto sin tocar las reservas del mes.";
+  } else if (!monotributo.estado.completo) {
+    mensajePrincipal = `Faltan ${Math.ceil(
+      monotributo.estado.faltante
+    ).toLocaleString("es-AR")} para cubrir el monotributo.`;
+  } else if (!electricidad.estado.completo) {
+    mensajePrincipal = `Faltan ${Math.ceil(
+      electricidad.estado.faltante
+    ).toLocaleString("es-AR")} para reponer la electricidad.`;
+  } else if (!sueldo.estado.completo) {
+    mensajePrincipal = `Faltan ${Math.ceil(
+      sueldo.estado.faltante
+    ).toLocaleString("es-AR")} para completar el fondo salarial.`;
+  } else if (!reinversion.estado.completo) {
+    mensajePrincipal = `Faltan ${Math.ceil(
+      reinversion.estado.faltante
+    ).toLocaleString("es-AR")} para completar la reinversión.`;
+  } else if (todosCubiertos && disponible <= 0) {
+    mensajePrincipal =
+      "Todo está cubierto, pero todavía no queda excedente para retirar.";
+  }
+
+  return {
+    saldoCaja: resumen.saldo,
+    ingresosMes: resumen.ingresosMes,
+    egresosMes: resumen.egresosMes,
+    disponibleParaRetirar: todosCubiertos
+      ? disponible
+      : 0,
+    totalAReservar,
+    mensajePrincipal,
+
+    sueldo: sueldo.estado,
+    monotributo: monotributo.estado,
+    electricidad: electricidad.estado,
+    reinversion: reinversion.estado,
+
+    sueldoPagadoMes,
+    monotributoPagadoMes,
+    electricidadPagadaMes,
+    reinversionUsadaMes,
+  };
+}

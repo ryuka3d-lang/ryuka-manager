@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Pencil, Search, Trash2 } from "lucide-react";
 
 import PageHeader from "@/app/components/PageHeader";
 import Button from "@/app/components/Button";
 import ProductForm from "@/app/components/ProductForm";
+import ProductToolbar from "@/app/components/product/ProductToolbar";
+import ProductGrid from "@/app/components/product/ProductGrid";
 
 import type { Producto } from "@/app/types/producto";
 
@@ -334,50 +335,16 @@ export default function ProductosPage() {
           {errorCarga}
         </div>
       )}
-
-      <div className="mt-8 rounded-2xl border border-[#2b2b2b] bg-[#171717] p-4 md:flex md:items-center md:justify-between md:gap-4">
-        <div>
-          <h2 className="text-lg font-semibold">
-            {mostrarFormulario
-              ? productoEditando
-                ? "Editando producto"
-                : "Nuevo producto"
-              : "Mis productos"}
-          </h2>
-
-          <p className="mt-1 text-sm text-gray-500">
-            {cargando
-              ? "Sincronizando productos..."
-              : `${productos.length} productos guardados`}
-          </p>
-        </div>
-
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row md:mt-0">
-          {!mostrarFormulario && (
-            <div className="relative min-w-64">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-
-              <input
-                value={busqueda}
-                onChange={(evento) =>
-                  setBusqueda(evento.target.value)
-                }
-                placeholder="Buscar producto..."
-                className="w-full rounded-xl border border-[#2b2b2b] bg-[#111] py-3 pl-10 pr-4 text-sm outline-none focus:border-[#810404]"
-              />
-            </div>
-          )}
-
-          <Button
-            texto={mostrarFormulario ? "Cerrar" : "+ Nuevo producto"}
-            onClick={
-              mostrarFormulario
-                ? cerrarFormulario
-                : comenzarNuevoProducto
-            }
-          />
-        </div>
-      </div>
+      <ProductToolbar
+        mostrarFormulario={mostrarFormulario}
+        productoEditando={productoEditando}
+        cantidadProductos={productos.length}
+        cargando={cargando}
+        busqueda={busqueda}
+        onBusquedaChange={setBusqueda}
+        onNuevoProducto={comenzarNuevoProducto}
+        onCerrarFormulario={cerrarFormulario}
+      />
 
       {mostrarFormulario && (
         <>
@@ -411,122 +378,16 @@ export default function ProductosPage() {
           </div>
         </>
       )}
-
       {!mostrarFormulario && (
-        <>
-          {productosFiltrados.length === 0 && !cargando ? (
-            <div className="mt-8 rounded-2xl border border-dashed border-[#343434] bg-[#171717] p-10 text-center">
-              <p className="font-semibold text-gray-300">
-                No encontramos productos.
-              </p>
-
-              <p className="mt-2 text-sm text-gray-500">
-                Probá con otra búsqueda o creá un producto nuevo.
-              </p>
-            </div>
-          ) : (
-            <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {productosFiltrados.map((productoGuardado) => (
-                <article
-                  key={productoGuardado.id}
-                  className="flex flex-col rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-5 transition hover:-translate-y-0.5 hover:border-[#444]"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-red-300">
-                        {productoGuardado.codigo}
-                      </p>
-
-                      <h3 className="mt-2 truncate text-xl font-bold">
-                        {productoGuardado.nombre}
-                      </h3>
-
-                      <p className="mt-1 text-sm text-gray-400">
-                        {productoGuardado.categoria ||
-                          "Sin categoría"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-5 space-y-2 text-sm">
-                    <p>
-                      Cantidad por cama:{" "}
-                      <strong>
-                        {productoGuardado.cantidadPorCama}
-                      </strong>
-                    </p>
-
-                    <p>
-                      Peso por cama:{" "}
-                      <strong>
-                        {productoGuardado.pesoPorCama || "0"} g
-                      </strong>
-                    </p>
-
-                    <p>
-                      Tiempo por cama:{" "}
-                      <strong>
-                        {productoGuardado.horas || "0"} h{" "}
-                        {productoGuardado.minutos || "0"} min
-                      </strong>
-                    </p>
-
-                    <p>
-                      Filamentos detallados:{" "}
-                      <strong>
-                        {productoGuardado.materiales.length}
-                      </strong>
-                    </p>
-                  </div>
-
-                  {productoGuardado.materiales.length > 0 && (
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      {productoGuardado.materiales.map(
-                        (material) => (
-                          <span
-                            key={material.id}
-                            className="rounded-full border border-[#353535] bg-[#151515] px-3 py-1 text-xs text-gray-300"
-                          >
-                            {material.material} {material.color}
-                          </span>
-                        )
-                      )}
-                    </div>
-                  )}
-
-                  <div className="mt-auto flex gap-3 border-t border-[#303030] pt-5">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        comenzarEdicion(productoGuardado)
-                      }
-                      className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#3a3a3a] px-4 py-3 text-sm font-semibold transition hover:bg-white/[0.04]"
-                    >
-                      <Pencil className="h-4 w-4" />
-                      Editar
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        void eliminar(productoGuardado)
-                      }
-                      disabled={
-                        eliminandoId === productoGuardado.id
-                      }
-                      className="flex items-center justify-center gap-2 rounded-xl border border-red-900 px-4 py-3 text-sm font-semibold text-red-300 transition hover:bg-red-950/30 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      {eliminandoId === productoGuardado.id
-                        ? "Eliminando..."
-                        : "Eliminar"}
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </>
+        <ProductGrid
+          productos={productosFiltrados}
+          cargando={cargando}
+          eliminandoId={eliminandoId}
+          onEditar={comenzarEdicion}
+          onEliminar={(productoGuardado) =>
+            void eliminar(productoGuardado)
+          }
+        />
       )}
     </main>
   );

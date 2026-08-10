@@ -7,24 +7,32 @@ import {
 } from "react";
 
 import { calcularPresupuesto } from "../../lib/cost-engine";
+
 import {
   cargarPresupuestosDesdeNube,
   eliminarPresupuesto,
   guardarPresupuesto,
   obtenerPresupuestos,
   type PresupuestoGuardado,
+  type PresupuestoItemGuardado,
 } from "../../lib/budget-service";
+
 import {
   cargarProductosDesdeNube,
   obtenerProductos,
   type ProductoGuardado,
 } from "../../lib/product-service";
+
 import {
   DEFAULT_BUDGET_CONFIG,
   obtenerConfiguracionPresupuesto,
 } from "../../lib/budget-config";
 
-import { cargarClientesDesdeNube, obtenerClientes, type ClienteGuardado } from "../../lib/client-service";
+import {
+  cargarClientesDesdeNube,
+  obtenerClientes,
+  type ClienteGuardado,
+} from "../../lib/client-service";
 
 import type { Accesorio } from "../types/producto";
 import type { PrecioFinalVenta } from "../components/budget/SaleSimulatorCard";
@@ -72,7 +80,8 @@ const PRECIOS_INICIALES: PrecioFinalVenta = {
 };
 
 export default function useBudget() {
-  const [clientes, setClientes] = useState<ClienteGuardado[]>([]);
+  const [clientes, setClientes] =
+    useState<ClienteGuardado[]>([]);
 
   const [productos, setProductos] =
     useState<ProductoGuardado[]>([]);
@@ -110,6 +119,11 @@ export default function useBudget() {
   );
 
   const [
+    itemsPresupuesto,
+    setItemsPresupuesto,
+  ] = useState<PresupuestoItemGuardado[]>([]);
+
+  const [
     presupuestosGuardados,
     setPresupuestosGuardados,
   ] = useState<PresupuestoGuardado[]>([]);
@@ -120,24 +134,38 @@ export default function useBudget() {
 
   useEffect(() => {
     setClientes(obtenerClientes());
-    void cargarClientesDesdeNube().then(setClientes).catch((error) => {
-      console.error("No se pudieron cargar los clientes desde Supabase:", error);
-    });
+
+    void cargarClientesDesdeNube()
+      .then(setClientes)
+      .catch((error) => {
+        console.error(
+          "No se pudieron cargar los clientes desde Supabase:",
+          error
+        );
+      });
 
     setProductos(obtenerProductos());
 
     void cargarProductosDesdeNube()
       .then(setProductos)
       .catch((error) => {
-        console.error("No se pudieron cargar los productos desde Supabase:", error);
+        console.error(
+          "No se pudieron cargar los productos desde Supabase:",
+          error
+        );
       });
 
-    setPresupuestosGuardados(obtenerPresupuestos());
+    setPresupuestosGuardados(
+      obtenerPresupuestos()
+    );
 
     void cargarPresupuestosDesdeNube()
       .then(setPresupuestosGuardados)
       .catch((error) => {
-        console.error("No se pudieron cargar los presupuestos desde Supabase:", error);
+        console.error(
+          "No se pudieron cargar los presupuestos desde Supabase:",
+          error
+        );
       });
 
     const configCargada =
@@ -177,6 +205,19 @@ export default function useBudget() {
     );
   }
 
+  function limpiarProductoActual() {
+    setProductoSeleccionadoId("");
+
+    setPresupuesto((actual) => ({
+      ...PRESUPUESTO_INICIAL,
+      clienteId: actual.clienteId,
+      cliente: actual.cliente,
+    }));
+
+    setAccesoriosPresupuesto([]);
+    setPreciosFinales(PRECIOS_INICIALES);
+  }
+
   function seleccionarProducto(id: string) {
     setProductoSeleccionadoId(id);
 
@@ -189,7 +230,6 @@ export default function useBudget() {
       setPresupuesto(
         (presupuestoActual) => ({
           ...presupuestoActual,
-
           producto: "",
           cantidadPorCama: "",
           pesoPorCama: "",
@@ -200,28 +240,21 @@ export default function useBudget() {
       );
 
       setAccesoriosPresupuesto([]);
-
+      setPreciosFinales(PRECIOS_INICIALES);
       return;
     }
 
     setPresupuesto(
       (presupuestoActual) => ({
         ...presupuestoActual,
-
         producto: productoEncontrado.nombre,
-
         cantidadPorCama:
           productoEncontrado.cantidadPorCama,
-
         pesoPorCama:
           productoEncontrado.pesoPorCama,
-
-        colores:
-          productoEncontrado.colores,
-
+        colores: productoEncontrado.colores,
         horasPorCama:
           productoEncontrado.horas,
-
         minutosPorCama:
           productoEncontrado.minutos,
       })
@@ -234,6 +267,8 @@ export default function useBudget() {
         })
       )
     );
+
+    setPreciosFinales(PRECIOS_INICIALES);
   }
 
   function actualizarAccesorio(
@@ -368,10 +403,167 @@ export default function useBudget() {
     }
   );
 
-  async function manejarGuardarPresupuesto() {
-    const cantidad =
-      cantidadSolicitadaNumero;
+  const totalesPresupuesto = useMemo(
+    () => ({
+      costoTotal: itemsPresupuesto.reduce(
+        (total, item) =>
+          total + item.totalCost,
+        0
+      ),
 
+      mayoristaTotal: itemsPresupuesto.reduce(
+        (total, item) =>
+          total + item.wholesaleTotal,
+        0
+      ),
+
+      mayoristaGanancia:
+        itemsPresupuesto.reduce(
+          (total, item) =>
+            total + item.wholesaleProfit,
+          0
+        ),
+
+      minoristaTotal: itemsPresupuesto.reduce(
+        (total, item) =>
+          total + item.retailTotal,
+        0
+      ),
+
+      minoristaGanancia:
+        itemsPresupuesto.reduce(
+          (total, item) =>
+            total + item.retailProfit,
+          0
+        ),
+
+      tiempoTotalMinutos:
+        itemsPresupuesto.reduce(
+          (total, item) =>
+            total + item.totalPrintMinutes,
+          0
+        ),
+
+      trabajoManualMinutos:
+        itemsPresupuesto.reduce(
+          (total, item) =>
+            total + item.manualMinutes,
+          0
+        ),
+
+      pesoTotalGramos:
+        itemsPresupuesto.reduce(
+          (total, item) =>
+            total + item.totalWeightGrams,
+          0
+        ),
+
+      kilosFilamento:
+        itemsPresupuesto.reduce(
+          (total, item) =>
+            total + item.filamentKilos,
+          0
+        ),
+
+      diasProduccion: Math.max(
+        0,
+        ...itemsPresupuesto.map(
+          (item) => item.productionDays
+        )
+      ),
+    }),
+    [itemsPresupuesto]
+  );
+
+  function agregarProductoAlPresupuesto() {
+    if (!productoSeleccionado) {
+      alert("Seleccioná un producto.");
+      return;
+    }
+
+    if (cantidadSolicitadaNumero <= 0) {
+      alert("Ingresá una cantidad válida.");
+      return;
+    }
+
+    if (
+      preciosFinales.mayoristaUnitario <= 0 ||
+      preciosFinales.minoristaUnitario <= 0
+    ) {
+      alert(
+        "Definí los precios finales antes de agregar el producto."
+      );
+      return;
+    }
+
+    const nuevoItem: PresupuestoItemGuardado = {
+      productId: productoSeleccionado.id,
+      productCode:
+        productoSeleccionado.codigo,
+      productName:
+        productoSeleccionado.nombre,
+      quantity: cantidadSolicitadaNumero,
+
+      hoursPerDay: horasDiariasCalculadas,
+      productionDays:
+        resultado.diasProduccion,
+      totalPrintMinutes:
+        resultado.tiempoTotalMinutos,
+      manualMinutes:
+        minutosTrabajoPersonalTotal,
+
+      totalWeightGrams: resultado.pesoTotal,
+      filamentKilos:
+        resultado.kilosFilamento,
+
+      accessories:
+        accesoriosPresupuesto.map(
+          (accesorio) => ({
+            ...accesorio,
+          })
+        ),
+
+      unitCost: resultado.costoPorUnidad,
+      totalCost: resultado.costoTotal,
+
+      wholesaleUnitPrice:
+        preciosFinales.mayoristaUnitario,
+      wholesaleTotal:
+        preciosFinales.mayoristaTotal,
+      wholesaleProfit:
+        preciosFinales.mayoristaGanancia,
+
+      retailUnitPrice:
+        preciosFinales.minoristaUnitario,
+      retailTotal:
+        preciosFinales.minoristaTotal,
+      retailProfit:
+        preciosFinales.minoristaGanancia,
+    };
+
+    setItemsPresupuesto(
+      (itemsActuales) => [
+        ...itemsActuales,
+        nuevoItem,
+      ]
+    );
+
+    limpiarProductoActual();
+  }
+
+  function eliminarItemPresupuesto(
+    indice: number
+  ) {
+    setItemsPresupuesto(
+      (itemsActuales) =>
+        itemsActuales.filter(
+          (_, indiceActual) =>
+            indiceActual !== indice
+        )
+    );
+  }
+
+  async function manejarGuardarPresupuesto() {
     if (!presupuesto.cliente.trim()) {
       alert(
         "Ingresá el nombre del cliente."
@@ -379,26 +571,14 @@ export default function useBudget() {
       return;
     }
 
-    if (!productoSeleccionado) {
-      alert("Seleccioná un producto.");
-      return;
-    }
-
-    if (cantidad <= 0) {
-      alert("Ingresá una cantidad válida.");
-      return;
-    }
-
-    if (
-      preciosFinales.mayoristaUnitario <=
-        0 ||
-      preciosFinales.minoristaUnitario <= 0
-    ) {
+    if (itemsPresupuesto.length === 0) {
       alert(
-        "Definí los precios finales antes de guardar."
+        "Agregá al menos un producto al presupuesto."
       );
       return;
     }
+
+    const primerItem = itemsPresupuesto[0];
 
     const presupuestoGuardado =
       await guardarPresupuesto({
@@ -406,65 +586,59 @@ export default function useBudget() {
         cliente:
           presupuesto.cliente.trim(),
 
-        productoId:
-          productoSeleccionado.id,
+        items: itemsPresupuesto,
 
+        productoId: primerItem.productId,
         productoCodigo:
-          productoSeleccionado.codigo,
-
+          primerItem.productCode,
         productoNombre:
-          productoSeleccionado.nombre,
-
-        cantidad,
+          primerItem.productName,
+        cantidad: primerItem.quantity,
 
         horasImpresionDia:
-          horasDiariasCalculadas,
+          primerItem.hoursPerDay,
 
         diasProduccion:
-          resultado.diasProduccion,
+          totalesPresupuesto.diasProduccion,
 
         tiempoTotalMinutos:
-          resultado.tiempoTotalMinutos,
+          totalesPresupuesto.tiempoTotalMinutos,
 
         trabajoManualMinutos:
-          minutosTrabajoPersonalTotal,
+          totalesPresupuesto.trabajoManualMinutos,
 
         pesoTotalGramos:
-          resultado.pesoTotal,
+          totalesPresupuesto.pesoTotalGramos,
 
         kilosFilamento:
-          resultado.kilosFilamento,
+          totalesPresupuesto.kilosFilamento,
 
         accesorios:
-          accesoriosPresupuesto.map(
-            (accesorio) => ({
-              ...accesorio,
-            })
-          ),
+          primerItem.accessories,
 
         costoTotal:
-          resultado.costoTotal,
+          totalesPresupuesto.costoTotal,
 
         costoPorUnidad:
-          resultado.costoPorUnidad,
+          primerItem.unitCost,
 
         precioMayoristaUnitario:
-          preciosFinales.mayoristaUnitario,
+          primerItem.wholesaleUnitPrice,
 
         precioMayoristaTotal:
-          preciosFinales.mayoristaTotal,
+          totalesPresupuesto.mayoristaTotal,
 
         gananciaMayorista:
-          preciosFinales.mayoristaGanancia,
+          totalesPresupuesto.mayoristaGanancia,
 
         precioMinoristaUnitario:
-          preciosFinales.minoristaUnitario,
+          primerItem.retailUnitPrice,
 
         precioMinoristaTotal:
-          preciosFinales.minoristaTotal,
+          totalesPresupuesto.minoristaTotal,
 
         gananciaMinorista:
-          preciosFinales.minoristaGanancia,
+          totalesPresupuesto.minoristaGanancia,
       });
 
     setPresupuestosGuardados(
@@ -473,6 +647,14 @@ export default function useBudget() {
         presupuestoGuardado,
       ]
     );
+
+    setItemsPresupuesto([]);
+
+    setPresupuesto(
+      PRESUPUESTO_INICIAL
+    );
+
+    limpiarProductoActual();
 
     alert(
       `Presupuesto ${presupuestoGuardado.id} guardado correctamente.`
@@ -486,9 +668,7 @@ export default function useBudget() {
       `¿Querés eliminar el presupuesto ${id}?`
     );
 
-    if (!confirmar) {
-      return;
-    }
+    if (!confirmar) return;
 
     const eliminado =
       await eliminarPresupuesto(id);
@@ -540,6 +720,11 @@ export default function useBudget() {
 
     preciosFinales,
     setPreciosFinales,
+
+    itemsPresupuesto,
+    totalesPresupuesto,
+    agregarProductoAlPresupuesto,
+    eliminarItemPresupuesto,
 
     presupuestosGuardados,
     manejarGuardarPresupuesto,

@@ -3,9 +3,9 @@
 import SaleSimulatorCard, {
   type PrecioFinalVenta,
 } from "./SaleSimulatorCard";
+
 import BudgetPreviewCard from "./BudgetPreviewCard";
 import CopyBudgetButtons from "./CopyBudgetButtons";
-import SaveBudgetSection from "./SaveBudgetSection";
 
 type Props = {
   cliente: string;
@@ -14,13 +14,10 @@ type Props = {
 
   resultado: {
     costoTotal: number;
-
     precioMayorista: number;
     mayoristaPorUnidad: number;
-
     precioMinorista: number;
     minoristaPorUnidad: number;
-
     tiempoTotalMinutos: number;
     diasProduccion: number;
     kilosFilamento: number;
@@ -38,7 +35,7 @@ type Props = {
     precios: PrecioFinalVenta
   ) => void;
 
-  onGuardar: () => void;
+  onAgregarProducto: () => void;
 };
 
 export default function BudgetSaleSection({
@@ -52,7 +49,7 @@ export default function BudgetSaleSection({
   trabajoManualMinutos,
   preciosFinales,
   onPreciosChange,
-  onGuardar,
+  onAgregarProducto,
 }: Props) {
   return (
     <>
@@ -77,9 +74,7 @@ export default function BudgetSaleSection({
         porcentajeMinorista={
           porcentajeMinorista
         }
-        onPreciosChange={
-          onPreciosChange
-        }
+        onPreciosChange={onPreciosChange}
       />
 
       <BudgetPreviewCard
@@ -101,9 +96,7 @@ export default function BudgetSaleSection({
         trabajoManualMinutos={
           trabajoManualMinutos
         }
-        costoTotal={
-          resultado.costoTotal
-        }
+        costoTotal={resultado.costoTotal}
         precioMayoristaUnitario={
           preciosFinales.mayoristaUnitario
         }
@@ -142,9 +135,24 @@ export default function BudgetSaleSection({
         }
       />
 
-      <SaveBudgetSection
-        onGuardar={onGuardar}
-      />
+      <section className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-5">
+        <h2 className="text-lg font-bold">
+          Agregar al presupuesto
+        </h2>
+
+        <p className="mt-2 text-sm text-gray-400">
+          Este producto se sumará a la lista. Después podés
+          elegir otro producto y repetir el proceso.
+        </p>
+
+        <button
+          type="button"
+          onClick={onAgregarProducto}
+          className="mt-5 w-full rounded-xl bg-[#810404] px-6 py-3 font-semibold transition hover:bg-[#a00808]"
+        >
+          + Agregar producto
+        </button>
+      </section>
     </>
   );
 }

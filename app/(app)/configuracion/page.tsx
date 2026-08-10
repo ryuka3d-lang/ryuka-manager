@@ -91,7 +91,26 @@ const camposEstructura: CampoConfiguracion[] = [
     clave: "monotributo",
     titulo: "Monotributo mensual",
     descripcion:
-      "Costo mensual del monotributo que se distribuye entre los trabajos.",
+      "Monto mensual que Ryuka debe reservar para el monotributo.",
+    prefijo: "$",
+    minimo: 0,
+    paso: 100,
+  },
+  {
+    clave: "reinversionPorcentaje",
+    titulo: "Reserva para reinversión",
+    descripcion:
+      "Porcentaje de los cobros del mes que se protege para filamento, herramientas y crecimiento.",
+    sufijo: "%",
+    minimo: 0,
+    maximo: 100,
+    paso: 1,
+  },
+  {
+    clave: "electricidadAReponer",
+    titulo: "Electricidad a reponer",
+    descripcion:
+      "Monto real que querés devolver por el consumo del taller. Si todavía no lo sabés, dejalo en $0.",
     prefijo: "$",
     minimo: 0,
     paso: 100,
@@ -293,7 +312,7 @@ export default function ConfiguracionPage() {
             </p>
 
             <p className="mt-1 text-sm text-zinc-500">
-              Los datos quedan guardados en este navegador.
+              Los valores se guardan en Ryuka y se sincronizan con la nube.
             </p>
           </div>
 
