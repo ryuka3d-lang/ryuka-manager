@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import type { FeriaGuardada, ProductoFeria } from "@/lib/fair-service";
 import type { ProductoGuardado } from "@/lib/product-service";
+import FairProductAssistant from "./FairProductAssistant";
 
 type Props = {
   productos: ProductoGuardado[];
@@ -181,7 +182,8 @@ export default function FairForm({
   }
 
   return (
-    <div className="mt-6 grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.7fr)]">
+    <div className="mt-6">
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.7fr)]">
       <section className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-5 md:p-6">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
           Datos del evento
@@ -455,6 +457,13 @@ export default function FairForm({
           </p>
         </div>
       </section>
+      </div>
+
+      <FairProductAssistant
+        tipo={tipo}
+        publicoEstimado={Number(publicoEstimado) || 0}
+        productos={productos}
+      />
     </div>
   );
 }
