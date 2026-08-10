@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 const enlaces = [
-  ["/", "📊 Dashboard"], ["/presupuestos", "📄 Presupuestos"], ["/productos", "📦 Productos"], ["/pedidos", "📋 Pedidos"], ["/produccion", "🖨 Producción"], ["/stock", "🧵 Stock"], ["/compras", "🛒 Compras"], ["/clientes", "👥 Clientes"], ["/finanzas", "💰 Caja"], ["/taller", "☁ Taller y nube"], ["/configuracion", "⚙ Configuración"]
+  ["/", "📊 Dashboard"], ["/presupuestos", "📄 Presupuestos"], ["/productos", "📦 Productos"], ["/pedidos", "📋 Pedidos"], ["/produccion", "🖨 Producción"], ["/stock", "🧵 Stock"], ["/compras", "🛒 Compras"], ["/ferias", "🎪 Ferias"], ["/clientes", "👥 Clientes"], ["/finanzas", "💰 Caja"], ["/taller", "☁ Taller y nube"], ["/configuracion", "⚙ Configuración"]
 ];
 export default function MobileNav() {
   const [abierto, setAbierto] = useState(false);

@@ -58,6 +58,11 @@ const grupos = [
         icono: "⊕",
         etiqueta: "Compras",
       },
+      {
+        href: "/ferias",
+        icono: "✦",
+        etiqueta: "Ferias",
+      },
     ],
   },
   {
