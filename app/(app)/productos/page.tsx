@@ -116,6 +116,8 @@ export default function ProductosPage() {
   const [eliminandoId, setEliminandoId] = useState<string | null>(null);
   const [errorCarga, setErrorCarga] = useState("");
   const [busqueda, setBusqueda] = useState("");
+  const [prefillAplicado, setPrefillAplicado] =
+    useState(false);
 
   const productosFiltrados = useMemo(() => {
     const termino = busqueda
@@ -133,6 +135,44 @@ export default function ProductosPage() {
         .includes(termino)
     );
   }, [busqueda, productos]);
+
+  useEffect(() => {
+    if (prefillAplicado) return;
+
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
+    if (params.get("nuevo") !== "1") {
+      setPrefillAplicado(true);
+      return;
+    }
+
+    const nombre = params.get("nombre") || "";
+    const categoria =
+      params.get("categoria") || "Feria";
+    const descripcion =
+      params.get("descripcion") || "";
+
+    setProducto({
+      ...crearProductoInicial(),
+      nombre,
+      categoria,
+      descripcion,
+    });
+
+    setProductoEditando(null);
+    setMostrarFormulario(true);
+    setPrefillAplicado(true);
+
+    // Limpiamos la URL para que, al cancelar o refrescar,
+    // Ryuka no vuelva a abrir el formulario automáticamente.
+    window.history.replaceState(
+      {},
+      "",
+      window.location.pathname
+    );
+  }, [prefillAplicado]);
 
   useEffect(() => {
     let cancelarSuscripcion: (() => void) | undefined;

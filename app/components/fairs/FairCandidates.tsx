@@ -120,6 +120,45 @@ export default function FairCandidates({
     );
   }
 
+  function crearProducto(
+    candidato: ModeloCandidato
+  ) {
+    if (candidato.licencia === "no_comercial") {
+      alert(
+        "Este modelo está marcado como NO comercial. No lo vamos a convertir en un producto para venta."
+      );
+      return;
+    }
+
+    if (candidato.licencia === "sin_revisar") {
+      const continuar = window.confirm(
+        "La licencia todavía figura como 'Revisar'. ¿Querés crear igualmente la ficha del producto? Antes de venderlo, confirmá que la licencia permita uso comercial."
+      );
+
+      if (!continuar) return;
+    }
+
+    const params = new URLSearchParams({
+      nuevo: "1",
+      nombre: candidato.nombre,
+      categoria: "Feria",
+      descripcion: [
+        `Modelo candidato de ${candidato.sitio}.`,
+        candidato.url,
+        candidato.notas
+          ? `Notas: ${candidato.notas}`
+          : "",
+      ]
+        .filter(Boolean)
+        .join("\n"),
+      origen: candidato.sitio,
+      modeloUrl: candidato.url,
+    });
+
+    window.location.href =
+      `/productos?${params.toString()}`;
+  }
+
   return (
     <section className="mt-6 rounded-2xl border border-[#2b2b2b] bg-[#171717] p-5 md:p-6">
       <div>
@@ -310,6 +349,23 @@ export default function FairCandidates({
                       >
                         Ver modelo ↗
                       </a>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          crearProducto(candidato)
+                        }
+                        disabled={
+                          candidato.licencia ===
+                          "no_comercial"
+                        }
+                        className="rounded-lg border border-[#810404] bg-red-950/20 px-3 py-2 text-xs font-semibold text-red-200 transition hover:bg-red-950/40 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/[0.02] disabled:text-zinc-600"
+                      >
+                        {candidato.licencia ===
+                        "no_comercial"
+                          ? "No apto para venta"
+                          : "Crear producto en Ryuka"}
+                      </button>
 
                       <select
                         value={candidato.licencia}
