@@ -15,10 +15,19 @@ import {
 
 type Props = {
   feriaId?: string;
+  onAgregarProductoAFeria?: (
+    producto: {
+      id: string;
+      codigo: string;
+      nombre: string;
+    },
+    cantidad: number
+  ) => void;
 };
 
 export default function FairCandidates({
   feriaId,
+  onAgregarProductoAFeria,
 }: Props) {
   const [candidatos, setCandidatos] =
     useState<ModeloCandidato[]>([]);
@@ -31,6 +40,11 @@ export default function FairCandidates({
   const [licencia, setLicencia] =
     useState<EstadoLicencia>("sin_revisar");
   const [notas, setNotas] = useState("");
+
+  const [
+    cantidadPorCandidato,
+    setCantidadPorCandidato,
+  ] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const cargar = () => {
@@ -162,6 +176,48 @@ export default function FairCandidates({
 
     window.location.href =
       `/productos?${params.toString()}`;
+  }
+
+  function agregarAFeria(
+    candidato: ModeloCandidato
+  ) {
+    if (
+      candidato.estado !== "convertido" ||
+      !candidato.productoId ||
+      !candidato.productoCodigo
+    ) {
+      return;
+    }
+
+    const cantidad = Math.floor(
+      Number(
+        cantidadPorCandidato[candidato.id] ||
+          0
+      )
+    );
+
+    if (cantidad <= 0) {
+      alert(
+        "Ingresá cuántas unidades querés llevar a la feria."
+      );
+      return;
+    }
+
+    onAgregarProductoAFeria?.(
+      {
+        id: candidato.productoId,
+        codigo: candidato.productoCodigo,
+        nombre:
+          candidato.productoNombre ||
+          candidato.nombre,
+      },
+      cantidad
+    );
+
+    setCantidadPorCandidato((actual) => ({
+      ...actual,
+      [candidato.id]: "",
+    }));
   }
 
   return (
@@ -358,6 +414,44 @@ export default function FairCandidates({
                               ? ` · ${candidato.productoNombre}`
                               : ""}
                           </p>
+
+                          {onAgregarProductoAFeria && (
+                            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                              <input
+                                type="number"
+                                min="1"
+                                value={
+                                  cantidadPorCandidato[
+                                    candidato.id
+                                  ] || ""
+                                }
+                                onChange={(evento) =>
+                                  setCantidadPorCandidato(
+                                    (actual) => ({
+                                      ...actual,
+                                      [candidato.id]:
+                                        evento.target
+                                          .value,
+                                    })
+                                  )
+                                }
+                                placeholder="Cantidad"
+                                className="min-w-0 flex-1 rounded-lg border border-emerald-900/60 bg-[#111] px-3 py-2 text-sm outline-none focus:border-emerald-600"
+                              />
+
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  agregarAFeria(
+                                    candidato
+                                  )
+                                }
+                                className="rounded-lg border border-emerald-800 bg-emerald-950/30 px-3 py-2 text-xs font-semibold text-emerald-300 transition hover:bg-emerald-950/50"
+                              >
+                                + Agregar a esta feria
+                              </button>
+                            </div>
+                          )}
                         </div>
                       )}
 

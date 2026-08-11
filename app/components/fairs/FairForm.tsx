@@ -156,6 +156,58 @@ export default function FairForm({
     );
   }
 
+  function agregarProductoConvertido(
+    producto: {
+      id: string;
+      codigo: string;
+      nombre: string;
+    },
+    cantidadObjetivo: number
+  ) {
+    setProductosFeria((actuales) => {
+      const existente = actuales.findIndex(
+        (item) =>
+          item.productId === producto.id
+      );
+
+      if (existente >= 0) {
+        const sumar = window.confirm(
+          `${producto.codigo} · ${producto.nombre} ya está en esta feria. ¿Querés sumar ${cantidadObjetivo} unidades al objetivo actual?`
+        );
+
+        if (!sumar) {
+          return actuales;
+        }
+
+        return actuales.map((item, index) =>
+          index === existente
+            ? {
+                ...item,
+                cantidadObjetivo:
+                  item.cantidadObjetivo +
+                  cantidadObjetivo,
+              }
+            : item
+        );
+      }
+
+      return [
+        ...actuales,
+        {
+          productId: producto.id,
+          codigo: producto.codigo,
+          nombre: producto.nombre,
+          cantidadObjetivo,
+          cantidadPreparada: 0,
+        },
+      ];
+    });
+
+    alert(
+      `${producto.codigo} agregado al plan de esta feria.`
+    );
+  }
+
   function guardar() {
     if (!nombre.trim()) {
       alert("Ingresá el nombre de la feria.");
@@ -468,6 +520,9 @@ export default function FairForm({
 
       <FairCandidates
         feriaId={feriaInicial?.id}
+        onAgregarProductoAFeria={
+          agregarProductoConvertido
+        }
       />
     </div>
   );
