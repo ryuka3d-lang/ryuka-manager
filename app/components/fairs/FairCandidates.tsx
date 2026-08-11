@@ -6,6 +6,7 @@ import {
   editarModeloCandidato,
   eliminarModeloCandidato,
   guardarModeloCandidato,
+  marcarCandidatoEvaluando,
   obtenerModelosCandidatos,
   type EstadoLicencia,
   type ModeloCandidato,
@@ -138,8 +139,12 @@ export default function FairCandidates({
       if (!continuar) return;
     }
 
+    marcarCandidatoEvaluando(candidato.id);
+
     const params = new URLSearchParams({
       nuevo: "1",
+      candidatoId: candidato.id,
+      feriaId: candidato.feriaId || "",
       nombre: candidato.nombre,
       categoria: "Feria",
       descripcion: [
@@ -305,9 +310,15 @@ export default function FairCandidates({
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold text-red-300">
-                          {candidato.sitio}
-                        </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="text-xs font-semibold text-red-300">
+                            {candidato.sitio}
+                          </p>
+
+                          <span className={claseEstado(candidato.estado)}>
+                            {textoEstado(candidato.estado)}
+                          </span>
+                        </div>
 
                         <h3 className="mt-1 truncate font-semibold">
                           {candidato.nombre}
@@ -334,6 +345,22 @@ export default function FairCandidates({
                       </button>
                     </div>
 
+                    {candidato.estado === "convertido" &&
+                      candidato.productoCodigo && (
+                        <div className="mt-3 rounded-lg border border-emerald-900/50 bg-emerald-950/20 p-3 text-sm">
+                          <p className="font-semibold text-emerald-300">
+                            Producto creado ✓
+                          </p>
+
+                          <p className="mt-1 text-zinc-300">
+                            {candidato.productoCodigo}
+                            {candidato.productoNombre
+                              ? ` · ${candidato.productoNombre}`
+                              : ""}
+                          </p>
+                        </div>
+                      )}
+
                     {candidato.notas && (
                       <p className="mt-3 text-sm leading-6 text-zinc-400">
                         {candidato.notas}
@@ -357,14 +384,22 @@ export default function FairCandidates({
                         }
                         disabled={
                           candidato.licencia ===
-                          "no_comercial"
+                            "no_comercial" ||
+                          candidato.estado ===
+                            "convertido"
                         }
                         className="rounded-lg border border-[#810404] bg-red-950/20 px-3 py-2 text-xs font-semibold text-red-200 transition hover:bg-red-950/40 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/[0.02] disabled:text-zinc-600"
                       >
                         {candidato.licencia ===
                         "no_comercial"
                           ? "No apto para venta"
-                          : "Crear producto en Ryuka"}
+                          : candidato.estado ===
+                              "convertido"
+                            ? "Producto creado ✓"
+                            : candidato.estado ===
+                                "evaluando"
+                              ? "Continuar creando producto"
+                              : "Crear producto en Ryuka"}
                       </button>
 
                       <select
@@ -457,6 +492,37 @@ function claseLicencia(
   }
 
   return `${base} border-amber-900 bg-amber-950/30 text-amber-300`;
+}
+
+function textoEstado(
+  estado: ModeloCandidato["estado"]
+) {
+  if (estado === "convertido") {
+    return "🟢 Producto creado";
+  }
+
+  if (estado === "evaluando") {
+    return "🟡 Evaluando";
+  }
+
+  return "💡 Idea pendiente";
+}
+
+function claseEstado(
+  estado: ModeloCandidato["estado"]
+) {
+  const base =
+    "rounded-full border px-2 py-1 text-[11px] font-semibold";
+
+  if (estado === "convertido") {
+    return `${base} border-emerald-900 bg-emerald-950/30 text-emerald-300`;
+  }
+
+  if (estado === "evaluando") {
+    return `${base} border-amber-900 bg-amber-950/30 text-amber-300`;
+  }
+
+  return `${base} border-white/10 bg-white/[0.03] text-zinc-400`;
 }
 
 function moneda(valor: number) {

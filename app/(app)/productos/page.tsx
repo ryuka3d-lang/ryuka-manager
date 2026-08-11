@@ -20,6 +20,11 @@ import {
   type ProductoGuardado,
 } from "@/lib/product-service";
 
+import {
+  marcarCandidatoComoIdea,
+  marcarCandidatoConvertido,
+} from "@/lib/fair-candidates";
+
 function crearProductoInicial(): Producto {
   return {
     nombre: "",
@@ -119,6 +124,11 @@ export default function ProductosPage() {
   const [prefillAplicado, setPrefillAplicado] =
     useState(false);
 
+  const [
+    candidatoOrigenId,
+    setCandidatoOrigenId,
+  ] = useState<string | null>(null);
+
   const productosFiltrados = useMemo(() => {
     const termino = busqueda
       .trim()
@@ -153,6 +163,11 @@ export default function ProductosPage() {
       params.get("categoria") || "Feria";
     const descripcion =
       params.get("descripcion") || "";
+
+    const candidatoId =
+      params.get("candidatoId");
+
+    setCandidatoOrigenId(candidatoId);
 
     setProducto({
       ...crearProductoInicial(),
@@ -227,13 +242,28 @@ export default function ProductosPage() {
     };
   }, []);
 
-  function cerrarFormulario() {
+  function cerrarFormulario(
+    opciones?: {
+      conservarEstadoCandidato?: boolean;
+    }
+  ) {
+    if (
+      candidatoOrigenId &&
+      !opciones?.conservarEstadoCandidato
+    ) {
+      marcarCandidatoComoIdea(
+        candidatoOrigenId
+      );
+    }
+
     setProducto(crearProductoInicial());
     setProductoEditando(null);
     setMostrarFormulario(false);
+    setCandidatoOrigenId(null);
   }
 
   function comenzarNuevoProducto() {
+    setCandidatoOrigenId(null);
     setProducto(crearProductoInicial());
     setProductoEditando(null);
     setMostrarFormulario(true);
@@ -241,6 +271,7 @@ export default function ProductosPage() {
   }
 
   function comenzarEdicion(productoGuardado: ProductoGuardado) {
+    setCandidatoOrigenId(null);
     setProducto(copiarProductoParaEditar(productoGuardado));
     setProductoEditando(productoGuardado);
     setMostrarFormulario(true);
@@ -294,11 +325,27 @@ export default function ProductosPage() {
 
       const guardado = await guardarProducto(producto);
 
+      if (candidatoOrigenId) {
+        marcarCandidatoConvertido(
+          candidatoOrigenId,
+          {
+            id: guardado.id,
+            codigo: guardado.codigo,
+            nombre: guardado.nombre,
+          }
+        );
+      }
+
       await recargarProductos();
-      cerrarFormulario();
+
+      cerrarFormulario({
+        conservarEstadoCandidato: true,
+      });
 
       alert(
-        `Producto ${guardado.codigo} guardado correctamente en la nube.`
+        candidatoOrigenId
+          ? `Producto ${guardado.codigo} guardado y vinculado al modelo candidato.`
+          : `Producto ${guardado.codigo} guardado correctamente en la nube.`
       );
     } catch (error) {
       console.error(error);
@@ -409,7 +456,7 @@ export default function ProductosPage() {
 
             <button
               type="button"
-              onClick={cerrarFormulario}
+              onClick={() => cerrarFormulario()}
               disabled={guardando}
               className="rounded-xl border border-[#3a3a3a] px-6 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             >

@@ -13,6 +13,11 @@ export type EstadoLicencia =
   | "comercial"
   | "no_comercial";
 
+export type EstadoCandidato =
+  | "idea"
+  | "evaluando"
+  | "convertido";
+
 export type ModeloCandidato = {
   id: string;
   feriaId?: string;
@@ -22,35 +27,78 @@ export type ModeloCandidato = {
   precioArchivo: number;
   licencia: EstadoLicencia;
   notas: string;
+
+  estado: EstadoCandidato;
+
+  productoId?: string;
+  productoCodigo?: string;
+  productoNombre?: string;
+  convertidoEn?: string;
+
   creadoEn: string;
 };
 
 function normalizar(
   candidato: Partial<ModeloCandidato>
 ): ModeloCandidato {
+  const tieneProducto = Boolean(
+    candidato.productoId ||
+      candidato.productoCodigo
+  );
+
+  const estado: EstadoCandidato =
+    candidato.estado === "convertido" ||
+    tieneProducto
+      ? "convertido"
+      : candidato.estado === "evaluando"
+        ? "evaluando"
+        : "idea";
+
   return {
     id:
       candidato.id ||
       `MOD-${Date.now()
         .toString(36)
         .toUpperCase()}`,
+
     feriaId: candidato.feriaId,
+
     nombre: candidato.nombre || "",
+
     sitio:
       candidato.sitio === "MakerWorld" ||
       candidato.sitio === "Cults3D" ||
       candidato.sitio === "Otro"
         ? candidato.sitio
         : "Printables",
+
     url: candidato.url || "",
+
     precioArchivo:
       Number(candidato.precioArchivo) || 0,
+
     licencia:
       candidato.licencia === "comercial" ||
       candidato.licencia === "no_comercial"
         ? candidato.licencia
         : "sin_revisar",
+
     notas: candidato.notas || "",
+
+    estado,
+
+    productoId:
+      candidato.productoId || undefined,
+
+    productoCodigo:
+      candidato.productoCodigo || undefined,
+
+    productoNombre:
+      candidato.productoNombre || undefined,
+
+    convertidoEn:
+      candidato.convertidoEn || undefined,
+
     creadoEn:
       candidato.creadoEn ||
       new Date().toISOString(),
@@ -64,7 +112,8 @@ function leerTodos() {
 
   try {
     const contenido =
-      localStorage.getItem(STORAGE_KEY) || "[]";
+      localStorage.getItem(STORAGE_KEY) ||
+      "[]";
 
     const datos = JSON.parse(contenido);
 
@@ -79,7 +128,9 @@ function leerTodos() {
 function guardarTodos(
   candidatos: ModeloCandidato[]
 ) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
 
   localStorage.setItem(
     STORAGE_KEY,
@@ -106,16 +157,34 @@ export function obtenerModelosCandidatos(
     : todos;
 }
 
+export function obtenerModeloCandidato(
+  id: string
+) {
+  return (
+    leerTodos().find(
+      (candidato) => candidato.id === id
+    ) || null
+  );
+}
+
 export function guardarModeloCandidato(
   candidato: Omit<
     ModeloCandidato,
-    "id" | "creadoEn"
+    | "id"
+    | "creadoEn"
+    | "estado"
+    | "productoId"
+    | "productoCodigo"
+    | "productoNombre"
+    | "convertidoEn"
   >
 ) {
-  const nuevo = normalizar(candidato);
+  const nuevo = normalizar({
+    ...candidato,
+    estado: "idea",
+  });
 
-  const todos = [...leerTodos(), nuevo];
-  guardarTodos(todos);
+  guardarTodos([...leerTodos(), nuevo]);
 
   return nuevo;
 }
@@ -149,6 +218,43 @@ export function editarModeloCandidato(
   return actualizado;
 }
 
+export function marcarCandidatoEvaluando(
+  id: string
+) {
+  return editarModeloCandidato(id, {
+    estado: "evaluando",
+  });
+}
+
+export function marcarCandidatoComoIdea(
+  id: string
+) {
+  return editarModeloCandidato(id, {
+    estado: "idea",
+    productoId: undefined,
+    productoCodigo: undefined,
+    productoNombre: undefined,
+    convertidoEn: undefined,
+  });
+}
+
+export function marcarCandidatoConvertido(
+  id: string,
+  producto: {
+    id: string;
+    codigo: string;
+    nombre: string;
+  }
+) {
+  return editarModeloCandidato(id, {
+    estado: "convertido",
+    productoId: producto.id,
+    productoCodigo: producto.codigo,
+    productoNombre: producto.nombre,
+    convertidoEn: new Date().toISOString(),
+  });
+}
+
 export function eliminarModeloCandidato(
   id: string
 ) {
@@ -163,5 +269,6 @@ export function eliminarModeloCandidato(
   }
 
   guardarTodos(nuevos);
+
   return true;
 }
