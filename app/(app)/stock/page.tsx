@@ -14,6 +14,7 @@ import {
 export default function StockPage() {
   const [bobinas, setBobinas] = useState<BobinaFilamento[]>([]);
   const [busqueda, setBusqueda] = useState("");
+  const [cargando, setCargando] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [bobinaSeleccionada, setBobinaSeleccionada] =
     useState<BobinaFilamento | null>(null);
@@ -21,19 +22,17 @@ export default function StockPage() {
     useState<BobinaFilamento | null>(null);
 
   useEffect(() => {
-    recargar();
+    void recargar();
   }, []);
 
   const bobinasFiltradas = useMemo(() => {
     const texto = busqueda.trim().toLowerCase();
     if (!texto) return bobinas;
 
-    return bobinas.filter(
-      (bobina) =>
-        bobina.material.toLowerCase().includes(texto) ||
-        bobina.color.toLowerCase().includes(texto) ||
-        bobina.marca.toLowerCase().includes(texto) ||
-        bobina.id.toLowerCase().includes(texto)
+    return bobinas.filter((bobina) =>
+      `${bobina.material} ${bobina.color} ${bobina.marca} ${bobina.id}`
+        .toLowerCase()
+        .includes(texto)
     );
   }, [bobinas, busqueda]);
 
@@ -41,25 +40,26 @@ export default function StockPage() {
     (total, bobina) => total + bobina.pesoActualGramos,
     0
   );
+
   const bobinasBajas = bobinas.filter(
     (bobina) => bobina.pesoActualGramos <= bobina.stockMinimoGramos
   ).length;
 
-  function recargar() {
-    setBobinas(obtenerBobinas());
+  async function recargar() {
+    try {
+      setBobinas(await obtenerBobinas());
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : "No se pudo cargar Stock.");
+    } finally {
+      setCargando(false);
+    }
   }
 
-  function abrirNueva() {
-    setBobinaSeleccionada(null);
-    setModalAbierto(true);
-  }
-
-  function abrirEdicion(bobina: BobinaFilamento) {
-    setBobinaSeleccionada(bobina);
-    setModalAbierto(true);
-  }
-
-  function ajustar(bobina: BobinaFilamento, tipo: "entrada" | "salida") {
+  async function ajustar(
+    bobina: BobinaFilamento,
+    tipo: "entrada" | "salida"
+  ) {
     const valor = window.prompt(
       tipo === "entrada"
         ? "¿Cuántos gramos querés agregar?"
@@ -67,6 +67,7 @@ export default function StockPage() {
     );
 
     if (valor === null) return;
+
     const cantidad = Number(valor);
 
     if (!Number.isFinite(cantidad) || cantidad <= 0) {
@@ -74,34 +75,30 @@ export default function StockPage() {
       return;
     }
 
-    const movimiento = registrarMovimientoFilamento(
-      bobina.id,
-      tipo,
-      cantidad,
-      tipo === "entrada" ? "Entrada manual" : "Salida manual"
-    );
+    try {
+      await registrarMovimientoFilamento(
+        bobina.uuid,
+        tipo,
+        cantidad,
+        tipo === "entrada" ? "Entrada manual" : "Salida manual"
+      );
+      await recargar();
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "No se pudo registrar.");
+    }
+  }
 
-    if (!movimiento) {
-      alert("No se pudo registrar el movimiento. Revisá el peso disponible.");
+  async function eliminar(bobina: BobinaFilamento) {
+    if (!confirm(`¿Querés eliminar ${bobina.material} ${bobina.color}?`)) {
       return;
     }
 
-    recargar();
-  }
-
-  function eliminar(bobina: BobinaFilamento) {
-    const confirmar = window.confirm(
-      `¿Querés eliminar ${bobina.material} ${bobina.color}?`
-    );
-    if (!confirmar) return;
-
-    eliminarBobina(bobina.id);
-    recargar();
+    await eliminarBobina(bobina.uuid);
+    await recargar();
   }
 
   return (
     <main className="flex min-h-screen bg-[#101010] text-white">
-
       <section className="min-w-0 flex-1 p-6 lg:p-10">
         <header className="rounded-[2rem] border border-white/10 bg-[#181818] p-7 lg:p-10">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -113,13 +110,16 @@ export default function StockPage() {
                 Bobinas de filamento
               </h1>
               <p className="mt-4 max-w-3xl leading-7 text-zinc-300">
-                Controlá el peso disponible y revisá en qué pedidos se utilizó cada bobina.
+                Stock guardado directamente en Supabase.
               </p>
             </div>
 
             <button
               type="button"
-              onClick={abrirNueva}
+              onClick={() => {
+                setBobinaSeleccionada(null);
+                setModalAbierto(true);
+              }}
               className="rounded-xl bg-[#810404] px-6 py-3 font-semibold hover:bg-[#a00808]"
             >
               + Nueva bobina
@@ -146,34 +146,36 @@ export default function StockPage() {
             <div>
               <h2 className="text-xl font-bold">Bobinas actuales</h2>
               <p className="mt-1 text-sm text-zinc-500">
-                {bobinasFiltradas.length} resultado
-                {bobinasFiltradas.length === 1 ? "" : "s"}
+                {cargando ? "Cargando..." : `${bobinasFiltradas.length} resultados`}
               </p>
             </div>
 
             <input
               type="search"
               value={busqueda}
-              onChange={(evento) => setBusqueda(evento.target.value)}
+              onChange={(e) => setBusqueda(e.target.value)}
               placeholder="Buscar material, color, marca o código..."
               className="w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3 outline-none focus:border-[#810404] md:max-w-md"
             />
           </div>
 
-          {bobinasFiltradas.length === 0 ? (
+          {!cargando && bobinasFiltradas.length === 0 ? (
             <div className="mt-6 rounded-2xl border border-dashed border-white/10 p-10 text-center text-zinc-500">
-              Todavía no hay bobinas registradas.
+              Todavía no hay bobinas registradas en la nube.
             </div>
           ) : (
             <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {bobinasFiltradas.map((bobina) => (
                 <FilamentCard
-                  key={bobina.id}
+                  key={bobina.uuid}
                   bobina={bobina}
-                  onEntrada={() => ajustar(bobina, "entrada")}
-                  onSalida={() => ajustar(bobina, "salida")}
-                  onEditar={() => abrirEdicion(bobina)}
-                  onEliminar={() => eliminar(bobina)}
+                  onEntrada={() => void ajustar(bobina, "entrada")}
+                  onSalida={() => void ajustar(bobina, "salida")}
+                  onEditar={() => {
+                    setBobinaSeleccionada(bobina);
+                    setModalAbierto(true);
+                  }}
+                  onEliminar={() => void eliminar(bobina)}
                   onHistorial={() => setBobinaHistorial(bobina)}
                 />
               ))}
@@ -186,9 +188,9 @@ export default function StockPage() {
         <FilamentModal
           bobina={bobinaSeleccionada}
           onClose={() => setModalAbierto(false)}
-          onSaved={() => {
+          onSaved={async () => {
             setModalAbierto(false);
-            recargar();
+            await recargar();
           }}
         />
       )}

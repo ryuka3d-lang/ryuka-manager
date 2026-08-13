@@ -1,6 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import {
   obtenerBobinas,
@@ -22,12 +26,19 @@ type Props = {
   ) => void;
 };
 
-function normalizar(valor: string) {
+function normalizar(
+  valor: string
+) {
   return valor
     .trim()
-    .toLocaleLowerCase("es-AR")
+    .toLocaleLowerCase(
+      "es-AR"
+    )
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    );
 }
 
 export default function FilamentSelectionModalCloud({
@@ -35,24 +46,68 @@ export default function FilamentSelectionModalCloud({
   onClose,
   onStarted,
 }: Props) {
-  const bobinas = useMemo(
-    () => obtenerBobinas(),
-    []
-  );
+  const [bobinas, setBobinas] =
+    useState<
+      BobinaFilamento[]
+    >([]);
 
-  const requerimientos = useMemo(
-    () =>
-      obtenerRequerimientosFilamentoNube(
-        pedido
-      ),
-    [pedido]
-  );
+  const [cargandoBobinas, setCargandoBobinas] =
+    useState(true);
 
-  const [selecciones, setSelecciones] =
-    useState<Record<string, string>>({});
+  const [errorBobinas, setErrorBobinas] =
+    useState("");
 
-  const [guardando, setGuardando] =
-    useState(false);
+  useEffect(() => {
+    let activo = true;
+
+    void obtenerBobinas()
+      .then((data) => {
+        if (activo) {
+          setBobinas(data);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+
+        if (activo) {
+          setErrorBobinas(
+            error instanceof Error
+              ? error.message
+              : "No se pudieron cargar las bobinas."
+          );
+        }
+      })
+      .finally(() => {
+        if (activo) {
+          setCargandoBobinas(false);
+        }
+      });
+
+    return () => {
+      activo = false;
+    };
+  }, []);
+
+  const requerimientos =
+    useMemo(
+      () =>
+        obtenerRequerimientosFilamentoNube(
+          pedido
+        ),
+      [pedido]
+    );
+
+  const [
+    selecciones,
+    setSelecciones,
+  ] = useState<
+    Record<string, string>
+  >({});
+
+  const [
+    guardando,
+    setGuardando,
+  ] = useState(false);
 
   function obtenerCompatibles(
     material: string,
@@ -61,15 +116,23 @@ export default function FilamentSelectionModalCloud({
     return bobinas
       .filter((bobina) => {
         const mismoMaterial =
-          normalizar(bobina.material) ===
+          normalizar(
+            bobina.material
+          ) ===
           normalizar(material);
 
         const mismoColor =
-          color === "Sin especificar" ||
-          normalizar(bobina.color) ===
+          color ===
+            "Sin especificar" ||
+          normalizar(
+            bobina.color
+          ) ===
             normalizar(color);
 
-        return mismoMaterial && mismoColor;
+        return (
+          mismoMaterial &&
+          mismoColor
+        );
       })
       .sort(
         (a, b) =>
@@ -82,27 +145,36 @@ export default function FilamentSelectionModalCloud({
     const faltantes =
       requerimientos.filter(
         (requerimiento) =>
-          !selecciones[requerimiento.key]
+          !selecciones[
+            requerimiento.key
+          ]
       );
 
-    if (faltantes.length > 0) {
+    if (
+      faltantes.length > 0
+    ) {
       alert(
         "Elegí una bobina para cada filamento."
       );
       return;
     }
 
-    const asignaciones: AsignacionBobinaNube[] =
-      requerimientos.map(
-        (requerimiento) => ({
-          requirementKey:
-            requerimiento.key,
-          spoolId:
-            selecciones[
-              requerimiento.key
-            ],
-        })
-      );
+    const asignaciones:
+      AsignacionBobinaNube[] =
+        requerimientos.map(
+          (
+            requerimiento
+          ) => ({
+            requirementKey:
+              requerimiento.key,
+
+            // Ahora usamos el UUID real de filament_spools.
+            spoolId:
+              selecciones[
+                requerimiento.key
+              ],
+          })
+        );
 
     setGuardando(true);
 
@@ -113,7 +185,9 @@ export default function FilamentSelectionModalCloud({
           asignaciones
         );
 
-      onStarted(actualizado);
+      onStarted(
+        actualizado
+      );
     } catch (error) {
       console.error(error);
 
@@ -151,16 +225,32 @@ export default function FilamentSelectionModalCloud({
           <button
             type="button"
             onClick={onClose}
-            disabled={guardando}
+            disabled={
+              guardando
+            }
             className="rounded-lg border border-white/10 px-3 py-2 disabled:opacity-50"
           >
             ✕
           </button>
         </div>
 
+        {cargandoBobinas && (
+          <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.02] p-4 text-sm text-zinc-400">
+            Cargando bobinas de Stock...
+          </div>
+        )}
+
+        {errorBobinas && (
+          <div className="mt-6 rounded-xl border border-red-900 bg-red-950/20 p-4 text-sm text-red-200">
+            {errorBobinas}
+          </div>
+        )}
+
         <div className="mt-6 space-y-4">
           {requerimientos.map(
-            (requerimiento) => {
+            (
+              requerimiento
+            ) => {
               const compatibles =
                 obtenerCompatibles(
                   requerimiento.material,
@@ -169,7 +259,9 @@ export default function FilamentSelectionModalCloud({
 
               return (
                 <section
-                  key={requerimiento.key}
+                  key={
+                    requerimiento.key
+                  }
                   className="rounded-2xl border border-white/10 bg-[#111111] p-5"
                 >
                   <p className="text-xs text-zinc-500">
@@ -182,7 +274,9 @@ export default function FilamentSelectionModalCloud({
                     {
                       requerimiento.material
                     }{" "}
-                    {requerimiento.color}
+                    {
+                      requerimiento.color
+                    }
                   </h3>
 
                   <p className="mt-1 text-sm text-zinc-500">
@@ -202,13 +296,23 @@ export default function FilamentSelectionModalCloud({
                         requerimiento.key
                       ] ?? ""
                     }
-                    disabled={guardando}
-                    onChange={(evento) =>
+                    disabled={
+                      guardando ||
+                      cargandoBobinas
+                    }
+                    onChange={(
+                      evento
+                    ) =>
                       setSelecciones(
-                        (actual) => ({
+                        (
+                          actual
+                        ) => ({
                           ...actual,
+
                           [requerimiento.key]:
-                            evento.target.value,
+                            evento
+                              .target
+                              .value,
                         })
                       )
                     }
@@ -226,13 +330,24 @@ export default function FilamentSelectionModalCloud({
 
                         return (
                           <option
-                            key={bobina.id}
-                            value={bobina.id}
+                            key={
+                              bobina.uuid
+                            }
+
+                            // El usuario sigue viendo BOB-xxxx,
+                            // pero guardamos el UUID real.
+                            value={
+                              bobina.uuid
+                            }
+
                             disabled={
                               !suficiente
                             }
                           >
-                            {bobina.id} ·{" "}
+                            {
+                              bobina.id
+                            }{" "}
+                            ·{" "}
                             {bobina.marca ||
                               "Sin marca"}{" "}
                             ·{" "}
@@ -249,24 +364,27 @@ export default function FilamentSelectionModalCloud({
                     )}
                   </select>
 
-                  {compatibles.length ===
-                    0 && (
-                    <p className="mt-3 text-sm text-amber-300">
-                      No hay una bobina
-                      compatible. Cargala
-                      primero en Stock.
-                    </p>
-                  )}
+                  {!cargandoBobinas &&
+                    compatibles.length ===
+                      0 && (
+                      <p className="mt-3 text-sm text-amber-300">
+                        No hay una
+                        bobina compatible
+                        en Stock.
+                      </p>
+                    )}
                 </section>
               );
             }
           )}
         </div>
 
-        {requerimientos.length === 0 && (
+        {requerimientos.length ===
+          0 && (
           <div className="mt-6 rounded-xl border border-amber-900 bg-amber-950/20 p-4 text-sm text-amber-200">
-            Esta producción no tiene requerimientos
-            de filamento calculables.
+            Esta producción no tiene
+            requerimientos de filamento
+            calculables.
           </div>
         )}
 
@@ -274,7 +392,9 @@ export default function FilamentSelectionModalCloud({
           <button
             type="button"
             onClick={onClose}
-            disabled={guardando}
+            disabled={
+              guardando
+            }
             className="rounded-xl border border-white/10 px-5 py-3 disabled:opacity-50"
           >
             Cancelar
@@ -282,10 +402,17 @@ export default function FilamentSelectionModalCloud({
 
           <button
             type="button"
-            onClick={() => void iniciar()}
+            onClick={() =>
+              void iniciar()
+            }
             disabled={
               guardando ||
-              requerimientos.length === 0
+              cargandoBobinas ||
+              Boolean(
+                errorBobinas
+              ) ||
+              requerimientos.length ===
+                0
             }
             className="rounded-xl bg-[#810404] px-6 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
           >

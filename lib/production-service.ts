@@ -234,23 +234,33 @@ export function obtenerRequerimientosFilamento(
     .filter((requerimiento) => requerimiento.gramos > 0);
 }
 
-export function iniciarImpresionConBobinas(
+export async function iniciarImpresionConBobinas(
   pedidoId: string,
   asignaciones: AsignacionBobina[]
-): PedidoProduccion | null {
+): Promise<PedidoProduccion | null> {
   const pedidos = obtenerPedidosProduccion();
   const pedido = pedidos.find((actual) => actual.id === pedidoId);
 
   if (
     !pedido ||
-    pedido.estado !== "pendiente" ||
-    pedidoYaConsumioFilamento(pedido.id)
+    pedido.estado !== "pendiente"
   ) {
     return null;
   }
 
-  const requerimientos = obtenerRequerimientosFilamento(pedido);
-  const bobinas = obtenerBobinas();
+  if (
+    await pedidoYaConsumioFilamento(
+      pedido.id
+    )
+  ) {
+    return null;
+  }
+
+  const requerimientos =
+    obtenerRequerimientosFilamento(pedido);
+
+  const bobinas =
+    await obtenerBobinas();
 
   const datosValidados = requerimientos.map((requerimiento) => {
     const asignacion = asignaciones.find(
@@ -276,17 +286,20 @@ export function iniciarImpresionConBobinas(
     if (!dato) return null;
 
     const { requerimiento, bobina } = dato;
-    const movimiento = registrarMovimientoFilamento(
-      bobina.id,
-      "salida",
-      requerimiento.gramos,
-      `Consumo de ${pedido.productoNombre}`,
-      pedido.id,
-      pedido.productoNombre
-    );
+    const movimiento =
+      await registrarMovimientoFilamento(
+        bobina.uuid || bobina.id,
+        "salida",
+        requerimiento.gramos,
+        `Consumo de ${pedido.productoNombre}`,
+        pedido.id,
+        pedido.productoNombre
+      );
 
     if (!movimiento) {
-      reponerFilamentoDePedido(pedido.id);
+      await reponerFilamentoDePedido(
+        pedido.id
+      );
       return null;
     }
 
@@ -325,23 +338,38 @@ export function actualizarEstadoPedido(
   estado: EstadoPedido
 ): PedidoProduccion | null {
   const pedidos = obtenerPedidosProduccion();
-  const pedido = pedidos.find((actual) => actual.id === id);
+
+  const pedido = pedidos.find(
+    (actual) => actual.id === id
+  );
+
   if (!pedido) return null;
 
-  if (pedido.estado === "pendiente" && estado === "imprimiendo") {
+  if (
+    pedido.estado === "pendiente" &&
+    estado === "imprimiendo"
+  ) {
     return null;
   }
 
   const ahora = new Date().toISOString();
+
   const actualizado: PedidoProduccion = {
     ...pedido,
     estado,
     actualizadoEn: ahora,
-    fechaEntrega: estado === "entregado" ? ahora : pedido.fechaEntrega,
+    fechaEntrega:
+      estado === "entregado"
+        ? ahora
+        : pedido.fechaEntrega,
   };
 
   guardarLista(
-    pedidos.map((actual) => (actual.id === id ? actualizado : actual))
+    pedidos.map((actual) =>
+      actual.id === id
+        ? actualizado
+        : actual
+    )
   );
 
   return actualizado;
@@ -369,12 +397,28 @@ export function actualizarDatosComercialesPedido(
   return actualizado;
 }
 
-export function eliminarPedidoProduccion(id: string): boolean {
-  const pedidos = obtenerPedidosProduccion();
-  if (!pedidos.some((pedido) => pedido.id === id)) return false;
+export async function eliminarPedidoProduccion(
+  id: string
+): Promise<boolean> {
+  const pedidos =
+    obtenerPedidosProduccion();
 
-  reponerFilamentoDePedido(id);
-  guardarLista(pedidos.filter((pedido) => pedido.id !== id));
+  if (
+    !pedidos.some(
+      (pedido) => pedido.id === id
+    )
+  ) {
+    return false;
+  }
+
+  await reponerFilamentoDePedido(id);
+
+  guardarLista(
+    pedidos.filter(
+      (pedido) => pedido.id !== id
+    )
+  );
+
   return true;
 }
 
