@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   editarMovimientoCaja,
   eliminarMovimientoCaja,
+  eliminarTodosMovimientosManualesCaja,
   obtenerCentroFinanciero,
   obtenerMovimientosCaja,
   obtenerResumenCaja,
@@ -55,9 +56,21 @@ export default function FinanzasPage() {
   const [tipoFiltro, setTipoFiltro] = useState<"todos" | TipoMovimientoCaja>("todos");
   const [mesFiltro, setMesFiltro] = useState(() => hoy().slice(0, 7));
   const [busqueda, setBusqueda] = useState("");
+  const filtrosActivos = Boolean(busqueda.trim()) || tipoFiltro !== "todos" || mesFiltro !== hoy().slice(0, 7);
+
+  const cantidadManuales = useMemo(
+    () => movimientos.filter((movimiento) => movimiento.origen === "manual").length,
+    [movimientos]
+  );
 
   function recargar() {
     setMovimientos(obtenerMovimientosCaja());
+  }
+
+  function limpiarFiltros() {
+    setTipoFiltro("todos");
+    setMesFiltro(hoy().slice(0, 7));
+    setBusqueda("");
   }
 
   useEffect(() => {
@@ -119,8 +132,8 @@ export default function FinanzasPage() {
   return (
     <main className="flex min-h-screen bg-[#101010] text-white">
 
-      <section className="min-w-0 flex-1 p-6 lg:p-10">
-        <header className="rounded-[2rem] border border-white/10 bg-[#181818] p-7 lg:p-10">
+      <section className="min-w-0 flex-1 p-4 sm:p-6 lg:p-10">
+        <header className="rounded-3xl border border-white/10 bg-[#181818] p-5 sm:p-7 lg:rounded-[2rem] lg:p-10">
           <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-300">
@@ -132,20 +145,20 @@ export default function FinanzasPage() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
               <button
                 type="button"
                 onClick={() => abrirNuevo("egreso")}
-                className="rounded-xl border border-white/10 px-5 py-3 font-semibold hover:bg-white/5"
+                className="min-h-12 rounded-xl border border-white/10 px-3 py-3 text-sm font-semibold hover:bg-white/5 sm:px-5"
               >
-                − Registrar egreso
+                − Egreso
               </button>
               <button
                 type="button"
                 onClick={() => abrirNuevo("ingreso")}
-                className="rounded-xl bg-[#810404] px-5 py-3 font-semibold hover:bg-[#a00808]"
+                className="min-h-12 rounded-xl bg-[#810404] px-3 py-3 text-sm font-semibold hover:bg-[#a00808] sm:px-5"
               >
-                + Registrar ingreso
+                + Ingreso
               </button>
             </div>
           </div>
@@ -156,7 +169,7 @@ export default function FinanzasPage() {
           reinversionPorcentaje={config.reinversionPorcentaje}
         />
 
-        <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
           <Resumen titulo="Saldo total" valor={moneda(resumen.saldo)} destacado />
           <Resumen titulo="Ingresos del mes" valor={moneda(resumen.ingresosMes)} />
           <Resumen titulo="Egresos del mes" valor={moneda(resumen.egresosMes)} />
@@ -169,7 +182,7 @@ export default function FinanzasPage() {
           </div>
         )}
 
-        <section className="mt-8 rounded-[2rem] border border-white/10 bg-[#181818] p-6">
+        <section className="mt-8 rounded-3xl border border-white/10 bg-[#181818] p-4 sm:p-6 lg:rounded-[2rem]">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <h2 className="text-xl font-bold">Movimientos</h2>
@@ -178,30 +191,69 @@ export default function FinanzasPage() {
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3">
-              <input
-                type="month"
-                value={mesFiltro}
-                onChange={(evento) => setMesFiltro(evento.target.value)}
-                className="rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
-              />
-              <select
-                value={tipoFiltro}
-                onChange={(evento) => setTipoFiltro(evento.target.value as "todos" | TipoMovimientoCaja)}
-                className="rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
-              >
-                <option value="todos">Todos</option>
-                <option value="ingreso">Ingresos</option>
-                <option value="egreso">Egresos</option>
-              </select>
-              <input
-                value={busqueda}
-                onChange={(evento) => setBusqueda(evento.target.value)}
-                placeholder="Buscar..."
-                className="rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
-              />
+            <div className="w-full xl:max-w-3xl">
+              <div className="grid gap-2 sm:grid-cols-3">
+                <input
+                  type="month"
+                  value={mesFiltro}
+                  onChange={(evento) => setMesFiltro(evento.target.value)}
+                  className="min-h-12 rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
+                  aria-label="Filtrar por mes"
+                />
+                <select
+                  value={tipoFiltro}
+                  onChange={(evento) => setTipoFiltro(evento.target.value as "todos" | TipoMovimientoCaja)}
+                  className="min-h-12 rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
+                  aria-label="Filtrar por tipo"
+                >
+                  <option value="todos">Todos</option>
+                  <option value="ingreso">Ingresos</option>
+                  <option value="egreso">Egresos</option>
+                </select>
+                <input
+                  value={busqueda}
+                  onChange={(evento) => setBusqueda(evento.target.value)}
+                  placeholder="Buscar concepto, categoría..."
+                  className="min-h-12 rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
+                  aria-label="Buscar movimientos"
+                />
+              </div>
+
+              {filtrosActivos && (
+                <button
+                  type="button"
+                  onClick={limpiarFiltros}
+                  className="mt-2 text-xs font-semibold text-zinc-400 underline decoration-white/20 underline-offset-4 hover:text-white"
+                >
+                  Restablecer filtros
+                </button>
+              )}
             </div>
           </div>
+
+          {cantidadManuales > 0 && (
+            <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-amber-900/40 bg-amber-950/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold text-amber-200">
+                  {cantidadManuales} movimiento{cantidadManuales === 1 ? "" : "s"} manual{cantidadManuales === 1 ? "" : "es"}
+                </p>
+                <p className="mt-1 text-xs text-zinc-500">
+                  Podés limpiar los movimientos de prueba sin afectar compras ni cobros automáticos.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!confirm("¿Eliminar TODOS los movimientos manuales de Caja? Esta acción no afecta compras ni cobros automáticos.")) return;
+                  eliminarTodosMovimientosManualesCaja();
+                  recargar();
+                }}
+                className="w-full rounded-xl border border-amber-800/50 px-4 py-2.5 text-sm font-semibold text-amber-200 hover:bg-amber-950/30 sm:w-auto"
+              >
+                Limpiar movimientos manuales
+              </button>
+            </div>
+          )}
 
           {filtrados.length === 0 ? (
             <div className="mt-6 rounded-2xl border border-dashed border-white/15 p-10 text-center text-zinc-400">
@@ -212,7 +264,7 @@ export default function FinanzasPage() {
               {filtrados.map((movimiento) => (
                 <article
                   key={movimiento.id}
-                  className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-[#121212] p-4 md:flex-row md:items-center md:justify-between"
+                  className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-[#121212] p-4 sm:p-5 md:flex-row md:items-center md:justify-between"
                 >
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
@@ -238,6 +290,11 @@ export default function FinanzasPage() {
                           Automático desde Pedidos
                         </span>
                       )}
+                      {movimiento.origen === "manual" && (
+                        <span className="rounded-full bg-amber-950/60 px-2.5 py-1 text-xs text-amber-300">
+                          Manual
+                        </span>
+                      )}
                     </div>
 
                     <h3 className="mt-2 truncate font-bold">{movimiento.concepto}</h3>
@@ -250,7 +307,7 @@ export default function FinanzasPage() {
                     )}
                   </div>
 
-                  <div className="flex shrink-0 items-center justify-between gap-3 md:justify-end">
+                  <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between md:justify-end">
                     <strong
                       className={`text-lg ${
                         movimiento.tipo === "ingreso" ? "text-emerald-300" : "text-red-300"
@@ -260,7 +317,7 @@ export default function FinanzasPage() {
                     </strong>
 
                     {movimiento.editable && (
-                      <div className="flex gap-2">
+                      <div className="grid grid-cols-2 gap-2 sm:flex">
                         <button
                           type="button"
                           onClick={() => {
@@ -363,7 +420,7 @@ function MovimientoModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm">
-      <div className="my-6 w-full max-w-2xl rounded-[2rem] border border-white/10 bg-[#181818] p-6">
+      <div className="my-4 w-full max-w-2xl rounded-3xl border border-white/10 bg-[#181818] p-4 sm:my-6 sm:rounded-[2rem] sm:p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">
@@ -456,7 +513,7 @@ function MovimientoModal({
           </label>
         </div>
 
-        <div className="mt-6 flex justify-end gap-3">
+        <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:justify-end sm:gap-3">
           <button type="button" onClick={onClose} className="rounded-xl border border-white/10 px-5 py-3">
             Cancelar
           </button>

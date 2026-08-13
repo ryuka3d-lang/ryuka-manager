@@ -23,6 +23,8 @@ import {
 
 export default function PedidosPage() {
   const [pedidos, setPedidos] = useState<Order[]>([]);
+  const [cargando, setCargando] = useState(true);
+  const [recargando, setRecargando] = useState(false);
   const [pagos, setPagos] = useState<PagoPedido[]>([]);
   const [busqueda, setBusqueda] = useState("");
   const [filtro, setFiltro] = useState<"todos" | "pendiente" | "parcial" | "pagado">("todos");
@@ -33,6 +35,8 @@ const [pedidoEditar, setPedidoEditar] =
   useState<Order | null>(null);
 
   async function recargar() {
+  if (recargando) return;
+  setRecargando(true);
   try {
     const workspace = await obtenerWorkspaceId();
 
@@ -55,6 +59,9 @@ const [pedidoEditar, setPedidoEditar] =
         ? error.message
         : "No se pudieron cargar los pedidos."
     );
+  } finally {
+    setCargando(false);
+    setRecargando(false);
   }
 }
 
@@ -96,9 +103,9 @@ useEffect(() => {
   }, [pedidos, pagos, busqueda, filtro]);
 
   return (
-    <main className="flex min-h-screen bg-[#101010] text-white">
-      <section className="min-w-0 flex-1 p-6 lg:p-10">
-        <header className="rounded-[2rem] border border-white/10 bg-[#181818] p-7 lg:p-10">
+    <main className="min-h-screen bg-[#101010] text-white">
+      <section className="min-w-0 p-4 sm:p-6 lg:p-10">
+        <header className="rounded-[1.5rem] border border-white/10 bg-[#181818] p-5 sm:rounded-[2rem] sm:p-7 lg:p-10">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-300">
             Ventas y cobranzas
           </p>
@@ -108,23 +115,23 @@ useEffect(() => {
           </p>
         </header>
 
-        <section className="mt-6 grid gap-4 sm:grid-cols-3">
+        <section className="mt-5 grid gap-3 sm:mt-6 sm:gap-4 sm:grid-cols-3">
           <Resumen titulo="Total vendido" valor={moneda(resumen.total)} />
           <Resumen titulo="Total cobrado" valor={moneda(resumen.cobrado)} />
           <Resumen titulo="Pendiente de cobro" valor={moneda(resumen.pendiente)} destacado />
         </section>
 
-        <section className="mt-8 rounded-[2rem] border border-white/10 bg-[#181818] p-6">
+        <section className="mt-6 rounded-[1.5rem] border border-white/10 bg-[#181818] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-6">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <h2 className="text-xl font-bold">Listado de pedidos</h2>
               <p className="mt-1 text-sm text-zinc-400">{pedidos.length} pedidos registrados.</p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid w-full gap-3 sm:grid-cols-2 xl:w-auto">
               <select
                 value={filtro}
                 onChange={(evento) => setFiltro(evento.target.value as typeof filtro)}
-                className="rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
+                className="min-h-12 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
               >
                 <option value="todos">Todos los cobros</option>
                 <option value="pendiente">Sin cobrar</option>
@@ -135,13 +142,17 @@ useEffect(() => {
                 value={busqueda}
                 onChange={(evento) => setBusqueda(evento.target.value)}
                 placeholder="Buscar pedido o cliente..."
-                className="rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
+                className="min-h-12 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
               />
             </div>
           </div>
 
-          {filtrados.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-dashed border-white/15 p-10 text-center text-zinc-400">
+          {cargando ? (
+            <div className="mt-6 rounded-2xl border border-white/10 bg-[#121212] p-8 text-center text-zinc-400">
+              Cargando pedidos...
+            </div>
+          ) : filtrados.length === 0 ? (
+            <div className="mt-6 rounded-2xl border border-dashed border-white/15 p-8 text-center text-zinc-400 sm:p-10">
               No hay pedidos para mostrar. Crealos desde Presupuestos.
             </div>
           ) : (
@@ -162,6 +173,10 @@ useEffect(() => {
                 />
               ))}
             </div>
+          )}
+
+          {recargando && !cargando && (
+            <p className="mt-3 text-center text-xs text-zinc-600">Actualizando pedidos...</p>
           )}
         </section>
       </section>
@@ -228,7 +243,7 @@ const productos =
     : "Pedido sin productos";
 
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#121212] p-5">
+    <article className="rounded-2xl border border-white/10 bg-[#121212] p-4 sm:p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-xs font-bold text-red-300">
@@ -246,7 +261,7 @@ const productos =
         <EstadoCobro estado={estado} />
       </div>
 
-      <div className="mt-5 grid grid-cols-3 gap-3 rounded-2xl bg-white/[0.03] p-4 text-sm">
+      <div className="mt-5 grid grid-cols-1 gap-2 rounded-2xl bg-white/[0.03] p-3 text-sm sm:grid-cols-3 sm:gap-3 sm:p-4">
         <Dato
   titulo="Total"
   valor={moneda(pedido.totalAmount)}
@@ -463,7 +478,7 @@ function EditarTotalModal({
 }
 
 function Modal({ titulo, subtitulo, onClose, children }: { titulo: string; subtitulo: string; onClose: () => void; children: React.ReactNode }) {
-  return <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm"><div className="my-6 w-full max-w-2xl rounded-[2rem] border border-white/10 bg-[#181818] p-6"><div className="flex items-start justify-between"><div><p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">{subtitulo}</p><h2 className="mt-2 text-2xl font-bold">{titulo}</h2></div><button type="button" onClick={onClose} className="rounded-lg border border-white/10 px-3 py-2">✕</button></div><div className="mt-6">{children}</div></div></div>;
+  return <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-black/75 p-0 backdrop-blur-sm sm:items-center sm:p-4"><div className="max-h-[92vh] w-full overflow-y-auto rounded-t-[1.5rem] border border-white/10 bg-[#181818] p-5 sm:my-6 sm:max-w-2xl sm:rounded-[2rem] sm:p-6 rounded-[2rem] border border-white/10 bg-[#181818] p-6"><div className="flex items-start justify-between"><div><p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">{subtitulo}</p><h2 className="mt-2 text-2xl font-bold">{titulo}</h2></div><button type="button" onClick={onClose} className="rounded-lg border border-white/10 px-3 py-2">✕</button></div><div className="mt-6">{children}</div></div></div>;
 }
 function Acciones({ onClose, onSave, texto }: { onClose: () => void; onSave: () => void; texto: string }) { return <div className="mt-6 flex justify-end gap-3"><button type="button" onClick={onClose} className="rounded-xl border border-white/10 px-5 py-3">Cancelar</button><button type="button" onClick={onSave} className="rounded-xl bg-[#810404] px-6 py-3 font-semibold">{texto}</button></div>; }
 function Campo({ titulo, valor, tipo, onChange }: { titulo: string; valor: string; tipo: "date" | "number"; onChange: (valor: string) => void }) { return <label><span className="text-sm font-semibold text-zinc-300">{titulo}</span><input type={tipo} min={tipo === "number" ? 0 : undefined} value={valor} onChange={(e) => onChange(e.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3" /></label>; }

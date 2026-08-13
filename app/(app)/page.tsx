@@ -92,7 +92,7 @@ export default function Home() {
             </span>
 
             <h1 className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-              Buenos días, Jj y vodoque 👋
+              Buenos días, Juan y Mili 👋
             </h1>
 
             <p className="mt-4 max-w-2xl text-base leading-7 text-zinc-300 lg:text-lg">

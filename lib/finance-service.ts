@@ -234,6 +234,21 @@ export function eliminarMovimientoCaja(id: string): boolean {
   return true;
 }
 
+/**
+ * Elimina únicamente los movimientos cargados manualmente en Caja.
+ * No toca compras ni cobros automáticos, porque esos movimientos
+ * se generan desde sus módulos de origen.
+ */
+export function eliminarTodosMovimientosManualesCaja(): number {
+  const movimientos = obtenerMovimientosManuales();
+  const cantidad = movimientos.length;
+
+  if (cantidad === 0) return 0;
+
+  guardarLista([]);
+  return cantidad;
+}
+
 export function obtenerResumenCaja(
   movimientos = obtenerMovimientosCaja(),
   fechaReferencia = new Date()

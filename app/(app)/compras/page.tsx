@@ -19,10 +19,12 @@ export default function ComprasPage() {
   const [insumos, setInsumos] = useState<InsumoStock[]>([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [tipo, setTipo] = useState<TipoItemCompra>("filamento");
+  const [cargando, setCargando] = useState(true);
 
   function recargar() {
     setCompras(obtenerCompras());
     setInsumos(obtenerInsumosStock());
+    setCargando(false);
   }
 
   useEffect(() => {
@@ -50,9 +52,9 @@ export default function ComprasPage() {
     <main className="min-h-screen bg-[#101010] text-white">
       
 
-      <section className="min-w-0 flex-1 p-6 lg:p-10">
-        <header className="rounded-[2rem] border border-white/10 bg-[#181818] p-7 lg:p-10">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+      <section className="min-w-0 flex-1 p-3 sm:p-5 lg:p-10">
+        <header className="rounded-[1.5rem] border border-white/10 bg-[#181818] p-5 sm:rounded-[2rem] sm:p-7 lg:p-10">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-300">
                 Abastecimiento
@@ -66,21 +68,21 @@ export default function ComprasPage() {
             <button
               type="button"
               onClick={() => setMostrarFormulario(true)}
-              className="rounded-xl bg-[#810404] px-6 py-3 font-semibold hover:bg-[#a00808]"
+              className="w-full rounded-xl bg-[#810404] px-5 py-3 font-semibold hover:bg-[#a00808] sm:w-auto"
             >
               + Nueva compra
             </button>
           </div>
         </header>
 
-        <section className="mt-6 grid gap-4 sm:grid-cols-3">
+        <section className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-3 sm:gap-4">
           <Resumen titulo="Gastado este mes" valor={moneda(totalMes)} />
           <Resumen titulo="Compras registradas" valor={String(compras.length)} />
           <Resumen titulo="Insumos con stock bajo" valor={String(insumosBajos)} />
         </section>
 
         {insumos.length > 0 && (
-          <section className="mt-8 rounded-[2rem] border border-white/10 bg-[#181818] p-6">
+          <section className="mt-6 rounded-[1.5rem] border border-white/10 bg-[#181818] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-6">
             <h2 className="text-xl font-bold">Stock de insumos</h2>
             <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {insumos.map((insumo) => {
@@ -105,17 +107,23 @@ export default function ComprasPage() {
           </section>
         )}
 
-        <section className="mt-8 rounded-[2rem] border border-white/10 bg-[#181818] p-6">
+        <section className="mt-6 rounded-[1.5rem] border border-white/10 bg-[#181818] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-6">
           <h2 className="text-xl font-bold">Historial de compras</h2>
 
-          {compras.length === 0 ? (
+          {cargando ? (
+            <div className="mt-5 grid gap-3">
+              {[1, 2, 3].map((item) => (
+                <div key={item} className="h-24 animate-pulse rounded-2xl bg-white/5" />
+              ))}
+            </div>
+          ) : compras.length === 0 ? (
             <div className="mt-5 rounded-2xl border border-dashed border-white/15 p-8 text-center text-zinc-400">
               Todavía no registraste compras.
             </div>
           ) : (
             <div className="mt-5 space-y-3">
               {compras.map((compra) => (
-                <article key={compra.id} className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-[#121212] p-4 md:flex-row md:items-center md:justify-between">
+                <article key={compra.id} className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-[#121212] p-4 sm:p-5 md:flex-row md:items-center md:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-xs font-bold text-red-300">{compra.id}</span>
@@ -132,7 +140,7 @@ export default function ComprasPage() {
                     )}
                   </div>
 
-                  <div className="flex items-center gap-3 md:text-right">
+                  <div className="flex items-center justify-between gap-3 border-t border-white/5 pt-3 md:border-0 md:pt-0 md:text-right">
                     <strong className="text-lg">{moneda(compra.precioTotal)}</strong>
                     <button
                       type="button"
@@ -142,7 +150,7 @@ export default function ComprasPage() {
                           recargar();
                         }
                       }}
-                      className="rounded-lg border border-white/10 px-3 py-2 text-sm text-zinc-400 hover:text-white"
+                      className="rounded-xl border border-white/10 px-3 py-2.5 text-sm font-semibold text-zinc-400 hover:text-white"
                     >
                       Eliminar
                     </button>
@@ -230,8 +238,8 @@ function CompraModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm">
-      <div className="my-6 w-full max-w-3xl rounded-[2rem] border border-white/10 bg-[#181818] p-6">
+    <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-black/75 p-0 backdrop-blur-sm sm:items-center sm:p-4">
+      <div className="my-0 max-h-[95vh] w-full overflow-y-auto rounded-t-[1.75rem] border border-white/10 bg-[#181818] p-5 sm:my-6 sm:max-w-3xl sm:rounded-[2rem] sm:p-6">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">Nueva compra</p>
@@ -240,12 +248,12 @@ function CompraModal({
           <button type="button" onClick={onClose} className="rounded-lg border border-white/10 px-3 py-2">✕</button>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 rounded-xl bg-[#101010] p-1">
+        <div className="mt-5 grid grid-cols-2 rounded-xl bg-[#101010] p-1 sm:mt-6">
           <button type="button" onClick={() => setTipo("filamento")} className={`rounded-lg px-4 py-3 font-semibold ${tipo === "filamento" ? "bg-[#810404]" : "text-zinc-400"}`}>🧵 Filamento</button>
           <button type="button" onClick={() => setTipo("insumo")} className={`rounded-lg px-4 py-3 font-semibold ${tipo === "insumo" ? "bg-[#810404]" : "text-zinc-400"}`}>📦 Insumo</button>
         </div>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <div className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4">
           <Campo titulo="Proveedor" valor={proveedor} onChange={setProveedor} />
           <Campo titulo="Fecha" tipo="date" valor={fechaCompra} onChange={setFechaCompra} />
 
@@ -273,9 +281,9 @@ function CompraModal({
 
         <label className="mt-4 block"><span className="text-sm font-semibold text-zinc-300">Notas</span><textarea value={notas} onChange={(e) => setNotas(e.target.value)} rows={3} className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3" /></label>
 
-        <div className="mt-6 flex justify-end gap-3">
-          <button type="button" onClick={onClose} className="rounded-xl border border-white/10 px-5 py-3">Cancelar</button>
-          <button type="button" onClick={guardar} className="rounded-xl bg-[#810404] px-6 py-3 font-semibold">Guardar compra</button>
+        <div className="mt-5 flex flex-col-reverse gap-2 sm:mt-6 sm:flex-row sm:justify-end sm:gap-3">
+          <button type="button" onClick={onClose} className="w-full rounded-xl border border-white/10 px-5 py-3 sm:w-auto">Cancelar</button>
+          <button type="button" onClick={guardar} className="w-full rounded-xl bg-[#810404] px-6 py-3 font-semibold sm:w-auto">Guardar compra</button>
         </div>
       </div>
     </div>

@@ -44,28 +44,21 @@ const columnas: Array<{
 ];
 
 export default function ProduccionPage() {
-  const [pedidos, setPedidos] = useState<
-    OrdenProduccionNube[]
-  >([]);
-
-  const [cargando, setCargando] =
-    useState(true);
-
+  const [pedidos, setPedidos] = useState<OrdenProduccionNube[]>([]);
+  const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
+  const [estadoActivo, setEstadoActivo] =
+    useState<EstadoProduccionNube>("pending");
+  const [avanzandoId, setAvanzandoId] = useState<string | null>(null);
 
-  const [
-    pedidoParaIniciar,
-    setPedidoParaIniciar,
-  ] = useState<OrdenProduccionNube | null>(
-    null
-  );
+  const [pedidoParaIniciar, setPedidoParaIniciar] =
+    useState<OrdenProduccionNube | null>(null);
 
   async function recargar() {
     try {
       setError("");
 
-      const data =
-        await listarOrdenesProduccionNube();
+      const data = await listarOrdenesProduccionNube();
 
       setPedidos(data);
     } catch (cause) {
@@ -90,16 +83,10 @@ export default function ProduccionPage() {
 
     window.addEventListener("focus", onFocus);
 
-    const intervalo = window.setInterval(
-      () => void recargar(),
-      15000
-    );
+    const intervalo = window.setInterval(() => void recargar(), 15000);
 
     return () => {
-      window.removeEventListener(
-        "focus",
-        onFocus
-      );
+      window.removeEventListener("focus", onFocus);
       window.clearInterval(intervalo);
     };
   }, []);
@@ -108,12 +95,9 @@ export default function ProduccionPage() {
     () =>
       columnas.reduce(
         (resultado, columna) => {
-          resultado[columna.estado] =
-            pedidos.filter(
-              (pedido) =>
-                pedido.status ===
-                columna.estado
-            );
+          resultado[columna.estado] = pedidos.filter(
+            (pedido) => pedido.status === columna.estado
+          );
 
           return resultado;
         },
@@ -131,21 +115,21 @@ export default function ProduccionPage() {
     [pedidos]
   );
 
-  async function avanzar(
-    pedido: OrdenProduccionNube
-  ) {
+  async function avanzar(pedido: OrdenProduccionNube) {
     if (pedido.status === "pending") {
       setPedidoParaIniciar(pedido);
       return;
     }
 
+    if (avanzandoId) return;
+
+    setAvanzandoId(pedido.id);
+
     try {
-      const actualizado =
-        await avanzarEstadoProduccionNube(
-          pedido
-        );
+      const actualizado = await avanzarEstadoProduccionNube(pedido);
 
       reemplazarPedido(actualizado);
+      setEstadoActivo(actualizado.status);
     } catch (cause) {
       console.error(cause);
 
@@ -154,25 +138,23 @@ export default function ProduccionPage() {
           ? cause.message
           : "No se pudo avanzar la producción."
       );
+    } finally {
+      setAvanzandoId(null);
     }
   }
 
-  function reemplazarPedido(
-    actualizado: OrdenProduccionNube
-  ) {
+  function reemplazarPedido(actualizado: OrdenProduccionNube) {
     setPedidos((actuales) =>
       actuales.map((pedido) =>
-        pedido.id === actualizado.id
-          ? actualizado
-          : pedido
+        pedido.id === actualizado.id ? actualizado : pedido
       )
     );
   }
 
   return (
     <main className="min-h-screen bg-[#101010] text-white">
-      <section className="min-w-0 flex-1 p-6 lg:p-10">
-        <header className="rounded-[2rem] border border-white/10 bg-[#181818] p-7 lg:p-10">
+      <section className="min-w-0 p-4 sm:p-6 lg:p-10">
+        <header className="rounded-[1.5rem] border border-white/10 bg-[#181818] p-5 sm:rounded-[2rem] sm:p-7 lg:p-10">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-300">
             Centro de operaciones
           </p>
@@ -208,52 +190,120 @@ export default function ProduccionPage() {
             </p>
           </section>
         ) : (
-          <section className="mt-8 grid gap-5 xl:grid-cols-5">
-            {columnas.map((columna) => (
-              <section
-                key={columna.estado}
-                className="min-w-0 rounded-3xl border border-white/10 bg-[#181818] p-4"
-              >
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                  <h2 className="font-bold">
-                    {columna.icono}{" "}
-                    {columna.titulo}
-                  </h2>
+          <>
+            {/* VISTA MOBILE */}
+            <section className="mt-6 xl:hidden">
+              <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
+                {columnas.map((columna) => {
+                  const activo =
+                    estadoActivo === columna.estado;
 
-                  <span className="rounded-full bg-white/5 px-2.5 py-1 text-xs">
-                    {
-                      pedidosPorEstado[
-                        columna.estado
-                      ].length
-                    }
-                  </span>
-                </div>
-
-                <div className="mt-4 space-y-3">
-                  {pedidosPorEstado[
-                    columna.estado
-                  ].map((pedido) => (
-                    <PedidoCard
-                      key={pedido.id}
-                      pedido={pedido}
-                      onAvanzar={() =>
-                        void avanzar(pedido)
+                  return (
+                    <button
+                      key={columna.estado}
+                      type="button"
+                      onClick={() =>
+                        setEstadoActivo(columna.estado)
                       }
-                    />
+                      className={`min-w-max rounded-xl border px-4 py-3 text-sm font-semibold transition ${
+                        activo
+                          ? "border-[#810404] bg-[#810404] text-white"
+                          : "border-white/10 bg-[#181818] text-zinc-400"
+                      }`}
+                    >
+                      {columna.icono} {columna.titulo} ·{" "}
+                      {pedidosPorEstado[columna.estado].length}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="mt-3 rounded-3xl border border-white/10 bg-[#181818] p-4">
+                {columnas
+                  .filter(
+                    (columna) =>
+                      columna.estado === estadoActivo
+                  )
+                  .map((columna) => (
+                    <div
+                      key={columna.estado}
+                      className="space-y-3"
+                    >
+                      {pedidosPorEstado[
+                        columna.estado
+                      ].map((pedido) => (
+                        <PedidoCard
+                          key={pedido.id}
+                          pedido={pedido}
+                          avanzando={
+                            avanzandoId === pedido.id
+                          }
+                          onAvanzar={() =>
+                            void avanzar(pedido)
+                          }
+                        />
+                      ))}
+
+                      {pedidosPorEstado[
+                        columna.estado
+                      ].length === 0 && (
+                        <p className="py-8 text-center text-sm text-zinc-500">
+                          No hay órdenes en esta etapa.
+                        </p>
+                      )}
+                    </div>
                   ))}
-                </div>
-              </section>
-            ))}
-          </section>
+              </div>
+            </section>
+
+            {/* VISTA DESKTOP */}
+            <section className="mt-8 hidden gap-5 xl:grid xl:grid-cols-5">
+              {columnas.map((columna) => (
+                <section
+                  key={columna.estado}
+                  className="min-w-0 rounded-3xl border border-white/10 bg-[#181818] p-4"
+                >
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                    <h2 className="font-bold">
+                      {columna.icono} {columna.titulo}
+                    </h2>
+
+                    <span className="rounded-full bg-white/5 px-2.5 py-1 text-xs">
+                      {
+                        pedidosPorEstado[
+                          columna.estado
+                        ].length
+                      }
+                    </span>
+                  </div>
+
+                  <div className="mt-4 space-y-3">
+                    {pedidosPorEstado[
+                      columna.estado
+                    ].map((pedido) => (
+                      <PedidoCard
+                        key={pedido.id}
+                        pedido={pedido}
+                        avanzando={
+                          avanzandoId === pedido.id
+                        }
+                        onAvanzar={() =>
+                          void avanzar(pedido)
+                        }
+                      />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </section>
+          </>
         )}
       </section>
 
       {pedidoParaIniciar && (
         <FilamentSelectionModalCloud
           pedido={pedidoParaIniciar}
-          onClose={() =>
-            setPedidoParaIniciar(null)
-          }
+          onClose={() => setPedidoParaIniciar(null)}
           onStarted={(actualizado) => {
             reemplazarPedido(actualizado);
             setPedidoParaIniciar(null);
@@ -266,30 +316,27 @@ export default function ProduccionPage() {
 
 function PedidoCard({
   pedido,
+  avanzando,
   onAvanzar,
 }: {
   pedido: OrdenProduccionNube;
+  avanzando: boolean;
   onAvanzar: () => void;
 }) {
-  const siguiente =
-    obtenerSiguienteEstado(pedido.status);
+  const siguiente = obtenerSiguienteEstado(pedido.status);
 
-  const costoReal =
-    obtenerCostoRealProduccion(pedido);
+  const costoReal = obtenerCostoRealProduccion(pedido);
 
   const cantidad = pedido.items.reduce(
-    (total, item) =>
-      total + item.quantity,
+    (total, item) => total + item.quantity,
     0
   );
 
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#121212] p-4">
+    <article className="rounded-2xl border border-white/10 bg-[#121212] p-4 sm:p-5">
       <p className="text-xs font-bold text-red-300">
         {pedido.code}
-        {pedido.orderCode
-          ? ` · ${pedido.orderCode}`
-          : ""}
+        {pedido.orderCode ? ` · ${pedido.orderCode}` : ""}
       </p>
 
       <h3 className="mt-2 font-bold">
@@ -337,43 +384,34 @@ function PedidoCard({
             Bobinas utilizadas
           </p>
 
-          {pedido.consumptions.map(
-            (consumo) => (
-              <div
-                key={consumo.id}
-                className="border-b border-white/5 py-2 last:border-0"
-              >
-                <p className="text-xs font-semibold text-zinc-300">
-                  {consumo.spoolCode} ·{" "}
-                  {consumo.material}{" "}
-                  {consumo.color}
-                </p>
+          {pedido.consumptions.map((consumo) => (
+            <div
+              key={consumo.id}
+              className="border-b border-white/5 py-2 last:border-0"
+            >
+              <p className="text-xs font-semibold text-zinc-300">
+                {consumo.spoolCode} · {consumo.material}{" "}
+                {consumo.color}
+              </p>
 
-                <p className="mt-1 text-xs text-zinc-500">
-                  {consumo.grams.toLocaleString(
-                    "es-AR",
-                    {
-                      maximumFractionDigits: 1,
-                    }
-                  )}{" "}
-                  g utilizados
-                </p>
-              </div>
-            )
-          )}
+              <p className="mt-1 text-xs text-zinc-500">
+                {consumo.grams.toLocaleString("es-AR", {
+                  maximumFractionDigits: 1,
+                })}{" "}
+                g utilizados
+              </p>
+            </div>
+          ))}
 
           {costoReal > 0 && (
             <p className="mt-3 border-t border-white/5 pt-3 text-xs text-zinc-400">
               Costo real:{" "}
               <strong className="text-zinc-200">
-                {costoReal.toLocaleString(
-                  "es-AR",
-                  {
-                    style: "currency",
-                    currency: "ARS",
-                    maximumFractionDigits: 2,
-                  }
-                )}
+                {costoReal.toLocaleString("es-AR", {
+                  style: "currency",
+                  currency: "ARS",
+                  maximumFractionDigits: 2,
+                })}
               </strong>
             </p>
           )}
@@ -384,9 +422,12 @@ function PedidoCard({
         <button
           type="button"
           onClick={onAvanzar}
-          className="mt-4 w-full rounded-xl bg-[#810404] px-4 py-3 text-sm font-semibold hover:bg-[#a00808]"
+          disabled={avanzando}
+          className="mt-4 min-h-12 w-full rounded-xl bg-[#810404] px-4 py-3 text-sm font-semibold hover:bg-[#a00808] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {obtenerTextoBoton(pedido.status)}
+          {avanzando
+            ? "Guardando..."
+            : obtenerTextoBoton(pedido.status)}
         </button>
       )}
 
@@ -408,13 +449,9 @@ function Fila({
 }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <span className="text-zinc-500">
-        {titulo}
-      </span>
+      <span className="text-zinc-500">{titulo}</span>
 
-      <strong className="text-zinc-300">
-        {valor}
-      </strong>
+      <strong className="text-zinc-300">{valor}</strong>
     </div>
   );
 }
@@ -443,13 +480,9 @@ function obtenerTextoBoton(
   }[estado];
 }
 
-function formatearTiempo(
-  minutos: number
-) {
+function formatearTiempo(minutos: number) {
   const horas = Math.floor(minutos / 60);
-  const resto = Math.round(
-    minutos % 60
-  );
+  const resto = Math.round(minutos % 60);
 
   if (horas <= 0) {
     return `${resto} min`;
