@@ -79,6 +79,34 @@ const PRECIOS_INICIALES: PrecioFinalVenta = {
   minoristaGanancia: 0,
 };
 
+export type DatosPresupuestoRapido = {
+  nombre: string;
+  cantidad: string;
+  cantidadPorCama: string;
+  pesoPorCama: string;
+  horasPorCama: string;
+  minutosPorCama: string;
+  horasManual: string;
+  minutosManual: string;
+  precioMayoristaUnitario: string;
+  precioMinoristaUnitario: string;
+  accesorios: Accesorio[];
+};
+
+const PRESUPUESTO_RAPIDO_INICIAL: DatosPresupuestoRapido = {
+  nombre: "",
+  cantidad: "",
+  cantidadPorCama: "",
+  pesoPorCama: "",
+  horasPorCama: "",
+  minutosPorCama: "",
+  horasManual: "",
+  minutosManual: "",
+  precioMayoristaUnitario: "",
+  precioMinoristaUnitario: "",
+  accesorios: [],
+};
+
 export default function useBudget() {
   const [clientes, setClientes] =
     useState<ClienteGuardado[]>([]);
@@ -95,6 +123,13 @@ export default function useBudget() {
     useState<DatosPresupuesto>(
       PRESUPUESTO_INICIAL
     );
+
+  const [
+    presupuestoRapido,
+    setPresupuestoRapido,
+  ] = useState<DatosPresupuestoRapido>(
+    PRESUPUESTO_RAPIDO_INICIAL
+  );
 
   const [
     accesoriosPresupuesto,
@@ -137,7 +172,7 @@ export default function useBudget() {
 
     void cargarClientesDesdeNube()
       .then(setClientes)
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error(
           "No se pudieron cargar los clientes desde Supabase:",
           error
@@ -148,7 +183,7 @@ export default function useBudget() {
 
     void cargarProductosDesdeNube()
       .then(setProductos)
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error(
           "No se pudieron cargar los productos desde Supabase:",
           error
@@ -161,7 +196,7 @@ export default function useBudget() {
 
     void cargarPresupuestosDesdeNube()
       .then(setPresupuestosGuardados)
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error(
           "No se pudieron cargar los presupuestos desde Supabase:",
           error
@@ -205,6 +240,17 @@ export default function useBudget() {
     );
   }
 
+  function actualizarPresupuestoRapido(
+    cambios: Partial<DatosPresupuestoRapido>
+  ) {
+    setPresupuestoRapido(
+      (actual) => ({
+        ...actual,
+        ...cambios,
+      })
+    );
+  }
+
   function limpiarProductoActual() {
     setProductoSeleccionadoId("");
 
@@ -216,6 +262,12 @@ export default function useBudget() {
 
     setAccesoriosPresupuesto([]);
     setPreciosFinales(PRECIOS_INICIALES);
+  }
+
+  function limpiarPresupuestoRapido() {
+    setPresupuestoRapido(
+      PRESUPUESTO_RAPIDO_INICIAL
+    );
   }
 
   function seleccionarProducto(id: string) {
@@ -286,6 +338,26 @@ export default function useBudget() {
                 }
               : accesorio
         )
+    );
+  }
+
+  function actualizarAccesorioRapido(
+    id: string,
+    cambios: Partial<Accesorio>
+  ) {
+    setPresupuestoRapido(
+      (actual) => ({
+        ...actual,
+        accesorios: actual.accesorios.map(
+          (accesorio) =>
+            accesorio.id === id
+              ? {
+                  ...accesorio,
+                  ...cambios,
+                }
+              : accesorio
+        ),
+      })
     );
   }
 
@@ -395,6 +467,73 @@ export default function useBudget() {
       ),
 
       accesorios: accesoriosPresupuesto,
+    },
+    {
+      ...config,
+      horasImpresionDia:
+        horasDiariasCalculadas,
+    }
+  );
+
+  const cantidadRapidaNumero = Number(
+    presupuestoRapido.cantidad || 0
+  );
+
+  const cantidadPorCamaRapido = Math.max(
+    1,
+    Number(
+      presupuestoRapido.cantidadPorCama || 1
+    )
+  );
+
+  const pesoPorCamaRapido = Number(
+    presupuestoRapido.pesoPorCama || 0
+  );
+
+  const minutosManualRapido =
+    Number(
+      presupuestoRapido.horasManual || 0
+    ) *
+      60 +
+    Number(
+      presupuestoRapido.minutosManual || 0
+    );
+
+  const horasManualRapido = Math.floor(
+    minutosManualRapido / 60
+  );
+
+  const minutosManualRapidoResto =
+    minutosManualRapido % 60;
+
+  const resultadoRapido = calcularPresupuesto(
+    {
+      cantidadSolicitada:
+        cantidadRapidaNumero,
+
+      cantidadPorCama:
+        cantidadPorCamaRapido,
+
+      pesoPorCama: pesoPorCamaRapido,
+
+      horasPorCama: Number(
+        presupuestoRapido.horasPorCama || 0
+      ),
+
+      minutosPorCama: Number(
+        presupuestoRapido.minutosPorCama || 0
+      ),
+
+      horasTrabajoPersonal:
+        horasManualRapido,
+
+      minutosTrabajoPersonal:
+        minutosManualRapidoResto,
+
+      colores: 0,
+
+      accesorios:
+        presupuestoRapido.accesorios,
     },
     {
       ...config,
@@ -538,7 +677,7 @@ export default function useBudget() {
       retailTotal:
         preciosFinales.minoristaTotal,
       retailProfit:
-        preciosFinales.minoristaGanancia,
+        preciosFinales.mayoristaGanancia,
     };
 
     setItemsPresupuesto(
@@ -549,6 +688,99 @@ export default function useBudget() {
     );
 
     limpiarProductoActual();
+  }
+
+  function agregarItemRapido() {
+    if (!presupuestoRapido.nombre.trim()) {
+      alert("Ingresá un nombre para el ítem.");
+      return;
+    }
+
+    if (cantidadRapidaNumero <= 0) {
+      alert("Ingresá una cantidad válida.");
+      return;
+    }
+
+    const precioMayoristaUnitario = Number(
+      presupuestoRapido.precioMayoristaUnitario ||
+        0
+    );
+
+    const precioMinoristaUnitario = Number(
+      presupuestoRapido.precioMinoristaUnitario ||
+        0
+    );
+
+    if (
+      precioMayoristaUnitario <= 0 ||
+      precioMinoristaUnitario <= 0
+    ) {
+      alert(
+        "Definí los precios mayorista y minorista antes de agregar el ítem."
+      );
+      return;
+    }
+
+    const precioMayoristaTotal =
+      precioMayoristaUnitario *
+      cantidadRapidaNumero;
+
+    const precioMinoristaTotal =
+      precioMinoristaUnitario *
+      cantidadRapidaNumero;
+
+    const nuevoItem: PresupuestoItemGuardado = {
+      productId: "",
+      productCode: "RAPIDO",
+      productName:
+        presupuestoRapido.nombre.trim(),
+      quantity: cantidadRapidaNumero,
+
+      hoursPerDay: horasDiariasCalculadas,
+      productionDays:
+        resultadoRapido.diasProduccion,
+      totalPrintMinutes:
+        resultadoRapido.tiempoTotalMinutos,
+      manualMinutes: minutosManualRapido,
+
+      totalWeightGrams:
+        resultadoRapido.pesoTotal,
+      filamentKilos:
+        resultadoRapido.kilosFilamento,
+
+      accessories:
+        presupuestoRapido.accesorios.map(
+          (accesorio) => ({
+            ...accesorio,
+          })
+        ),
+
+      unitCost: resultadoRapido.costoPorUnidad,
+      totalCost: resultadoRapido.costoTotal,
+
+      wholesaleUnitPrice:
+        precioMayoristaUnitario,
+      wholesaleTotal: precioMayoristaTotal,
+      wholesaleProfit:
+        precioMayoristaTotal -
+        resultadoRapido.costoTotal,
+
+      retailUnitPrice:
+        precioMinoristaUnitario,
+      retailTotal: precioMinoristaTotal,
+      retailProfit:
+        precioMinoristaTotal -
+        resultadoRapido.costoTotal,
+    };
+
+    setItemsPresupuesto(
+      (itemsActuales) => [
+        ...itemsActuales,
+        nuevoItem,
+      ]
+    );
+
+    limpiarPresupuestoRapido();
   }
 
   function eliminarItemPresupuesto(
@@ -650,9 +882,7 @@ export default function useBudget() {
 
     setItemsPresupuesto([]);
 
-    setPresupuesto(
-      PRESUPUESTO_INICIAL
-    );
+    setPresupuesto(PRESUPUESTO_INICIAL);
 
     limpiarProductoActual();
 
@@ -698,6 +928,12 @@ export default function useBudget() {
     presupuesto,
     actualizarPresupuesto,
     seleccionarProducto,
+
+    presupuestoRapido,
+    actualizarPresupuestoRapido,
+    actualizarAccesorioRapido,
+    agregarItemRapido,
+    resultadoRapido,
 
     accesoriosPresupuesto,
     actualizarAccesorio,

@@ -10,11 +10,19 @@ import BudgetProductionSection from "@/app/components/budget/BudgetProductionSec
 import BudgetCostsSection from "@/app/components/budget/BudgetCostsSection";
 import BudgetSaleSection from "@/app/components/budget/BudgetSaleSection";
 import MultiProductBudgetSummary from "@/app/components/budget/MultiProductBudgetSummary";
+import QuickQuoteSection from "@/app/components/budget/QuickQuoteSection";
 import useBudget from "@/app/hooks/useBudget";
+import {
+  obtenerCatalogoAccesorios,
+  obtenerConfiguracion,
+} from "@/lib/settings-service";
 
 export default function PresupuestosPage() {
   const [vista, setVista] =
     useState<"nuevo" | "guardados">("nuevo");
+
+  const [modoRapido, setModoRapido] =
+    useState(false);
 
   const {
     clientes,
@@ -25,6 +33,11 @@ export default function PresupuestosPage() {
     presupuesto,
     actualizarPresupuesto,
     seleccionarProducto,
+
+    presupuestoRapido,
+    actualizarPresupuestoRapido,
+    actualizarAccesorioRapido,
+    agregarItemRapido,
 
     accesoriosPresupuesto,
     actualizarAccesorio,
@@ -58,6 +71,45 @@ export default function PresupuestosPage() {
     manejarEliminarPresupuesto,
   } = useBudget();
 
+  const catalogoAccesorios =
+    obtenerCatalogoAccesorios(
+      obtenerConfiguracion()
+    );
+
+  const accesoriosParaRapido =
+    catalogoAccesorios.map((opcion) => ({
+      id: opcion.id,
+      nombre: opcion.nombre,
+      activo: true,
+      modo: "porUnidad" as const,
+      cantidad: "1",
+    }));
+
+  function handleAgregarAccesorioRapido(
+    id: string
+  ) {
+    const opcion = catalogoAccesorios.find(
+      (elemento) => elemento.id === id
+    );
+
+    if (!opcion) {
+      return;
+    }
+
+    actualizarPresupuestoRapido({
+      accesorios: [
+        ...presupuestoRapido.accesorios,
+        {
+          id: opcion.id,
+          nombre: opcion.nombre,
+          activo: true,
+          modo: "porUnidad",
+          cantidad: "1",
+        },
+      ],
+    });
+  }
+
   return (
     <main className="p-5 text-white md:p-8 lg:p-10">
       <PageHeader
@@ -65,30 +117,50 @@ export default function PresupuestosPage() {
         subtitulo="Agregá uno o varios productos y calculá el pedido completo."
       />
 
-      <div className="mt-6 flex gap-2 rounded-xl border border-[#2b2b2b] bg-[#171717] p-1 md:w-fit">
-        <button
-          type="button"
-          onClick={() => setVista("nuevo")}
-          className={`rounded-lg px-4 py-2 text-sm font-semibold ${
-            vista === "nuevo"
-              ? "bg-[#810404] text-white"
-              : "text-gray-400 hover:text-white"
-          }`}
-        >
-          Nuevo presupuesto
-        </button>
+      <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="flex gap-2 rounded-xl border border-[#2b2b2b] bg-[#171717] p-1 md:w-fit">
+          <button
+            type="button"
+            onClick={() => setVista("nuevo")}
+            className={`rounded-lg px-4 py-2 text-sm font-semibold ${
+              vista === "nuevo"
+                ? "bg-[#810404] text-white"
+                : "text-gray-400 hover:text-white"
+            }`}
+          >
+            Nuevo presupuesto
+          </button>
 
-        <button
-          type="button"
-          onClick={() => setVista("guardados")}
-          className={`rounded-lg px-4 py-2 text-sm font-semibold ${
-            vista === "guardados"
-              ? "bg-[#810404] text-white"
-              : "text-gray-400 hover:text-white"
-          }`}
-        >
-          Guardados ({presupuestosGuardados.length})
-        </button>
+          <button
+            type="button"
+            onClick={() => setVista("guardados")}
+            className={`rounded-lg px-4 py-2 text-sm font-semibold ${
+              vista === "guardados"
+                ? "bg-[#810404] text-white"
+                : "text-gray-400 hover:text-white"
+            }`}
+          >
+            Guardados ({presupuestosGuardados.length})
+          </button>
+        </div>
+
+        {vista === "nuevo" && (
+          <button
+            type="button"
+            onClick={() =>
+              setModoRapido(!modoRapido)
+            }
+            className={`rounded-xl px-5 py-2 text-sm font-semibold transition ${
+              modoRapido
+                ? "bg-red-700 text-white"
+                : "border border-[#3a3a3a] bg-[#151515] text-gray-300 hover:border-red-700"
+            }`}
+          >
+            {modoRapido
+              ? "✓ Modo rápido activo"
+              : "⚡ Presupuesto rápido"}
+          </button>
+        )}
       </div>
 
       {vista === "nuevo" ? (
@@ -104,6 +176,25 @@ export default function PresupuestosPage() {
               manejarGuardarPresupuesto
             }
           />
+
+          {modoRapido && (
+            <QuickQuoteSection
+              datos={presupuestoRapido}
+              accesoriosDisponibles={
+                accesoriosParaRapido
+              }
+              onDatosChange={
+                actualizarPresupuestoRapido
+              }
+              onAccesorioChange={
+                actualizarAccesorioRapido
+              }
+              onAgregarAccesorio={
+                handleAgregarAccesorioRapido
+              }
+              onAgregar={agregarItemRapido}
+            />
+          )}
 
           <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(380px,0.85fr)]">
             <div className="space-y-4">
