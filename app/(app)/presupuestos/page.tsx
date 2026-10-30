@@ -38,6 +38,8 @@ export default function PresupuestosPage() {
     actualizarPresupuestoRapido,
     actualizarAccesorioRapido,
     agregarItemRapido,
+    resultadoRapido,
+    preciosSugeridosRapido,
 
     accesoriosPresupuesto,
     actualizarAccesorio,
@@ -183,6 +185,7 @@ export default function PresupuestosPage() {
               accesoriosDisponibles={
                 accesoriosParaRapido
               }
+              preciosSugeridos={preciosSugeridosRapido}
               onDatosChange={
                 actualizarPresupuestoRapido
               }

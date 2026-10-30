@@ -10,6 +10,10 @@ import type { DatosPresupuestoRapido } from "../../hooks/useBudget";
 type Props = {
   datos: DatosPresupuestoRapido;
   accesoriosDisponibles: Accesorio[];
+  preciosSugeridos: {
+    mayoristaUnitario: number;
+    minoristaUnitario: number;
+  };
   onDatosChange: (
     cambios: Partial<DatosPresupuestoRapido>
   ) => void;
@@ -21,9 +25,18 @@ type Props = {
   onAgregar: () => void;
 };
 
+function formatearDinero(valor: number) {
+  return new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+    maximumFractionDigits: 2,
+  }).format(valor);
+}
+
 export default function QuickQuoteSection({
   datos,
   accesoriosDisponibles,
+  preciosSugeridos,
   onDatosChange,
   onAccesorioChange,
   onAgregarAccesorio,
@@ -37,6 +50,14 @@ export default function QuickQuoteSection({
       !datos.accesorios.some((accesorio) => accesorio.id === opcion.id)
   );
 
+  const mayoristaMostrar =
+    Number(datos.precioMayoristaUnitario || 0) ||
+    preciosSugeridos.mayoristaUnitario;
+
+  const minoristaMostrar =
+    Number(datos.precioMinoristaUnitario || 0) ||
+    preciosSugeridos.minoristaUnitario;
+
   return (
     <section className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-5 md:p-6">
       <div>
@@ -49,7 +70,7 @@ export default function QuickQuoteSection({
         </h2>
 
         <p className="mt-1 text-sm text-gray-500">
-          Calculá sin cargar un producto. Ingresá los datos por cama.
+          Calculá sin cargar un producto. Los precios se calculan automáticamente con los márgenes de configuración.
         </p>
       </div>
 
@@ -116,26 +137,62 @@ export default function QuickQuoteSection({
             onDatosChange({ minutosManual: valor })
           }
         />
+      </div>
 
-        <Input
-          label="Precio mayorista unitario"
-          type="number"
-          value={datos.precioMayoristaUnitario}
-          onChange={(valor) =>
-            onDatosChange({ precioMayoristaUnitario: valor })
-          }
-          placeholder="Ej.: 1500"
-        />
+      <div className="mt-6 rounded-xl border border-[#3a3a3a] bg-[#151515] p-4">
+        <p className="text-sm font-semibold text-gray-300">
+          Precios calculados automáticamente
+        </p>
 
-        <Input
-          label="Precio minorista unitario"
-          type="number"
-          value={datos.precioMinoristaUnitario}
-          onChange={(valor) =>
-            onDatosChange({ precioMinoristaUnitario: valor })
-          }
-          placeholder="Ej.: 2000"
-        />
+        <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <div className="rounded-lg border border-[#2b2b2b] bg-[#101010] p-3">
+            <p className="text-xs text-gray-500">
+              Mayorista sugerido
+            </p>
+
+            <p className="mt-1 text-lg font-bold text-emerald-300">
+              {formatearDinero(preciosSugeridos.mayoristaUnitario)}
+            </p>
+
+            <Input
+              label="Ajustar manualmente (opcional)"
+              type="number"
+              value={datos.precioMayoristaUnitario}
+              onChange={(valor) =>
+                onDatosChange({
+                  precioMayoristaUnitario: valor,
+                })
+              }
+              placeholder={`Usar ${formatearDinero(preciosSugeridos.mayoristaUnitario)}`}
+            />
+          </div>
+
+          <div className="rounded-lg border border-[#2b2b2b] bg-[#101010] p-3">
+            <p className="text-xs text-gray-500">
+              Minorista sugerido
+            </p>
+
+            <p className="mt-1 text-lg font-bold text-emerald-300">
+              {formatearDinero(preciosSugeridos.minoristaUnitario)}
+            </p>
+
+            <Input
+              label="Ajustar manualmente (opcional)"
+              type="number"
+              value={datos.precioMinoristaUnitario}
+              onChange={(valor) =>
+                onDatosChange({
+                  precioMinoristaUnitario: valor,
+                })
+              }
+              placeholder={`Usar ${formatearDinero(preciosSugeridos.minoristaUnitario)}`}
+            />
+          </div>
+        </div>
+
+        <p className="mt-3 text-xs text-gray-500">
+          Si dejás los campos vacíos, se usan los precios sugeridos calculados con los márgenes de configuración.
+        </p>
       </div>
 
       {accesoriosDisponibles.length > 0 && (

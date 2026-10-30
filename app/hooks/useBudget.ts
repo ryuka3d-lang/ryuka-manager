@@ -15,6 +15,7 @@ import {
   obtenerPresupuestos,
   type PresupuestoGuardado,
   type PresupuestoItemGuardado,
+  type TipoMensajeWhatsapp,
 } from "../../lib/budget-service";
 
 import {
@@ -107,6 +108,11 @@ const PRESUPUESTO_RAPIDO_INICIAL: DatosPresupuestoRapido = {
   accesorios: [],
 };
 
+export type MensajeWhatsappPendiente = {
+  tipo: TipoMensajeWhatsapp;
+  texto: string;
+};
+
 export default function useBudget() {
   const [clientes, setClientes] =
     useState<ClienteGuardado[]>([]);
@@ -151,6 +157,13 @@ export default function useBudget() {
     setPreciosFinales,
   ] = useState<PrecioFinalVenta>(
     PRECIOS_INICIALES
+  );
+
+  const [
+    mensajeWhatsappPendiente,
+    setMensajeWhatsappPendiente,
+  ] = useState<MensajeWhatsappPendiente | null>(
+    null
   );
 
   const [
@@ -249,6 +262,13 @@ export default function useBudget() {
         ...cambios,
       })
     );
+  }
+
+  function registrarMensajeWhatsapp(
+    tipo: TipoMensajeWhatsapp,
+    texto: string
+  ) {
+    setMensajeWhatsappPendiente({ tipo, texto });
   }
 
   function limpiarProductoActual() {
@@ -542,6 +562,27 @@ export default function useBudget() {
     }
   );
 
+  // Precios sugeridos automáticos para presupuesto rápido
+  const preciosSugeridosRapido = useMemo(() => {
+    if (cantidadRapidaNumero <= 0) {
+      return {
+        mayoristaUnitario: 0,
+        minoristaUnitario: 0,
+      };
+    }
+
+    return {
+      mayoristaUnitario:
+        resultadoRapido.mayoristaPorUnidad,
+      minoristaUnitario:
+        resultadoRapido.minoristaPorUnidad,
+    };
+  }, [
+    cantidadRapidaNumero,
+    resultadoRapido.mayoristaPorUnidad,
+    resultadoRapido.minoristaPorUnidad,
+  ]);
+
   const totalesPresupuesto = useMemo(
     () => ({
       costoTotal: itemsPresupuesto.reduce(
@@ -701,22 +742,24 @@ export default function useBudget() {
       return;
     }
 
-    const precioMayoristaUnitario = Number(
-      presupuestoRapido.precioMayoristaUnitario ||
-        0
-    );
+    const precioMayoristaUnitario =
+      Number(
+        presupuestoRapido.precioMayoristaUnitario ||
+          0
+      ) || preciosSugeridosRapido.mayoristaUnitario;
 
-    const precioMinoristaUnitario = Number(
-      presupuestoRapido.precioMinoristaUnitario ||
-        0
-    );
+    const precioMinoristaUnitario =
+      Number(
+        presupuestoRapido.precioMinoristaUnitario ||
+          0
+      ) || preciosSugeridosRapido.minoristaUnitario;
 
     if (
       precioMayoristaUnitario <= 0 ||
       precioMinoristaUnitario <= 0
     ) {
       alert(
-        "Definí los precios mayorista y minorista antes de agregar el ítem."
+        "Ingresá los datos de producción para calcular los precios automáticamente."
       );
       return;
     }
@@ -827,6 +870,11 @@ export default function useBudget() {
           primerItem.productName,
         cantidad: primerItem.quantity,
 
+        mensajeWhatsapp:
+          mensajeWhatsappPendiente?.texto ?? "",
+        mensajeWhatsappTipo:
+          mensajeWhatsappPendiente?.tipo ?? null,
+
         horasImpresionDia:
           primerItem.hoursPerDay,
 
@@ -884,6 +932,8 @@ export default function useBudget() {
 
     setPresupuesto(PRESUPUESTO_INICIAL);
 
+    setMensajeWhatsappPendiente(null);
+
     limpiarProductoActual();
 
     alert(
@@ -934,6 +984,7 @@ export default function useBudget() {
     actualizarAccesorioRapido,
     agregarItemRapido,
     resultadoRapido,
+    preciosSugeridosRapido,
 
     accesoriosPresupuesto,
     actualizarAccesorio,
@@ -956,6 +1007,8 @@ export default function useBudget() {
 
     preciosFinales,
     setPreciosFinales,
+
+    registrarMensajeWhatsapp,
 
     itemsPresupuesto,
     totalesPresupuesto,

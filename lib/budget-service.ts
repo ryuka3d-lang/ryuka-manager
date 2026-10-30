@@ -6,6 +6,9 @@ const STORAGE_KEY = "ryuka-presupuestos";
 const MIGRATION_KEY = "ryuka-budgets-relational-migrated-v1";
 
 export type TipoVenta = "mayorista" | "minorista";
+export type TipoMensajeWhatsapp =
+  | "mayorista"
+  | "minorista";
 export type EstadoPresupuesto =
   | "borrador"
   | "enviado"
@@ -61,6 +64,9 @@ export type PresupuestoGuardado = {
   validoHasta: string | null;
   notas: string;
 
+  mensajeWhatsapp: string;
+  mensajeWhatsappTipo: TipoMensajeWhatsapp | null;
+
   horasImpresionDia: number;
   diasProduccion: number;
   tiempoTotalMinutos: number;
@@ -107,6 +113,8 @@ type BudgetRow = {
   valid_until: string | null;
   notes: string;
   total_cost: number | string;
+  whatsapp_message: string | null;
+  whatsapp_message_type: string | null;
   created_at: string;
   updated_at: string;
   budget_items?: BudgetItemRow[];
@@ -134,6 +142,15 @@ type BudgetItemRow = {
   retail_total: number | string;
   retail_profit: number | string;
 };
+
+function normalizarTipoMensaje(
+  valor: unknown
+): TipoMensajeWhatsapp | null {
+  return valor === "mayorista" ||
+    valor === "minorista"
+    ? valor
+    : null;
+}
 
 function crearItemLegado(
   p: Partial<PresupuestoGuardado>
@@ -233,6 +250,14 @@ function normalizar(
     estado: p.estado || "borrador",
     validoHasta: p.validoHasta || null,
     notas: p.notas || "",
+
+    mensajeWhatsapp:
+      typeof p.mensajeWhatsapp === "string"
+        ? p.mensajeWhatsapp
+        : "",
+    mensajeWhatsappTipo: normalizarTipoMensaje(
+      p.mensajeWhatsappTipo
+    ),
 
     horasImpresionDia:
       Number(p.horasImpresionDia) ||
@@ -410,6 +435,10 @@ function convertirFila(
     estado: row.status,
     validoHasta: row.valid_until,
     notas: row.notes,
+    mensajeWhatsapp: row.whatsapp_message || "",
+    mensajeWhatsappTipo: normalizarTipoMensaje(
+      row.whatsapp_message_type
+    ),
     items,
     costoTotal: items.reduce(
       (total, item) => total + item.totalCost,
@@ -447,6 +476,8 @@ async function leerNube(workspaceId: string) {
       valid_until,
       notes,
       total_cost,
+      whatsapp_message,
+      whatsapp_message_type,
       created_at,
       updated_at,
       budget_items(
@@ -651,6 +682,10 @@ async function upsertPresupuesto(
           total_cost: costoTotal,
           wholesale_total: precioMayoristaTotal,
           retail_total: precioMinoristaTotal,
+          whatsapp_message:
+            presupuesto.mensajeWhatsapp || "",
+          whatsapp_message_type:
+            presupuesto.mensajeWhatsappTipo || null,
           updated_at: new Date().toISOString(),
         },
         {
