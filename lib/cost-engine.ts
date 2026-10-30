@@ -32,6 +32,12 @@ export type ConfiguracionCostos = {
   costoCaja: number;
   costoBolsa: number;
 
+  accesoriosExtra?: {
+    id: string;
+    nombre: string;
+    costo: number;
+  }[];
+
   margenMayorista: number;
   margenMinorista: number;
 };
@@ -55,7 +61,19 @@ function obtenerPrecioAccesorio(
     bolsa: config.costoBolsa,
   };
 
-  return precios[id] ?? 0;
+  if (id in precios) {
+    return precios[id];
+  }
+
+  const accesorioExtra = (
+    config.accesoriosExtra ?? []
+  ).find(
+    (accesorio) => accesorio.id === id
+  );
+
+  return accesorioExtra
+    ? accesorioExtra.costo
+    : 0;
 }
 
 function aplicarGanancia(
@@ -149,23 +167,9 @@ export function calcularPresupuesto(
     config.horasProductivas
   );
 
-  /*
-   * Valor hora destinado al sueldo.
-   *
-   * Ejemplo:
-   * $1.000.000 ÷ 160 horas = $6.250 por hora.
-   */
-
   const valorHoraPersonal =
     Math.max(0, config.sueldoMensual) /
     horasProductivas;
-
-  /*
-   * Trabajo manual del pedido.
-   *
-   * Ejemplo:
-   * 1 hora y 30 minutos = 1,5 horas.
-   */
 
   const minutosTrabajoPersonal =
     Math.max(0, data.horasTrabajoPersonal) * 60 +
@@ -177,16 +181,6 @@ export function calcularPresupuesto(
   const costoManoObra =
     horasTrabajoPersonal *
     valorHoraPersonal;
-
-  /*
-   * Monotributo proporcional.
-   *
-   * El pedido NO paga el monotributo completo.
-   *
-   * Primero calculamos cuánto representa por hora
-   * productiva y luego lo aplicamos al tiempo total
-   * de impresión.
-   */
 
   const costoMonotributoHora =
     Math.max(0, config.monotributo) /
@@ -292,12 +286,6 @@ export function calcularPresupuesto(
 
   const gananciaMinorista =
     precioMinorista - costoTotal;
-
-  /*
-   * Margen real sobre la venta:
-   *
-   * ganancia ÷ precio de venta × 100
-   */
 
   const margenVentaMayorista =
     precioMayorista > 0

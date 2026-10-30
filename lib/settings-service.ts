@@ -1,3 +1,9 @@
+export type AccesorioPredeterminado = {
+  id: string;
+  nombre: string;
+  costo: number;
+};
+
 export type RyukaConfig = {
   precioKgFilamento: number;
 
@@ -16,6 +22,7 @@ export type RyukaConfig = {
   costoSticker: number;
   costoCaja: number;
   costoBolsa: number;
+  accesoriosExtra: AccesorioPredeterminado[];
 
   margenMayorista: number;
   margenMinorista: number;
@@ -42,6 +49,7 @@ export const DEFAULT_RYUKA_CONFIG: RyukaConfig = {
   costoSticker: 0,
   costoCaja: 0,
   costoBolsa: 0,
+  accesoriosExtra: [],
 
   margenMayorista: 40,
   margenMinorista: 80,
@@ -56,6 +64,67 @@ function convertirNumero(
   return Number.isFinite(numero)
     ? numero
     : valorPredeterminado;
+}
+
+function normalizarAccesorioExtra(
+  valor: unknown
+): AccesorioPredeterminado | null {
+  if (typeof valor !== "object" || valor === null) {
+    return null;
+  }
+
+  const registro = valor as Record<string, unknown>;
+
+  const id =
+    typeof registro.id === "string"
+      ? registro.id
+      : "";
+
+  const nombre =
+    typeof registro.nombre === "string"
+      ? registro.nombre.trim()
+      : "";
+
+  if (!id || !nombre) {
+    return null;
+  }
+
+  const costo = Number(registro.costo);
+
+  return {
+    id,
+    nombre,
+    costo: Number.isFinite(costo)
+      ? Math.max(0, costo)
+      : 0,
+  };
+}
+
+function normalizarAccesoriosExtra(
+  valor: unknown
+): AccesorioPredeterminado[] {
+  if (!Array.isArray(valor)) {
+    return [];
+  }
+
+  const lista: AccesorioPredeterminado[] = [];
+
+  for (const elemento of valor) {
+    const accesorio =
+      normalizarAccesorioExtra(elemento);
+
+    if (
+      accesorio &&
+      !lista.some(
+        (existente) =>
+          existente.id === accesorio.id
+      )
+    ) {
+      lista.push(accesorio);
+    }
+  }
+
+  return lista;
 }
 
 function normalizarConfiguracion(
@@ -136,6 +205,10 @@ function normalizarConfiguracion(
       DEFAULT_RYUKA_CONFIG.costoBolsa
     ),
 
+    accesoriosExtra: normalizarAccesoriosExtra(
+      datos.accesoriosExtra
+    ),
+
     margenMayorista: convertirNumero(
       datos.margenMayorista,
       DEFAULT_RYUKA_CONFIG.margenMayorista
@@ -146,6 +219,61 @@ function normalizarConfiguracion(
       DEFAULT_RYUKA_CONFIG.margenMinorista
     ),
   };
+}
+
+export function obtenerCatalogoAccesorios(
+  configuracion: RyukaConfig
+): AccesorioPredeterminado[] {
+  return [
+    {
+      id: "argolla",
+      nombre: "Argolla",
+      costo: configuracion.costoArgolla,
+    },
+    {
+      id: "sticker",
+      nombre: "Sticker",
+      costo: configuracion.costoSticker,
+    },
+    {
+      id: "caja",
+      nombre: "Caja",
+      costo: configuracion.costoCaja,
+    },
+    {
+      id: "bolsa",
+      nombre: "Bolsa",
+      costo: configuracion.costoBolsa,
+    },
+    ...configuracion.accesoriosExtra,
+  ];
+}
+
+export function generarIdAccesorio(
+  nombre: string,
+  catalogo: AccesorioPredeterminado[]
+): string {
+  const base =
+    nombre
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "") || "accesorio";
+
+  let id = base;
+  let contador = 2;
+
+  while (
+    catalogo.some(
+      (existente) => existente.id === id
+    )
+  ) {
+    id = `${base}-${contador}`;
+    contador += 1;
+  }
+
+  return id;
 }
 
 export function obtenerConfiguracion(): RyukaConfig {

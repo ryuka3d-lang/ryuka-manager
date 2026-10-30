@@ -1,11 +1,18 @@
 "use client";
 
+import { useState } from "react";
+
 import type {
   Accesorio,
   ModoAccesorio,
   Producto,
   SetProducto,
 } from "../../types/producto";
+
+import {
+  obtenerCatalogoAccesorios,
+  obtenerConfiguracion,
+} from "../../../lib/settings-service";
 
 type Props = {
   producto: Producto;
@@ -16,6 +23,21 @@ export default function AccessoriesCard({
   producto,
   setProducto,
 }: Props) {
+  const [catalogo] = useState(() =>
+    obtenerCatalogoAccesorios(
+      obtenerConfiguracion()
+    )
+  );
+
+  const accesoriosDisponibles =
+    catalogo.filter(
+      (opcion) =>
+        !producto.accesorios.some(
+          (accesorio) =>
+            accesorio.id === opcion.id
+        )
+    );
+
   function actualizarAccesorio(
     indice: number,
     cambios: Partial<Accesorio>
@@ -31,6 +53,30 @@ export default function AccessoriesCard({
               }
             : accesorio
       ),
+    }));
+  }
+
+  function agregarAccesorio(id: string) {
+    const opcion = catalogo.find(
+      (elemento) => elemento.id === id
+    );
+
+    if (!opcion) {
+      return;
+    }
+
+    setProducto((productoActual) => ({
+      ...productoActual,
+      accesorios: [
+        ...productoActual.accesorios,
+        {
+          id: opcion.id,
+          nombre: opcion.nombre,
+          activo: true,
+          modo: "porUnidad",
+          cantidad: "1",
+        },
+      ],
     }));
   }
 
@@ -141,6 +187,71 @@ export default function AccessoriesCard({
         </div>
       </div>
 
+      {accesoriosDisponibles.length > 0 && (
+        <div className="mt-5 flex flex-col gap-3 rounded-xl border border-[#2b2b2b] bg-[#151515] p-4 sm:flex-row sm:items-end">
+          <label className="flex-1">
+            <span className="text-sm font-semibold text-gray-300">
+              Agregar accesorio al producto
+            </span>
+
+            <select
+              id="selector-accesorio-disponible"
+              defaultValue=""
+              className="
+                mt-2
+                w-full
+                rounded-xl
+                border
+                border-[#2b2b2b]
+                bg-[#101010]
+                px-3
+                py-2
+                outline-none
+                focus:border-[#810404]
+              "
+            >
+              <option value="" disabled>
+                Elegí un accesorio...
+              </option>
+
+              {accesoriosDisponibles.map(
+                (opcion) => (
+                  <option
+                    key={opcion.id}
+                    value={opcion.id}
+                  >
+                    {opcion.nombre}
+                  </option>
+                )
+              )}
+            </select>
+          </label>
+
+          <button
+            type="button"
+            onClick={() => {
+              const selector =
+                document.getElementById(
+                  "selector-accesorio-disponible"
+                ) as HTMLSelectElement | null;
+
+              if (
+                !selector ||
+                !selector.value
+              ) {
+                return;
+              }
+
+              agregarAccesorio(selector.value);
+              selector.value = "";
+            }}
+            className="rounded-xl bg-[#810404] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#a00808]"
+          >
+            + Agregar
+          </button>
+        </div>
+      )}
+
       <div className="mt-5 rounded-xl border border-[#2b2b2b] bg-[#151515] p-4 text-sm text-gray-400">
         <p>
           <strong className="text-white">
@@ -155,6 +266,14 @@ export default function AccessoriesCard({
           </strong>{" "}
           se utiliza una cantidad fija, por ejemplo una caja y
           dos bolsas.
+        </p>
+
+        <p className="mt-2">
+          <strong className="text-white">
+            Tip:
+          </strong>{" "}
+          los accesorios personalizados se crean en
+          Configuración → Accesorios personalizados.
         </p>
       </div>
     </div>

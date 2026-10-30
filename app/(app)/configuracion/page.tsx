@@ -5,10 +5,11 @@ import {
   useState,
 } from "react";
 
-
 import {
   DEFAULT_RYUKA_CONFIG,
+  generarIdAccesorio,
   guardarConfiguracion,
+  obtenerCatalogoAccesorios,
   obtenerConfiguracion,
   restaurarConfiguracion,
   type RyukaConfig,
@@ -186,6 +187,12 @@ export default function ConfiguracionPage() {
   const [guardado, setGuardado] =
     useState(false);
 
+  const [nuevoNombre, setNuevoNombre] =
+    useState("");
+
+  const [nuevoCosto, setNuevoCosto] =
+    useState("");
+
   useEffect(() => {
     setConfig(obtenerConfiguracion());
   }, []);
@@ -200,6 +207,91 @@ export default function ConfiguracionPage() {
       ...configActual,
       [clave]: Number(valor) || 0,
     }));
+  }
+
+  function actualizarAccesorioExtra(
+    id: string,
+    cambios: Partial<{
+      nombre: string;
+      costo: number;
+    }>
+  ) {
+    setGuardado(false);
+
+    setConfig((configActual) => ({
+      ...configActual,
+      accesoriosExtra:
+        configActual.accesoriosExtra.map(
+          (accesorio) =>
+            accesorio.id === id
+              ? { ...accesorio, ...cambios }
+              : accesorio
+        ),
+    }));
+  }
+
+  function eliminarAccesorioExtra(
+    id: string
+  ) {
+    setGuardado(false);
+
+    setConfig((configActual) => ({
+      ...configActual,
+      accesoriosExtra:
+        configActual.accesoriosExtra.filter(
+          (accesorio) =>
+            accesorio.id !== id
+        ),
+    }));
+  }
+
+  function agregarAccesorioExtra() {
+    const nombre = nuevoNombre.trim();
+
+    if (!nombre) {
+      alert(
+        "Ingresá un nombre para el accesorio nuevo."
+      );
+      return;
+    }
+
+    const catalogo =
+      obtenerCatalogoAccesorios(config);
+
+    if (
+      catalogo.some(
+        (accesorio) =>
+          accesorio.nombre.toLowerCase() ===
+          nombre.toLowerCase()
+      )
+    ) {
+      alert(
+        "Ya existe un accesorio con ese nombre."
+      );
+      return;
+    }
+
+    const id = generarIdAccesorio(
+      nombre,
+      catalogo
+    );
+
+    setGuardado(false);
+
+    setConfig((configActual) => ({
+      ...configActual,
+      accesoriosExtra: [
+        ...configActual.accesoriosExtra,
+        {
+          id,
+          nombre,
+          costo: Number(nuevoCosto) || 0,
+        },
+      ],
+    }));
+
+    setNuevoNombre("");
+    setNuevoCosto("");
   }
 
   function manejarGuardar() {
@@ -232,7 +324,6 @@ export default function ConfiguracionPage() {
 
   return (
     <main className="min-h-screen bg-[#101010] text-white">
-      
 
       <section className="min-w-0 flex-1 p-6 lg:p-10">
         <header className="overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_right,_rgba(129,4,4,0.32),_transparent_42%),#181818] p-7 lg:p-10">
@@ -293,6 +384,143 @@ export default function ConfiguracionPage() {
             config={config}
             onChange={actualizarCampo}
           />
+
+          <section className="rounded-[2rem] border border-[#2b2b2b] bg-[#181818] p-6">
+            <div>
+              <h2 className="text-xl font-bold">
+                Accesorios personalizados
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-zinc-400">
+                Creá accesorios nuevos con su costo predeterminado. Aparecen en
+                productos y presupuestos con la misma dinámica que los anteriores.
+              </p>
+            </div>
+
+            {config.accesoriosExtra.length > 0 && (
+              <div className="mt-6 space-y-3">
+                {config.accesoriosExtra.map(
+                  (accesorio) => (
+                    <div
+                      key={accesorio.id}
+                      className="grid gap-3 rounded-2xl border border-white/10 bg-[#121212] p-4 md:grid-cols-[1fr_180px_auto] md:items-end"
+                    >
+                      <label className="block">
+                        <span className="text-sm font-semibold text-zinc-300">
+                          Nombre
+                        </span>
+
+                        <input
+                          type="text"
+                          value={accesorio.nombre}
+                          onChange={(evento) =>
+                            actualizarAccesorioExtra(
+                              accesorio.id,
+                              {
+                                nombre:
+                                  evento.target.value,
+                              }
+                            )
+                          }
+                          className="mt-2 w-full rounded-xl border border-white/10 bg-[#0d0d0d] px-3 py-3 outline-none focus:border-[#810404]"
+                        />
+                      </label>
+
+                      <label className="block">
+                        <span className="text-sm font-semibold text-zinc-300">
+                          Costo por unidad
+                        </span>
+
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={accesorio.costo}
+                          onChange={(evento) =>
+                            actualizarAccesorioExtra(
+                              accesorio.id,
+                              {
+                                costo:
+                                  Number(
+                                    evento.target.value
+                                  ) || 0,
+                              }
+                            )
+                          }
+                          className="mt-2 w-full rounded-xl border border-white/10 bg-[#0d0d0d] px-3 py-3 outline-none focus:border-[#810404]"
+                        />
+                      </label>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          eliminarAccesorioExtra(
+                            accesorio.id
+                          )
+                        }
+                        className="min-h-12 rounded-xl border border-red-900 px-4 py-3 text-sm font-semibold text-red-300 transition hover:bg-red-950/30"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+
+            <div className="mt-6 grid gap-3 rounded-2xl border border-dashed border-white/15 bg-black/20 p-4 md:grid-cols-[1fr_180px_auto] md:items-end">
+              <label className="block">
+                <span className="text-sm font-semibold text-zinc-300">
+                  Nuevo accesorio
+                </span>
+
+                <input
+                  type="text"
+                  value={nuevoNombre}
+                  onChange={(evento) =>
+                    setNuevoNombre(
+                      evento.target.value
+                    )
+                  }
+                  placeholder="Ej.: Cinta, Gancho, Imán..."
+                  className="mt-2 w-full rounded-xl border border-white/10 bg-[#0d0d0d] px-3 py-3 outline-none focus:border-[#810404]"
+                />
+              </label>
+
+              <label className="block">
+                <span className="text-sm font-semibold text-zinc-300">
+                  Costo por unidad
+                </span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={nuevoCosto}
+                  onChange={(evento) =>
+                    setNuevoCosto(
+                      evento.target.value
+                    )
+                  }
+                  placeholder="$"
+                  className="mt-2 w-full rounded-xl border border-white/10 bg-[#0d0d0d] px-3 py-3 outline-none focus:border-[#810404]"
+                />
+              </label>
+
+              <button
+                type="button"
+                onClick={agregarAccesorioExtra}
+                className="min-h-12 rounded-xl bg-[#810404] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#a00808]"
+              >
+                + Agregar accesorio
+              </button>
+            </div>
+
+            <p className="mt-4 text-xs leading-5 text-zinc-500">
+              Recordá guardar los cambios para que el accesorio nuevo quede
+              disponible en productos y presupuestos.
+            </p>
+          </section>
 
           <SeccionConfiguracion
             titulo="Márgenes sugeridos"
@@ -374,7 +602,7 @@ function SeccionConfiguracion({
           <CampoNumero
             key={campo.clave}
             campo={campo}
-            valor={config[campo.clave]}
+            valor={config[campo.clave] as number}
             onChange={(valor) =>
               onChange(campo.clave, valor)
             }
