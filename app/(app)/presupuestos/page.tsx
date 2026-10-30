@@ -38,7 +38,6 @@ export default function PresupuestosPage() {
     actualizarPresupuestoRapido,
     actualizarAccesorioRapido,
     agregarItemRapido,
-    resultadoRapido,
     preciosSugeridosRapido,
 
     accesoriosPresupuesto,

@@ -108,6 +108,12 @@ El presupuesto puede estar sujeto a modificaciones según cambios en el diseño,
 
       setMensajeCopiado(tipo);
 
+      window.dispatchEvent(
+        new CustomEvent("ryuka-whatsapp-copied", {
+          detail: { tipo, mensaje },
+        })
+      );
+
       window.setTimeout(() => {
         setMensajeCopiado("");
       }, 2500);

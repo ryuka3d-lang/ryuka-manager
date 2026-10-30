@@ -28,6 +28,11 @@ export default function SavedBudgetsCard({
     setPresupuestoSeleccionado,
   ] = useState<PresupuestoGuardado | null>(null);
 
+  const [
+    mensajeWhatsappAbierto,
+    setMensajeWhatsappAbierto,
+  ] = useState<PresupuestoGuardado | null>(null);
+
   useEffect(() => {
     async function cargarWorkspace() {
       try {
@@ -102,6 +107,15 @@ export default function SavedBudgetsCard({
     }
   }
 
+  async function recopiarMensaje(mensaje: string) {
+    try {
+      await navigator.clipboard.writeText(mensaje);
+      alert("✓ Mensaje copiado al portapapeles");
+    } catch {
+      alert("No se pudo copiar el mensaje.");
+    }
+  }
+
   return (
     <section className="mt-8 rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
       <div>
@@ -130,6 +144,10 @@ export default function SavedBudgetsCard({
                 presupuestosConvertidos.includes(
                   presupuesto.id
                 );
+
+              const tieneMensajeWhatsapp =
+                presupuesto.mensajeWhatsapp &&
+                presupuesto.mensajeWhatsapp.trim().length > 0;
 
               return (
                 <article
@@ -207,6 +225,24 @@ export default function SavedBudgetsCard({
                     />
                   </div>
 
+                  {tieneMensajeWhatsapp && (
+                    <div className="mt-4 rounded-lg border border-emerald-900 bg-emerald-950/20 p-3">
+                      <p className="text-xs font-semibold text-emerald-300">
+                        📱 Mensaje de WhatsApp guardado ({presupuesto.mensajeWhatsappTipo})
+                      </p>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setMensajeWhatsappAbierto(presupuesto)
+                        }
+                        className="mt-2 text-sm text-emerald-200 underline decoration-emerald-700 underline-offset-4 hover:text-white"
+                      >
+                        Ver mensaje completo
+                      </button>
+                    </div>
+                  )}
+
                   <div className="mt-5 border-t border-[#303030] pt-5">
                     <button
                       type="button"
@@ -244,7 +280,79 @@ export default function SavedBudgetsCard({
           onConfirm={crearPedido}
         />
       )}
+
+      {mensajeWhatsappAbierto && (
+        <ModalMensajeWhatsapp
+          presupuesto={mensajeWhatsappAbierto}
+          onClose={() => setMensajeWhatsappAbierto(null)}
+          onRecopiar={recopiarMensaje}
+        />
+      )}
     </section>
+  );
+}
+
+function ModalMensajeWhatsapp({
+  presupuesto,
+  onClose,
+  onRecopiar,
+}: {
+  presupuesto: PresupuestoGuardado;
+  onClose: () => void;
+  onRecopiar: (mensaje: string) => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-[#181818] p-6 text-white">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">
+              Mensaje de WhatsApp
+            </p>
+
+            <h2 className="mt-2 text-2xl font-bold">
+              {presupuesto.cliente}
+            </h2>
+
+            <p className="mt-1 text-sm text-zinc-400">
+              Tipo: <strong>{presupuesto.mensajeWhatsappTipo}</strong>
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg border border-white/10 px-3 py-2"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="mt-6 max-h-96 overflow-y-auto rounded-2xl border border-white/10 bg-[#121212] p-5">
+          <pre className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-300">
+            {presupuesto.mensajeWhatsapp}
+          </pre>
+        </div>
+
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-xl border border-white/10 px-5 py-3"
+          >
+            Cerrar
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onRecopiar(presupuesto.mensajeWhatsapp)}
+            className="rounded-xl bg-[#810404] px-6 py-3 font-semibold"
+          >
+            📋 Recopiar mensaje
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -232,6 +232,38 @@ export default function useBudget() {
     );
   }, []);
 
+  useEffect(() => {
+    function manejarMensajeCopiado(
+      evento: Event
+    ) {
+      const detalle = (
+        evento as CustomEvent<{
+          tipo: TipoMensajeWhatsapp;
+          mensaje: string;
+        }>
+      ).detail;
+
+      if (detalle && detalle.mensaje) {
+        registrarMensajeWhatsapp(
+          detalle.tipo,
+          detalle.mensaje
+        );
+      }
+    }
+
+    window.addEventListener(
+      "ryuka-whatsapp-copied",
+      manejarMensajeCopiado
+    );
+
+    return () => {
+      window.removeEventListener(
+        "ryuka-whatsapp-copied",
+        manejarMensajeCopiado
+      );
+    };
+  }, []);
+
   const productoSeleccionado = useMemo(
     () =>
       productos.find(
@@ -562,7 +594,6 @@ export default function useBudget() {
     }
   );
 
-  // Precios sugeridos automáticos para presupuesto rápido
   const preciosSugeridosRapido = useMemo(() => {
     if (cantidadRapidaNumero <= 0) {
       return {
@@ -1007,8 +1038,6 @@ export default function useBudget() {
 
     preciosFinales,
     setPreciosFinales,
-
-    registrarMensajeWhatsapp,
 
     itemsPresupuesto,
     totalesPresupuesto,
