@@ -117,21 +117,21 @@ export default function SavedBudgetsCard({
   }
 
   return (
-    <section className="mt-8 rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+    <section className="mt-8 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <div>
         <h2 className="text-xl font-bold">
           Presupuestos guardados
         </h2>
 
-        <p className="mt-2 text-sm text-gray-400">
+        <p className="mt-2 text-sm text-[var(--muted)]">
           Cada presupuesto puede incluir uno o varios
           productos.
         </p>
       </div>
 
       {presupuestos.length === 0 ? (
-        <div className="mt-6 rounded-xl border border-[#303030] bg-[#151515] p-6">
-          <p className="text-center text-sm text-gray-400">
+        <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--field)] p-6">
+          <p className="text-center text-sm text-[var(--muted)]">
             Todavía no guardaste ningún presupuesto.
           </p>
         </div>
@@ -152,11 +152,11 @@ export default function SavedBudgetsCard({
               return (
                 <article
                   key={presupuesto.id}
-                  className="rounded-xl border border-[#303030] bg-[#151515] p-5"
+                  className="rounded-xl border border-[var(--border)] bg-[var(--field)] p-5"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-xs font-semibold text-red-300">
+                      <p className="text-xs font-semibold text-[var(--accent-text)]">
                         {presupuesto.id}
                       </p>
 
@@ -164,7 +164,7 @@ export default function SavedBudgetsCard({
                         {presupuesto.cliente}
                       </h3>
 
-                      <p className="mt-1 text-sm text-gray-400">
+                      <p className="mt-1 text-sm text-[var(--muted)]">
                         {presupuesto.items.length}{" "}
                         {presupuesto.items.length === 1
                           ? "producto"
@@ -177,7 +177,7 @@ export default function SavedBudgetsCard({
                       onClick={() =>
                         onEliminar(presupuesto.id)
                       }
-                      className="rounded-lg border border-red-900 px-3 py-2 text-sm text-red-300 transition hover:bg-red-950/30"
+                      className="rounded-lg border border-red-900 px-3 py-2 text-sm text-[var(--accent-text)] transition hover:bg-red-950/30"
                     >
                       Eliminar
                     </button>
@@ -188,7 +188,7 @@ export default function SavedBudgetsCard({
                       (item, indice) => (
                         <div
                           key={`${item.productId}-${indice}`}
-                          className="flex items-center justify-between gap-4 rounded-lg bg-white/[0.03] px-3 py-2 text-sm"
+                          className="flex items-center justify-between gap-4 rounded-lg bg-[var(--overlay)] px-3 py-2 text-sm"
                         >
                           <span className="min-w-0 truncate">
                             {item.productName}
@@ -236,14 +236,14 @@ export default function SavedBudgetsCard({
                         onClick={() =>
                           setMensajeWhatsappAbierto(presupuesto)
                         }
-                        className="mt-2 text-sm text-emerald-200 underline decoration-emerald-700 underline-offset-4 hover:text-white"
+                        className="mt-2 text-sm text-emerald-200 underline decoration-emerald-700 underline-offset-4 hover:text-[var(--text)]"
                       >
                         Ver mensaje completo
                       </button>
                     </div>
                   )}
 
-                  <div className="mt-5 border-t border-[#303030] pt-5">
+                  <div className="mt-5 border-t border-[var(--border)] pt-5">
                     <button
                       type="button"
                       disabled={yaConvertido}
@@ -255,7 +255,7 @@ export default function SavedBudgetsCard({
                       className={`w-full rounded-xl px-4 py-3 text-sm font-semibold transition ${
                         yaConvertido
                           ? "cursor-not-allowed border border-emerald-900 bg-emerald-950/20 text-emerald-300"
-                          : "bg-[#810404] text-white hover:bg-[#a00808]"
+                          : "bg-[var(--accent)] text-[var(--text)] hover:bg-[var(--accent-hover)]"
                       }`}
                     >
                       {yaConvertido
@@ -303,10 +303,10 @@ function ModalMensajeWhatsapp({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-[#181818] p-6 text-white">
+      <div className="w-full max-w-2xl rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 text-[var(--text)]">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)]">
               Mensaje de WhatsApp
             </p>
 
@@ -314,7 +314,7 @@ function ModalMensajeWhatsapp({
               {presupuesto.cliente}
             </h2>
 
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm text-[var(--muted)]">
               Tipo: <strong>{presupuesto.mensajeWhatsappTipo}</strong>
             </p>
           </div>
@@ -322,14 +322,14 @@ function ModalMensajeWhatsapp({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-white/10 px-3 py-2"
+            className="rounded-lg border border-[var(--border)] px-3 py-2"
           >
             ✕
           </button>
         </div>
 
-        <div className="mt-6 max-h-96 overflow-y-auto rounded-2xl border border-white/10 bg-[#121212] p-5">
-          <pre className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-300">
+        <div className="mt-6 max-h-96 overflow-y-auto rounded-2xl border border-[var(--border)] bg-[var(--field)] p-5">
+          <pre className="whitespace-pre-wrap text-sm leading-relaxed text-[var(--muted)]">
             {presupuesto.mensajeWhatsapp}
           </pre>
         </div>
@@ -338,7 +338,7 @@ function ModalMensajeWhatsapp({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-white/10 px-5 py-3"
+            className="rounded-xl border border-[var(--border)] px-5 py-3"
           >
             Cerrar
           </button>
@@ -346,7 +346,7 @@ function ModalMensajeWhatsapp({
           <button
             type="button"
             onClick={() => onRecopiar(presupuesto.mensajeWhatsapp)}
-            className="rounded-xl bg-[#810404] px-6 py-3 font-semibold"
+            className="rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold"
           >
             📋 Recopiar mensaje
           </button>
@@ -403,10 +403,10 @@ function CrearPedidoModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-xl rounded-[2rem] border border-white/10 bg-[#181818] p-6 text-white">
+      <div className="w-full max-w-xl rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 text-[var(--text)]">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)]">
               Nuevo pedido
             </p>
 
@@ -414,7 +414,7 @@ function CrearPedidoModal({
               Elegí el precio acordado
             </h2>
 
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-2 text-sm text-[var(--muted)]">
               Se convertirán los{" "}
               {presupuesto.items.length} productos
               del presupuesto.
@@ -425,7 +425,7 @@ function CrearPedidoModal({
             type="button"
             onClick={onClose}
             disabled={guardando}
-            className="rounded-lg border border-white/10 px-3 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-[var(--border)] px-3 py-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             ✕
           </button>
@@ -459,8 +459,8 @@ function CrearPedidoModal({
           <div
             className={`w-full rounded-2xl border p-4 ${
               tipo === "custom"
-                ? "border-red-700 bg-red-950/20"
-                : "border-white/10 bg-[#121212]"
+                ? "border-[var(--accent)] bg-red-950/20"
+                : "border-[var(--border)] bg-[var(--field)]"
             }`}
           >
             <button
@@ -484,13 +484,13 @@ function CrearPedidoModal({
                 setTipo("custom");
               }}
               placeholder="$"
-              className="mt-3 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3 disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-3 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
         </div>
 
-        <div className="mt-6 rounded-2xl bg-white/[0.04] p-4">
-          <p className="text-sm text-zinc-400">
+        <div className="mt-6 rounded-2xl bg-[var(--overlay)] p-4">
+          <p className="text-sm text-[var(--muted)]">
             Total del pedido
           </p>
 
@@ -504,7 +504,7 @@ function CrearPedidoModal({
             type="button"
             onClick={onClose}
             disabled={guardando}
-            className="rounded-xl border border-white/10 px-5 py-3 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-xl border border-[var(--border)] px-5 py-3 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancelar
           </button>
@@ -515,7 +515,7 @@ function CrearPedidoModal({
               guardando || total <= 0
             }
             onClick={() => void confirmar()}
-            className="rounded-xl bg-[#810404] px-6 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
           >
             {guardando
               ? "Creando..."
@@ -547,8 +547,8 @@ function OpcionPrecio({
       disabled={disabled}
       className={`flex w-full items-center justify-between rounded-2xl border p-4 text-left disabled:cursor-not-allowed disabled:opacity-50 ${
         activa
-          ? "border-red-700 bg-red-950/20"
-          : "border-white/10 bg-[#121212]"
+          ? "border-[var(--accent)] bg-red-950/20"
+          : "border-[var(--border)] bg-[var(--field)]"
       }`}
     >
       <span className="font-semibold">
@@ -569,7 +569,7 @@ function FilaDato({
 }) {
   return (
     <div className="flex items-center justify-between gap-4 text-sm">
-      <span className="text-gray-400">
+      <span className="text-[var(--muted)]">
         {titulo}
       </span>
 

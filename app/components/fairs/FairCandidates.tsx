@@ -221,9 +221,9 @@ export default function FairCandidates({
   }
 
   return (
-    <section className="mt-6 rounded-2xl border border-[#2b2b2b] bg-[#171717] p-5 md:p-6">
+    <section className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--field)] p-5 md:p-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
           Modelos candidatos
         </p>
 
@@ -231,14 +231,14 @@ export default function FairCandidates({
           Guardar ideas encontradas
         </h2>
 
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-[var(--muted)]">
           Pegá los modelos que te gusten de Printables,
           MakerWorld o Cults3D y dejalos asociados a esta feria.
         </p>
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-[#303030] bg-[#111] p-4">
+        <div className="rounded-xl border border-[var(--border)] bg-[#111] p-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <Campo
               label="Nombre del modelo"
@@ -248,7 +248,7 @@ export default function FairCandidates({
             />
 
             <div className="flex flex-col gap-2">
-              <label className="text-sm text-zinc-400">
+              <label className="text-sm text-[var(--muted)]">
                 Sitio
               </label>
 
@@ -260,7 +260,7 @@ export default function FairCandidates({
                       .value as SitioModelo
                   )
                 }
-                className="rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+                className="rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
               >
                 <option value="Printables">
                   Printables
@@ -295,7 +295,7 @@ export default function FairCandidates({
             />
 
             <div className="flex flex-col gap-2">
-              <label className="text-sm text-zinc-400">
+              <label className="text-sm text-[var(--muted)]">
                 Licencia
               </label>
 
@@ -307,7 +307,7 @@ export default function FairCandidates({
                       .value as EstadoLicencia
                   )
                 }
-                className="rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+                className="rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
               >
                 <option value="sin_revisar">
                   Revisar
@@ -323,7 +323,7 @@ export default function FairCandidates({
 
             <div className="sm:col-span-2">
               <div className="flex flex-col gap-2">
-                <label className="text-sm text-zinc-400">
+                <label className="text-sm text-[var(--muted)]">
                   Notas
                 </label>
 
@@ -336,7 +336,7 @@ export default function FairCandidates({
                   }
                   rows={3}
                   placeholder="Por qué puede servir, qué cambiarías, etc."
-                  className="rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+                  className="rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
                 />
               </div>
             </div>
@@ -345,7 +345,7 @@ export default function FairCandidates({
           <button
             type="button"
             onClick={agregar}
-            className="mt-4 w-full rounded-xl bg-[#810404] px-5 py-3 font-semibold transition hover:bg-[#a00808]"
+            className="mt-4 w-full rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold transition hover:bg-[var(--accent-hover)]"
           >
             + Guardar candidato
           </button>
@@ -353,7 +353,7 @@ export default function FairCandidates({
 
         <div>
           {candidatos.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-[#353535] p-6 text-center text-sm text-zinc-500">
+            <div className="rounded-xl border border-dashed border-[#353535] p-6 text-center text-sm text-[var(--muted)]">
               Todavía no guardaste ningún modelo candidato.
             </div>
           ) : (
@@ -362,12 +362,12 @@ export default function FairCandidates({
                 (candidato) => (
                   <article
                     key={candidato.id}
-                    className="rounded-xl border border-[#303030] bg-[#111] p-4"
+                    className="rounded-xl border border-[var(--border)] bg-[#111] p-4"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <p className="text-xs font-semibold text-red-300">
+                          <p className="text-xs font-semibold text-[var(--accent-text)]">
                             {candidato.sitio}
                           </p>
 
@@ -381,7 +381,7 @@ export default function FairCandidates({
                         </h3>
 
                         {candidato.precioArchivo > 0 && (
-                          <p className="mt-1 text-sm text-zinc-400">
+                          <p className="mt-1 text-sm text-[var(--muted)]">
                             Archivo:{" "}
                             {moneda(
                               candidato.precioArchivo
@@ -395,7 +395,7 @@ export default function FairCandidates({
                         onClick={() =>
                           eliminar(candidato.id)
                         }
-                        className="rounded-lg border border-red-900 px-3 py-2 text-xs font-semibold text-red-300 hover:bg-red-950/30"
+                        className="rounded-lg border border-red-900 px-3 py-2 text-xs font-semibold text-[var(--accent-text)] hover:bg-red-950/30"
                       >
                         Quitar
                       </button>
@@ -408,7 +408,7 @@ export default function FairCandidates({
                             Producto creado ✓
                           </p>
 
-                          <p className="mt-1 text-zinc-300">
+                          <p className="mt-1 text-[var(--muted)]">
                             {candidato.productoCodigo}
                             {candidato.productoNombre
                               ? ` · ${candidato.productoNombre}`
@@ -456,7 +456,7 @@ export default function FairCandidates({
                       )}
 
                     {candidato.notas && (
-                      <p className="mt-3 text-sm leading-6 text-zinc-400">
+                      <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
                         {candidato.notas}
                       </p>
                     )}
@@ -466,7 +466,7 @@ export default function FairCandidates({
                         href={candidato.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="rounded-lg border border-white/10 px-3 py-2 text-xs font-semibold hover:border-[#810404]"
+                        className="rounded-lg border border-[var(--border)] px-3 py-2 text-xs font-semibold hover:border-[var(--accent)]"
                       >
                         Ver modelo ↗
                       </a>
@@ -482,7 +482,7 @@ export default function FairCandidates({
                           candidato.estado ===
                             "convertido"
                         }
-                        className="rounded-lg border border-[#810404] bg-red-950/20 px-3 py-2 text-xs font-semibold text-red-200 transition hover:bg-red-950/40 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/[0.02] disabled:text-zinc-600"
+                        className="rounded-lg border border-[var(--accent)] bg-red-950/20 px-3 py-2 text-xs font-semibold text-red-200 transition hover:bg-red-950/40 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/[0.02] disabled:text-zinc-600"
                       >
                         {candidato.licencia ===
                         "no_comercial"
@@ -554,7 +554,7 @@ function Campo({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm text-zinc-400">
+      <label className="text-sm text-[var(--muted)]">
         {label}
       </label>
 
@@ -565,7 +565,7 @@ function Campo({
           onChange(evento.target.value)
         }
         placeholder={placeholder}
-        className="rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+        className="rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
       />
     </div>
   );
@@ -582,7 +582,7 @@ function claseLicencia(
   }
 
   if (licencia === "no_comercial") {
-    return `${base} border-red-900 bg-red-950/30 text-red-300`;
+    return `${base} border-red-900 bg-red-950/30 text-[var(--accent-text)]`;
   }
 
   return `${base} border-amber-900 bg-amber-950/30 text-amber-300`;
@@ -616,7 +616,7 @@ function claseEstado(
     return `${base} border-amber-900 bg-amber-950/30 text-amber-300`;
   }
 
-  return `${base} border-white/10 bg-white/[0.03] text-zinc-400`;
+  return `${base} border-[var(--border)] bg-[var(--overlay)] text-[var(--muted)]`;
 }
 
 function moneda(valor: number) {

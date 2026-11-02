@@ -125,13 +125,13 @@ El presupuesto puede estar sujeto a modificaciones según cambios en el diseño,
   }
 
   return (
-    <section className="mt-8 rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+    <section className="mt-8 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <div>
         <h2 className="text-xl font-bold">
           Compartir presupuesto
         </h2>
 
-        <p className="mt-2 text-sm text-gray-400">
+        <p className="mt-2 text-sm text-[var(--muted)]">
           Copiá el presupuesto con el precio final que definiste
           y pegalo directamente en WhatsApp.
         </p>
@@ -145,12 +145,12 @@ El presupuesto puede estar sujeto a modificaciones según cambios en el diseño,
           }
           className="
             rounded-xl
-            bg-red-700
+            bg-[var(--accent)]
             px-6
             py-3
             font-semibold
             transition
-            hover:bg-red-600
+            hover:bg-[var(--accent-hover)]
           "
         >
           {mensajeCopiado === "mayorista"
@@ -166,13 +166,13 @@ El presupuesto puede estar sujeto a modificaciones según cambios en el diseño,
           className="
             rounded-xl
             border
-            border-[#3a3a3a]
-            bg-[#151515]
+            border-[var(--border)]
+            bg-[var(--field)]
             px-6
             py-3
             font-semibold
             transition
-            hover:border-red-700
+            hover:border-[var(--accent)]
           "
         >
           {mensajeCopiado === "minorista"

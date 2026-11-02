@@ -243,14 +243,14 @@ export default function ClientesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#101010] text-white">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
       
 
       <section className="min-w-0 flex-1 p-6 lg:p-10">
-        <header className="overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_right,_rgba(129,4,4,0.34),_transparent_44%),#181818] p-7 lg:p-10">
+        <header className="overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[radial-gradient(circle_at_top_right,_rgba(129,4,4,0.34),_transparent_44%),#181818] p-7 lg:p-10">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-300">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
                 Base comercial
               </p>
 
@@ -258,7 +258,7 @@ export default function ClientesPage() {
                 Clientes
               </h1>
 
-              <p className="mt-4 max-w-2xl leading-7 text-zinc-300">
+              <p className="mt-4 max-w-2xl leading-7 text-[var(--muted)]">
                 Cada cliente nuevo detectado en los presupuestos aparece automáticamente acá.
                 También podés completar sus datos y consultar su historial.
               </p>
@@ -267,7 +267,7 @@ export default function ClientesPage() {
             <button
               type="button"
               onClick={abrirNuevoCliente}
-              className="rounded-xl bg-[#810404] px-6 py-3 font-semibold transition hover:bg-[#a00808]"
+              className="rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold transition hover:bg-[var(--accent-hover)]"
             >
               + Nuevo cliente
             </button>
@@ -304,14 +304,14 @@ export default function ClientesPage() {
           />
         </section>
 
-        <section className="mt-8 rounded-[2rem] border border-white/10 bg-[#181818] p-5 lg:p-6">
+        <section className="mt-8 rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-5 lg:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-xl font-bold">
                 Directorio de clientes
               </h2>
 
-              <p className="mt-1 text-sm text-zinc-500">
+              <p className="mt-1 text-sm text-[var(--muted)]">
                 {clientesFiltrados.length} resultado
                 {clientesFiltrados.length === 1
                   ? ""
@@ -328,17 +328,17 @@ export default function ClientesPage() {
                 )
               }
               placeholder="Buscar por nombre, teléfono o email..."
-              className="w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm outline-none transition placeholder:text-zinc-600 focus:border-[#810404] md:max-w-md"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-sm outline-none transition placeholder:text-zinc-600 focus:border-[var(--accent)] md:max-w-md"
             />
           </div>
 
           {clientesFiltrados.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-dashed border-white/10 p-10 text-center">
+            <div className="mt-6 rounded-2xl border border-dashed border-[var(--border)] p-10 text-center">
               <p className="text-lg font-semibold">
                 No encontramos clientes
               </p>
 
-              <p className="mt-2 text-sm text-zinc-500">
+              <p className="mt-2 text-sm text-[var(--muted)]">
                 Creá uno nuevo o guardá un presupuesto con el nombre del cliente.
               </p>
             </div>
@@ -370,10 +370,10 @@ export default function ClientesPage() {
 
       {formularioVisible && (
         <Modal>
-          <div className="w-full max-w-xl rounded-[2rem] border border-white/10 bg-[#181818] p-6 shadow-2xl">
+          <div className="w-full max-w-xl rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 shadow-2xl">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)]">
                   {clienteEditandoId
                     ? "Editar cliente"
                     : "Nuevo cliente"}
@@ -387,7 +387,7 @@ export default function ClientesPage() {
               <button
                 type="button"
                 onClick={cerrarFormulario}
-                className="rounded-lg border border-white/10 px-3 py-2 text-zinc-400 transition hover:bg-white/5 hover:text-white"
+                className="rounded-lg border border-[var(--border)] px-3 py-2 text-[var(--muted)] transition hover:bg-[var(--overlay)] hover:text-[var(--text)]"
               >
                 ✕
               </button>
@@ -433,7 +433,7 @@ export default function ClientesPage() {
               </div>
 
               <label>
-                <span className="text-sm font-semibold text-zinc-300">
+                <span className="text-sm font-semibold text-[var(--muted)]">
                   Notas
                 </span>
 
@@ -447,7 +447,7 @@ export default function ClientesPage() {
                   }
                   rows={4}
                   placeholder="Preferencias, forma de pago, detalles importantes..."
-                  className="mt-2 w-full resize-none rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm outline-none transition placeholder:text-zinc-600 focus:border-[#810404]"
+                  className="mt-2 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-sm outline-none transition placeholder:text-zinc-600 focus:border-[var(--accent)]"
                 />
               </label>
             </div>
@@ -456,7 +456,7 @@ export default function ClientesPage() {
               <button
                 type="button"
                 onClick={cerrarFormulario}
-                className="rounded-xl border border-white/10 px-5 py-3 text-sm font-semibold text-zinc-300 transition hover:bg-white/5"
+                className="rounded-xl border border-[var(--border)] px-5 py-3 text-sm font-semibold text-[var(--muted)] transition hover:bg-[var(--overlay)]"
               >
                 Cancelar
               </button>
@@ -466,7 +466,7 @@ export default function ClientesPage() {
                 onClick={
                   manejarGuardarCliente
                 }
-                className="rounded-xl bg-[#810404] px-6 py-3 text-sm font-semibold transition hover:bg-[#a00808]"
+                className="rounded-xl bg-[var(--accent)] px-6 py-3 text-sm font-semibold transition hover:bg-[var(--accent-hover)]"
               >
                 Guardar cliente
               </button>
@@ -477,10 +477,10 @@ export default function ClientesPage() {
 
       {clienteSeleccionado && (
         <Modal>
-          <div className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] border border-white/10 bg-[#181818] p-6 shadow-2xl">
+          <div className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 shadow-2xl">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)]">
                   Historial del cliente
                 </p>
 
@@ -492,7 +492,7 @@ export default function ClientesPage() {
               <button
                 type="button"
                 onClick={cerrarHistorial}
-                className="rounded-lg border border-white/10 px-3 py-2 text-zinc-400 transition hover:bg-white/5 hover:text-white"
+                className="rounded-lg border border-[var(--border)] px-3 py-2 text-[var(--muted)] transition hover:bg-[var(--overlay)] hover:text-[var(--text)]"
               >
                 ✕
               </button>
@@ -527,7 +527,7 @@ export default function ClientesPage() {
             <div className="mt-6 space-y-3">
               {historialSeleccionado.length ===
               0 ? (
-                <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-zinc-500">
+                <div className="rounded-2xl border border-dashed border-[var(--border)] p-8 text-center text-[var(--muted)]">
                   Este cliente todavía no tiene presupuestos.
                 </div>
               ) : (
@@ -535,11 +535,11 @@ export default function ClientesPage() {
                   (presupuesto) => (
                     <article
                       key={presupuesto.id}
-                      className="rounded-2xl border border-white/10 bg-[#111111] p-5"
+                      className="rounded-2xl border border-[var(--border)] bg-[#111111] p-5"
                     >
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-red-300">
+                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent-text)]">
                             {presupuesto.id}
                           </p>
 
@@ -549,7 +549,7 @@ export default function ClientesPage() {
                             }
                           </h3>
 
-                          <p className="mt-1 text-sm text-zinc-500">
+                          <p className="mt-1 text-sm text-[var(--muted)]">
                             {presupuesto.cantidad} unidades ·{" "}
                             {formateadorFecha.format(
                               new Date(
@@ -560,7 +560,7 @@ export default function ClientesPage() {
                         </div>
 
                         <div className="text-left sm:text-right">
-                          <p className="text-sm text-zinc-500">
+                          <p className="text-sm text-[var(--muted)]">
                             Total mayorista
                           </p>
 
@@ -596,8 +596,8 @@ function TarjetaResumen({
   detalle,
 }: TarjetaResumenProps) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#181818] p-5">
-      <p className="text-sm text-zinc-500">
+    <article className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
+      <p className="text-sm text-[var(--muted)]">
         {titulo}
       </p>
 
@@ -626,10 +626,10 @@ function TarjetaCliente({
   onHistorial,
 }: TarjetaClienteProps) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#111111] p-5">
+    <article className="rounded-2xl border border-[var(--border)] bg-[#111111] p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-red-300">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent-text)]">
             {cliente.id}
           </p>
 
@@ -637,7 +637,7 @@ function TarjetaCliente({
             {cliente.nombre}
           </h3>
 
-          <div className="mt-3 space-y-1 text-sm text-zinc-500">
+          <div className="mt-3 space-y-1 text-sm text-[var(--muted)]">
             <p>
               {cliente.telefono ||
                 "Sin teléfono"}
@@ -654,7 +654,7 @@ function TarjetaCliente({
             type="button"
             onClick={onEditar}
             title="Editar cliente"
-            className="rounded-lg border border-white/10 px-3 py-2 text-sm transition hover:bg-white/5"
+            className="rounded-lg border border-[var(--border)] px-3 py-2 text-sm transition hover:bg-[var(--overlay)]"
           >
             ✏️
           </button>
@@ -663,7 +663,7 @@ function TarjetaCliente({
             type="button"
             onClick={onEliminar}
             title="Eliminar cliente"
-            className="rounded-lg border border-white/10 px-3 py-2 text-sm transition hover:border-red-900 hover:bg-red-950/30"
+            className="rounded-lg border border-[var(--border)] px-3 py-2 text-sm transition hover:border-red-900 hover:bg-red-950/30"
           >
             🗑
           </button>
@@ -671,7 +671,7 @@ function TarjetaCliente({
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
-        <div className="rounded-xl bg-white/[0.03] p-3">
+        <div className="rounded-xl bg-[var(--overlay)] p-3">
           <p className="text-xs text-zinc-600">
             Presupuestos
           </p>
@@ -681,7 +681,7 @@ function TarjetaCliente({
           </p>
         </div>
 
-        <div className="rounded-xl bg-white/[0.03] p-3">
+        <div className="rounded-xl bg-[var(--overlay)] p-3">
           <p className="text-xs text-zinc-600">
             Mayorista
           </p>
@@ -707,14 +707,14 @@ function TarjetaCliente({
               .map((producto) => (
                 <span
                   key={producto}
-                  className="rounded-full border border-white/10 px-3 py-1 text-xs text-zinc-400"
+                  className="rounded-full border border-[var(--border)] px-3 py-1 text-xs text-[var(--muted)]"
                 >
                   {producto}
                 </span>
               ))}
 
             {cliente.productos.length > 3 && (
-              <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-zinc-500">
+              <span className="rounded-full border border-[var(--border)] px-3 py-1 text-xs text-[var(--muted)]">
                 +
                 {cliente.productos.length -
                   3}
@@ -725,7 +725,7 @@ function TarjetaCliente({
       )}
 
       {cliente.notas && (
-        <p className="mt-4 line-clamp-2 text-sm leading-6 text-zinc-500">
+        <p className="mt-4 line-clamp-2 text-sm leading-6 text-[var(--muted)]">
           {cliente.notas}
         </p>
       )}
@@ -733,7 +733,7 @@ function TarjetaCliente({
       <button
         type="button"
         onClick={onHistorial}
-        className="mt-5 w-full rounded-xl border border-white/10 px-4 py-3 text-sm font-semibold transition hover:border-[#810404] hover:bg-[#810404]/10"
+        className="mt-5 w-full rounded-xl border border-[var(--border)] px-4 py-3 text-sm font-semibold transition hover:border-[var(--accent)] hover:bg-[var(--accent)]/10"
       >
         Ver historial
       </button>
@@ -758,7 +758,7 @@ function CampoTexto({
 }: CampoTextoProps) {
   return (
     <label>
-      <span className="text-sm font-semibold text-zinc-300">
+      <span className="text-sm font-semibold text-[var(--muted)]">
         {titulo}
       </span>
 
@@ -769,7 +769,7 @@ function CampoTexto({
           onChange(evento.target.value)
         }
         placeholder={placeholder}
-        className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm outline-none transition placeholder:text-zinc-600 focus:border-[#810404]"
+        className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-sm outline-none transition placeholder:text-zinc-600 focus:border-[var(--accent)]"
       />
     </label>
   );
@@ -797,7 +797,7 @@ function DatoHistorial({
   valor,
 }: DatoHistorialProps) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#111111] p-4">
+    <div className="rounded-2xl border border-[var(--border)] bg-[#111111] p-4">
       <p className="text-xs text-zinc-600">
         {titulo}
       </p>

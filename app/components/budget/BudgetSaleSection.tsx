@@ -135,12 +135,12 @@ export default function BudgetSaleSection({
         }
       />
 
-      <section className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-5">
+      <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
         <h2 className="text-lg font-bold">
           Agregar al presupuesto
         </h2>
 
-        <p className="mt-2 text-sm text-gray-400">
+        <p className="mt-2 text-sm text-[var(--muted)]">
           Este producto se sumará a la lista. Después podés
           elegir otro producto y repetir el proceso.
         </p>
@@ -148,7 +148,7 @@ export default function BudgetSaleSection({
         <button
           type="button"
           onClick={onAgregarProducto}
-          className="mt-5 w-full rounded-xl bg-[#810404] px-6 py-3 font-semibold transition hover:bg-[#a00808]"
+          className="mt-5 w-full rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold transition hover:bg-[var(--accent-hover)]"
         >
           + Agregar producto
         </button>

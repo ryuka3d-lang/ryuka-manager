@@ -99,8 +99,8 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-72 shrink-0 border-r border-white/10 bg-[#810404] text-white lg:flex lg:flex-col">
-      <header className="border-b border-white/10 px-6 py-6">
+    <aside className="sticky top-0 hidden h-screen w-72 shrink-0 border-r border-[var(--border)] bg-[var(--accent)] text-[var(--text)] lg:flex lg:flex-col">
+      <header className="border-b border-[var(--border)] px-6 py-6">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-red-200">
           Ryuka
         </p>
@@ -134,8 +134,8 @@ export default function Sidebar() {
                       className={[
                         "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition",
                         activo
-                          ? "bg-white text-[#810404] shadow-sm"
-                          : "text-white/85 hover:bg-white/10 hover:text-white",
+                          ? "bg-white text-[var(--accent)] shadow-sm"
+                          : "text-[var(--text)]/85 hover:bg-white/10 hover:text-[var(--text)]",
                       ].join(" ")}
                     >
                       <span
@@ -143,7 +143,7 @@ export default function Sidebar() {
                         className={[
                           "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm",
                           activo
-                            ? "bg-[#810404]/10"
+                            ? "bg-[var(--accent)]/10"
                             : "bg-black/10 text-red-100",
                         ].join(" ")}
                       >
@@ -160,7 +160,7 @@ export default function Sidebar() {
         </div>
       </nav>
 
-      <footer className="border-t border-white/10 p-4">
+      <footer className="border-t border-[var(--border)] p-4">
         <div className="rounded-2xl border border-white/15 bg-black/10 p-4">
           <CloudStatus />
 

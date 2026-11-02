@@ -14,6 +14,7 @@ import {
   restaurarConfiguracion,
   type RyukaConfig,
 } from "@/lib/settings-service";
+import ThemeToggle from "@/app/components/ThemeToggle";
 
 type CampoConfiguracion = {
   clave: keyof RyukaConfig;
@@ -323,11 +324,11 @@ export default function ConfiguracionPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#101010] text-white">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
 
       <section className="min-w-0 flex-1 p-6 lg:p-10">
-        <header className="overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_right,_rgba(129,4,4,0.32),_transparent_42%),#181818] p-7 lg:p-10">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-300">
+        <header className="overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[radial-gradient(circle_at_top_right,_rgba(129,4,4,0.32),_transparent_42%),#181818] p-7 lg:p-10">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
             Configuración general
           </p>
 
@@ -335,22 +336,37 @@ export default function ConfiguracionPage() {
             Los valores que usa Ryuka
           </h1>
 
-          <p className="mt-4 max-w-3xl leading-7 text-zinc-300">
+          <p className="mt-4 max-w-3xl leading-7 text-[var(--muted)]">
             Actualizá costos, capacidad productiva y márgenes desde un solo lugar.
             Los próximos presupuestos usarán automáticamente estos valores.
           </p>
 
-          <div className="mt-7 rounded-2xl border border-white/10 bg-black/20 p-4">
-            <p className="text-sm font-semibold text-zinc-200">
+          <div className="mt-7 rounded-2xl border border-[var(--border)] bg-[var(--overlay)] p-4">
+            <p className="text-sm font-semibold text-[var(--text)]">
               Importante
             </p>
 
-            <p className="mt-1 text-sm leading-6 text-zinc-400">
+            <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
               Cambiar la configuración no modifica los presupuestos que ya fueron
               guardados. Solo afecta los cálculos nuevos.
             </p>
           </div>
         </header>
+
+        <section className="mt-8 rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6">
+          <h2 className="text-xl font-bold">
+            Apariencia
+          </h2>
+
+          <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+            Elegí entre modo oscuro moderno y modo claro limpio.
+            La preferencia queda guardada en este dispositivo.
+          </p>
+
+          <div className="mt-4">
+            <ThemeToggle />
+          </div>
+        </section>
 
         <div className="mt-8 space-y-6">
           <SeccionConfiguracion
@@ -385,13 +401,13 @@ export default function ConfiguracionPage() {
             onChange={actualizarCampo}
           />
 
-          <section className="rounded-[2rem] border border-[#2b2b2b] bg-[#181818] p-6">
+          <section className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6">
             <div>
               <h2 className="text-xl font-bold">
                 Accesorios personalizados
               </h2>
 
-              <p className="mt-2 text-sm leading-6 text-zinc-400">
+              <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
                 Creá accesorios nuevos con su costo predeterminado. Aparecen en
                 productos y presupuestos con la misma dinámica que los anteriores.
               </p>
@@ -403,10 +419,10 @@ export default function ConfiguracionPage() {
                   (accesorio) => (
                     <div
                       key={accesorio.id}
-                      className="grid gap-3 rounded-2xl border border-white/10 bg-[#121212] p-4 md:grid-cols-[1fr_180px_auto] md:items-end"
+                      className="grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--field)] p-4 md:grid-cols-[1fr_180px_auto] md:items-end"
                     >
                       <label className="block">
-                        <span className="text-sm font-semibold text-zinc-300">
+                        <span className="text-sm font-semibold text-[var(--muted)]">
                           Nombre
                         </span>
 
@@ -422,12 +438,12 @@ export default function ConfiguracionPage() {
                               }
                             )
                           }
-                          className="mt-2 w-full rounded-xl border border-white/10 bg-[#0d0d0d] px-3 py-3 outline-none focus:border-[#810404]"
+                          className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--field)] px-3 py-3 outline-none focus:border-[var(--accent)]"
                         />
                       </label>
 
                       <label className="block">
-                        <span className="text-sm font-semibold text-zinc-300">
+                        <span className="text-sm font-semibold text-[var(--muted)]">
                           Costo por unidad
                         </span>
 
@@ -447,7 +463,7 @@ export default function ConfiguracionPage() {
                               }
                             )
                           }
-                          className="mt-2 w-full rounded-xl border border-white/10 bg-[#0d0d0d] px-3 py-3 outline-none focus:border-[#810404]"
+                          className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--field)] px-3 py-3 outline-none focus:border-[var(--accent)]"
                         />
                       </label>
 
@@ -458,7 +474,7 @@ export default function ConfiguracionPage() {
                             accesorio.id
                           )
                         }
-                        className="min-h-12 rounded-xl border border-red-900 px-4 py-3 text-sm font-semibold text-red-300 transition hover:bg-red-950/30"
+                        className="min-h-12 rounded-xl border border-red-900 px-4 py-3 text-sm font-semibold text-[var(--accent-text)] transition hover:bg-red-950/30"
                       >
                         Eliminar
                       </button>
@@ -468,9 +484,9 @@ export default function ConfiguracionPage() {
               </div>
             )}
 
-            <div className="mt-6 grid gap-3 rounded-2xl border border-dashed border-white/15 bg-black/20 p-4 md:grid-cols-[1fr_180px_auto] md:items-end">
+            <div className="mt-6 grid gap-3 rounded-2xl border border-dashed border-white/15 bg-[var(--overlay)] p-4 md:grid-cols-[1fr_180px_auto] md:items-end">
               <label className="block">
-                <span className="text-sm font-semibold text-zinc-300">
+                <span className="text-sm font-semibold text-[var(--muted)]">
                   Nuevo accesorio
                 </span>
 
@@ -483,12 +499,12 @@ export default function ConfiguracionPage() {
                     )
                   }
                   placeholder="Ej.: Cinta, Gancho, Imán..."
-                  className="mt-2 w-full rounded-xl border border-white/10 bg-[#0d0d0d] px-3 py-3 outline-none focus:border-[#810404]"
+                  className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--field)] px-3 py-3 outline-none focus:border-[var(--accent)]"
                 />
               </label>
 
               <label className="block">
-                <span className="text-sm font-semibold text-zinc-300">
+                <span className="text-sm font-semibold text-[var(--muted)]">
                   Costo por unidad
                 </span>
 
@@ -503,20 +519,20 @@ export default function ConfiguracionPage() {
                     )
                   }
                   placeholder="$"
-                  className="mt-2 w-full rounded-xl border border-white/10 bg-[#0d0d0d] px-3 py-3 outline-none focus:border-[#810404]"
+                  className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--field)] px-3 py-3 outline-none focus:border-[var(--accent)]"
                 />
               </label>
 
               <button
                 type="button"
                 onClick={agregarAccesorioExtra}
-                className="min-h-12 rounded-xl bg-[#810404] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#a00808]"
+                className="min-h-12 rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--text)] transition hover:bg-[var(--accent-hover)]"
               >
                 + Agregar accesorio
               </button>
             </div>
 
-            <p className="mt-4 text-xs leading-5 text-zinc-500">
+            <p className="mt-4 text-xs leading-5 text-[var(--muted)]">
               Recordá guardar los cambios para que el accesorio nuevo quede
               disponible en productos y presupuestos.
             </p>
@@ -531,7 +547,7 @@ export default function ConfiguracionPage() {
           />
         </div>
 
-        <div className="sticky bottom-4 mt-8 flex flex-col gap-3 rounded-2xl border border-white/10 bg-[#181818]/95 p-4 shadow-2xl backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+        <div className="sticky bottom-4 mt-8 flex flex-col gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)]/95 p-4 shadow-2xl backdrop-blur sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-semibold">
               {guardado
@@ -539,7 +555,7 @@ export default function ConfiguracionPage() {
                 : "Guardá los cambios para aplicarlos"}
             </p>
 
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-sm text-[var(--muted)]">
               Los valores se guardan en Ryuka y se sincronizan con la nube.
             </p>
           </div>
@@ -548,7 +564,7 @@ export default function ConfiguracionPage() {
             <button
               type="button"
               onClick={manejarRestaurar}
-              className="rounded-xl border border-white/10 px-5 py-3 text-sm font-semibold text-zinc-300 transition hover:bg-white/5"
+              className="rounded-xl border border-[var(--border)] px-5 py-3 text-sm font-semibold text-[var(--muted)] transition hover:bg-[var(--overlay)]"
             >
               Restaurar valores
             </button>
@@ -556,7 +572,7 @@ export default function ConfiguracionPage() {
             <button
               type="button"
               onClick={manejarGuardar}
-              className="rounded-xl bg-[#810404] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#a00808]"
+              className="rounded-xl bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-[var(--text)] transition hover:bg-[var(--accent-hover)]"
             >
               Guardar configuración
             </button>
@@ -586,13 +602,13 @@ function SeccionConfiguracion({
   onChange,
 }: SeccionConfiguracionProps) {
   return (
-    <section className="rounded-[2rem] border border-white/10 bg-[#181818] p-6">
+    <section className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6">
       <div>
         <h2 className="text-xl font-bold">
           {titulo}
         </h2>
 
-        <p className="mt-2 text-sm leading-6 text-zinc-400">
+        <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
           {descripcion}
         </p>
       </div>
@@ -625,18 +641,18 @@ function CampoNumero({
   onChange,
 }: CampoNumeroProps) {
   return (
-    <label className="rounded-2xl border border-white/10 bg-[#121212] p-4">
+    <label className="rounded-2xl border border-[var(--border)] bg-[var(--field)] p-4">
       <span className="block font-semibold">
         {campo.titulo}
       </span>
 
-      <span className="mt-1 block min-h-10 text-xs leading-5 text-zinc-500">
+      <span className="mt-1 block min-h-10 text-xs leading-5 text-[var(--muted)]">
         {campo.descripcion}
       </span>
 
-      <div className="mt-4 flex items-center overflow-hidden rounded-xl border border-white/10 bg-[#0d0d0d] focus-within:border-[#810404]">
+      <div className="mt-4 flex items-center overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--field)] focus-within:border-[var(--accent)]">
         {campo.prefijo && (
-          <span className="border-r border-white/10 px-3 text-sm text-zinc-500">
+          <span className="border-r border-[var(--border)] px-3 text-sm text-[var(--muted)]">
             {campo.prefijo}
           </span>
         )}
@@ -650,11 +666,11 @@ function CampoNumero({
           onChange={(evento) =>
             onChange(evento.target.value)
           }
-          className="min-w-0 flex-1 bg-transparent px-3 py-3 text-white outline-none"
+          className="min-w-0 flex-1 bg-transparent px-3 py-3 text-[var(--text)] outline-none"
         />
 
         {campo.sufijo && (
-          <span className="border-l border-white/10 px-3 text-sm text-zinc-500">
+          <span className="border-l border-[var(--border)] px-3 text-sm text-[var(--muted)]">
             {campo.sufijo}
           </span>
         )}

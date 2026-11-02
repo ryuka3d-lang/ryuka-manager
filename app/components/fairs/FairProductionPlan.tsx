@@ -10,14 +10,14 @@ export default function FairProductionPlan({ feria, productos, horasImpresionDia
   const minutos = Math.round(plan.minutosImpresion % 60);
 
   return (
-    <section className="mt-5 rounded-2xl border border-[#2b2b2b] bg-[#111] p-5">
+    <section className="mt-5 rounded-2xl border border-[var(--border)] bg-[#111] p-5">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">Plan de producción</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">Plan de producción</p>
           <h3 className="mt-1 text-lg font-bold">Preparación para la feria</h3>
         </div>
         {plan.llegaATiempo !== null && (
-          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${plan.llegaATiempo ? "bg-emerald-950/70 text-emerald-300" : "bg-red-950/70 text-red-300"}`}>
+          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${plan.llegaATiempo ? "bg-emerald-950/70 text-emerald-300" : "bg-red-950/70 text-[var(--accent-text)]"}`}>
             {plan.llegaATiempo ? "🟢 Llegás a tiempo" : "🔴 Capacidad insuficiente"}
           </span>
         )}
@@ -31,10 +31,10 @@ export default function FairProductionPlan({ feria, productos, horasImpresionDia
       </div>
 
       {plan.diasHastaFeria !== null && (
-        <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm">
+        <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--overlay)] p-4 text-sm">
           <p><strong>{plan.diasHastaFeria} días</strong> hasta la feria · <strong>{Math.round(plan.horasDisponibles || 0)} h</strong> de capacidad configurada.</p>
           {plan.horasMargen !== null && (
-            <p className={`mt-2 font-semibold ${plan.horasMargen >= 0 ? "text-emerald-300" : "text-red-300"}`}>
+            <p className={`mt-2 font-semibold ${plan.horasMargen >= 0 ? "text-emerald-300" : "text-[var(--accent-text)]"}`}>
               {plan.horasMargen >= 0 ? `Te sobran aprox. ${Math.floor(plan.horasMargen)} h de capacidad.` : `Te faltan aprox. ${Math.ceil(Math.abs(plan.horasMargen))} h de capacidad.`}
             </p>
           )}
@@ -51,5 +51,5 @@ export default function FairProductionPlan({ feria, productos, horasImpresionDia
 }
 
 function Dato({ titulo, valor }: { titulo: string; valor: string }) {
-  return <div className="rounded-xl border border-white/10 bg-[#171717] p-3"><p className="text-xs text-zinc-500">{titulo}</p><strong className="mt-1 block">{valor}</strong></div>;
+  return <div className="rounded-xl border border-[var(--border)] bg-[var(--field)] p-3"><p className="text-xs text-[var(--muted)]">{titulo}</p><strong className="mt-1 block">{valor}</strong></div>;
 }

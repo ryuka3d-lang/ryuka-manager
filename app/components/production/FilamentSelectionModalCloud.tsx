@@ -203,10 +203,10 @@ export default function FilamentSelectionModalCloud({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm">
-      <div className="my-6 w-full max-w-2xl rounded-[2rem] border border-white/10 bg-[#181818] p-6 text-white">
+      <div className="my-6 w-full max-w-2xl rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 text-[var(--text)]">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)]">
               Iniciar impresión
             </p>
 
@@ -214,7 +214,7 @@ export default function FilamentSelectionModalCloud({
               Elegí las bobinas
             </h2>
 
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-2 text-sm text-[var(--muted)]">
               {pedido.code}
               {pedido.orderCode
                 ? ` · ${pedido.orderCode}`
@@ -228,14 +228,14 @@ export default function FilamentSelectionModalCloud({
             disabled={
               guardando
             }
-            className="rounded-lg border border-white/10 px-3 py-2 disabled:opacity-50"
+            className="rounded-lg border border-[var(--border)] px-3 py-2 disabled:opacity-50"
           >
             ✕
           </button>
         </div>
 
         {cargandoBobinas && (
-          <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.02] p-4 text-sm text-zinc-400">
+          <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/[0.02] p-4 text-sm text-[var(--muted)]">
             Cargando bobinas de Stock...
           </div>
         )}
@@ -262,9 +262,9 @@ export default function FilamentSelectionModalCloud({
                   key={
                     requerimiento.key
                   }
-                  className="rounded-2xl border border-white/10 bg-[#111111] p-5"
+                  className="rounded-2xl border border-[var(--border)] bg-[#111111] p-5"
                 >
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-[var(--muted)]">
                     {
                       requerimiento.productName
                     }
@@ -279,7 +279,7 @@ export default function FilamentSelectionModalCloud({
                     }
                   </h3>
 
-                  <p className="mt-1 text-sm text-zinc-500">
+                  <p className="mt-1 text-sm text-[var(--muted)]">
                     Necesitás{" "}
                     {requerimiento.grams.toLocaleString(
                       "es-AR",
@@ -316,7 +316,7 @@ export default function FilamentSelectionModalCloud({
                         })
                       )
                     }
-                    className="mt-4 w-full rounded-xl border border-white/10 bg-[#0d0d0d] px-4 py-3 outline-none focus:border-[#810404] disabled:opacity-50"
+                    className="mt-4 w-full rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)] disabled:opacity-50"
                   >
                     <option value="">
                       Seleccionar bobina...
@@ -395,7 +395,7 @@ export default function FilamentSelectionModalCloud({
             disabled={
               guardando
             }
-            className="rounded-xl border border-white/10 px-5 py-3 disabled:opacity-50"
+            className="rounded-xl border border-[var(--border)] px-5 py-3 disabled:opacity-50"
           >
             Cancelar
           </button>
@@ -414,7 +414,7 @@ export default function FilamentSelectionModalCloud({
               requerimientos.length ===
                 0
             }
-            className="rounded-xl bg-[#810404] px-6 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
           >
             {guardando
               ? "Iniciando..."

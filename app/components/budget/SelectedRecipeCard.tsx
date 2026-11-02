@@ -12,10 +12,10 @@ export default function SelectedRecipeCard({
   );
 
   return (
-    <section className="rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+    <section className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
         <div>
-          <p className="text-xs font-semibold text-red-300">
+          <p className="text-xs font-semibold text-[var(--accent-text)]">
             {producto.codigo}
           </p>
 
@@ -23,13 +23,13 @@ export default function SelectedRecipeCard({
             Receta seleccionada: {producto.nombre}
           </h2>
 
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="mt-2 text-sm text-[var(--muted)]">
             Los datos provienen de la ficha del producto y no se
             modifican desde este presupuesto.
           </p>
         </div>
 
-        <span className="w-fit rounded-full border border-[#383838] bg-[#151515] px-3 py-1 text-sm text-gray-300">
+        <span className="w-fit rounded-full border border-[#383838] bg-[var(--field)] px-3 py-1 text-sm text-[var(--muted)]">
           {producto.categoria || "Sin categoría"}
         </span>
       </div>
@@ -58,13 +58,13 @@ export default function SelectedRecipeCard({
         />
       </div>
 
-      <div className="mt-6 border-t border-[#303030] pt-5">
-        <p className="text-sm font-semibold text-gray-300">
+      <div className="mt-6 border-t border-[var(--border)] pt-5">
+        <p className="text-sm font-semibold text-[var(--muted)]">
           Accesorios definidos en el producto
         </p>
 
         {accesoriosActivos.length === 0 ? (
-          <p className="mt-3 text-sm text-gray-500">
+          <p className="mt-3 text-sm text-[var(--muted)]">
             Esta receta no tiene accesorios activos.
           </p>
         ) : (
@@ -72,7 +72,7 @@ export default function SelectedRecipeCard({
             {accesoriosActivos.map((accesorio) => (
               <span
                 key={accesorio.id}
-                className="rounded-full border border-[#383838] bg-[#151515] px-3 py-1 text-sm text-gray-300"
+                className="rounded-full border border-[#383838] bg-[var(--field)] px-3 py-1 text-sm text-[var(--muted)]"
               >
                 ✓ {accesorio.nombre}
               </span>
@@ -94,8 +94,8 @@ function DatoReceta({
   valor,
 }: DatoRecetaProps) {
   return (
-    <div className="rounded-xl border border-[#303030] bg-[#151515] p-4">
-      <p className="text-sm text-gray-400">
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--field)] p-4">
+      <p className="text-sm text-[var(--muted)]">
         {titulo}
       </p>
 

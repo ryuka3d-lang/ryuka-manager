@@ -14,7 +14,7 @@ export default function PageHeader({
         {titulo}
       </h1>
 
-      <p className="text-gray-400 mt-2">
+      <p className="text-[var(--muted)] mt-2">
         {subtitulo}
       </p>
 

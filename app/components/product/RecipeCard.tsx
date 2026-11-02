@@ -74,7 +74,7 @@ export default function RecipeCard({
     trabajoManualMinutos % 60;
 
   return (
-    <div className="rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <h2 className="mb-6 text-xl font-bold">
         🖨 Receta de impresión
       </h2>
@@ -174,7 +174,7 @@ export default function RecipeCard({
               }
             />
 
-            <p className="mt-2 text-xs text-gray-500">
+            <p className="mt-2 text-xs text-[var(--muted)]">
               Ejemplo: tiempo para retirar piezas,
               colocar argollas o preparar cada
               tanda.
@@ -182,7 +182,7 @@ export default function RecipeCard({
           </div>
         </div>
 
-        <div className="rounded-xl border border-[#2b2b2b] bg-[#151515] p-6">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--field)] p-6">
           <h3 className="mb-5 text-lg font-semibold">
             📊 Resumen de la receta
           </h3>
@@ -273,8 +273,8 @@ function ResumenFila({
   valor,
 }: ResumenFilaProps) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-[#2b2b2b] pb-3 last:border-b-0 last:pb-0">
-      <span className="text-sm text-gray-400">
+    <div className="flex items-center justify-between gap-4 border-b border-[var(--border)] pb-3 last:border-b-0 last:pb-0">
+      <span className="text-sm text-[var(--muted)]">
         {titulo}
       </span>
 

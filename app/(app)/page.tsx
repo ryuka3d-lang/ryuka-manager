@@ -82,12 +82,12 @@ export default function Home() {
       : "Todavía no hay un presupuesto para comparar.";
 
   return (
-    <main className="flex min-h-screen bg-[#101010] text-white">
+    <main className="flex min-h-screen bg-[var(--bg)] text-[var(--text)]">
 
       <section className="min-w-0 flex-1 p-6 lg:p-10">
-        <header className="overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_right,_rgba(129,4,4,0.32),_transparent_42%),#181818] p-7 lg:p-10">
+        <header className="overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[radial-gradient(circle_at_top_right,_rgba(129,4,4,0.32),_transparent_42%),#181818] p-7 lg:p-10">
           <div className="max-w-3xl">
-            <span className="inline-flex rounded-full border border-[#810404]/60 bg-[#810404]/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-red-100">
+            <span className="inline-flex rounded-full border border-[var(--accent)]/60 bg-[var(--accent)]/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-red-100">
               Ryuka Manager
             </span>
 
@@ -95,7 +95,7 @@ export default function Home() {
               Buenos días, Juan y Mili 👋
             </h1>
 
-            <p className="mt-4 max-w-2xl text-base leading-7 text-zinc-300 lg:text-lg">
+            <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--muted)] lg:text-lg">
               Acá van a encontrar lo importante
               del emprendimiento: qué necesita
               atención, cuánto están generando y
@@ -105,14 +105,14 @@ export default function Home() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/presupuestos"
-                className="rounded-2xl bg-[#810404] px-5 py-3 text-sm font-semibold transition hover:bg-[#a00808]"
+                className="rounded-2xl bg-[var(--accent)] px-5 py-3 text-sm font-semibold transition hover:bg-[var(--accent-hover)]"
               >
                 Crear presupuesto
               </Link>
 
               <Link
                 href="/productos"
-                className="rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold transition hover:bg-white/10"
+                className="rounded-2xl border border-white/15 bg-[var(--overlay)] px-5 py-3 text-sm font-semibold transition hover:bg-white/10"
               >
                 Ver productos
               </Link>
@@ -202,7 +202,7 @@ export default function Home() {
         </section>
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
-          <section className="rounded-[2rem] border border-white/10 bg-[#181818] p-6 lg:p-8">
+          <section className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 lg:p-8">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#c66]">
@@ -214,7 +214,7 @@ export default function Home() {
                 </h2>
               </div>
 
-              <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-zinc-400">
+              <span className="rounded-full bg-[var(--overlay)] px-3 py-1 text-xs text-[var(--muted)]">
                 Vista inicial
               </span>
             </div>
@@ -226,7 +226,7 @@ export default function Home() {
                     key={prioridad.titulo}
                     className="flex gap-4 rounded-2xl border border-white/8 bg-white/[0.025] p-4"
                   >
-                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#810404]/20 text-sm font-bold text-red-100">
+                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--accent)]/20 text-sm font-bold text-red-100">
                       {indice + 1}
                     </div>
 
@@ -238,14 +238,14 @@ export default function Home() {
                           }
                         </h3>
 
-                        <span className="text-xs font-medium text-zinc-500">
+                        <span className="text-xs font-medium text-[var(--muted)]">
                           {
                             prioridad.estado
                           }
                         </span>
                       </div>
 
-                      <p className="mt-1 text-sm leading-6 text-zinc-400">
+                      <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
                         {
                           prioridad.detalle
                         }
@@ -257,7 +257,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="rounded-[2rem] border border-white/10 bg-[#181818] p-6 lg:p-8">
+          <section className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 lg:p-8">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#c66]">
               Acciones rápidas
             </p>
@@ -272,9 +272,9 @@ export default function Home() {
                   <Link
                     key={accion.titulo}
                     href={accion.href}
-                    className="group flex items-center gap-4 rounded-2xl border border-white/8 bg-white/[0.025] p-4 transition hover:border-[#810404]/70 hover:bg-[#810404]/10"
+                    className="group flex items-center gap-4 rounded-2xl border border-white/8 bg-white/[0.025] p-4 transition hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/10"
                   >
-                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/5 text-xl">
+                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[var(--overlay)] text-xl">
                       {accion.icono}
                     </div>
 
@@ -283,14 +283,14 @@ export default function Home() {
                         {accion.titulo}
                       </h3>
 
-                      <p className="mt-1 text-sm text-zinc-400">
+                      <p className="mt-1 text-sm text-[var(--muted)]">
                         {
                           accion.descripcion
                         }
                       </p>
                     </div>
 
-                    <span className="text-zinc-600 transition group-hover:translate-x-1 group-hover:text-white">
+                    <span className="text-zinc-600 transition group-hover:translate-x-1 group-hover:text-[var(--text)]">
                       →
                     </span>
                   </Link>
@@ -300,7 +300,7 @@ export default function Home() {
           </section>
         </div>
 
-        <section className="mt-8 rounded-[2rem] border border-[#810404]/35 bg-[#810404]/10 p-6 text-center lg:p-8">
+        <section className="mt-8 rounded-[2rem] border border-[var(--accent)]/35 bg-[var(--accent)]/10 p-6 text-center lg:p-8">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-200">
             Primer dato real conectado
           </p>

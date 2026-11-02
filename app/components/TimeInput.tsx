@@ -16,7 +16,7 @@ export default function TimeInput({
   return (
     <div className="flex flex-col gap-2">
 
-      <label className="text-sm text-gray-400">
+      <label className="text-sm text-[var(--muted)]">
         {label}
       </label>
 
@@ -29,9 +29,9 @@ export default function TimeInput({
           onChange={(e) => onHorasChange(e.target.value)}
           className="
             w-full
-            bg-[#1b1b1b]
+            bg-[var(--card)]
             border
-            border-[#2b2b2b]
+            border-[var(--border)]
             rounded-xl
             px-4
             py-3
@@ -47,9 +47,9 @@ export default function TimeInput({
           onChange={(e) => onMinutosChange(e.target.value)}
           className="
             w-full
-            bg-[#1b1b1b]
+            bg-[var(--card)]
             border
-            border-[#2b2b2b]
+            border-[var(--border)]
             rounded-xl
             px-4
             py-3

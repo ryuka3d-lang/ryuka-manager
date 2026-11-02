@@ -103,14 +103,14 @@ useEffect(() => {
   }, [pedidos, pagos, busqueda, filtro]);
 
   return (
-    <main className="min-h-screen bg-[#101010] text-white">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
       <section className="min-w-0 p-4 sm:p-6 lg:p-10">
-        <header className="rounded-[1.5rem] border border-white/10 bg-[#181818] p-5 sm:rounded-[2rem] sm:p-7 lg:p-10">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-300">
+        <header className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)] p-5 sm:rounded-[2rem] sm:p-7 lg:p-10">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
             Ventas y cobranzas
           </p>
           <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Pedidos</h1>
-          <p className="mt-4 text-zinc-300">
+          <p className="mt-4 text-[var(--muted)]">
             Registrá señas y pagos finales. Cada cobro aparece automáticamente en Caja.
           </p>
         </header>
@@ -121,17 +121,17 @@ useEffect(() => {
           <Resumen titulo="Pendiente de cobro" valor={moneda(resumen.pendiente)} destacado />
         </section>
 
-        <section className="mt-6 rounded-[1.5rem] border border-white/10 bg-[#181818] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-6">
+        <section className="mt-6 rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-6">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <h2 className="text-xl font-bold">Listado de pedidos</h2>
-              <p className="mt-1 text-sm text-zinc-400">{pedidos.length} pedidos registrados.</p>
+              <p className="mt-1 text-sm text-[var(--muted)]">{pedidos.length} pedidos registrados.</p>
             </div>
             <div className="grid w-full gap-3 sm:grid-cols-2 xl:w-auto">
               <select
                 value={filtro}
                 onChange={(evento) => setFiltro(evento.target.value as typeof filtro)}
-                className="min-h-12 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
+                className="min-h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-sm"
               >
                 <option value="todos">Todos los cobros</option>
                 <option value="pendiente">Sin cobrar</option>
@@ -142,17 +142,17 @@ useEffect(() => {
                 value={busqueda}
                 onChange={(evento) => setBusqueda(evento.target.value)}
                 placeholder="Buscar pedido o cliente..."
-                className="min-h-12 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
+                className="min-h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-sm"
               />
             </div>
           </div>
 
           {cargando ? (
-            <div className="mt-6 rounded-2xl border border-white/10 bg-[#121212] p-8 text-center text-zinc-400">
+            <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--field)] p-8 text-center text-[var(--muted)]">
               Cargando pedidos...
             </div>
           ) : filtrados.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-dashed border-white/15 p-8 text-center text-zinc-400 sm:p-10">
+            <div className="mt-6 rounded-2xl border border-dashed border-white/15 p-8 text-center text-[var(--muted)] sm:p-10">
               No hay pedidos para mostrar. Crealos desde Presupuestos.
             </div>
           ) : (
@@ -243,10 +243,10 @@ const productos =
     : "Pedido sin productos";
 
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#121212] p-4 sm:p-5">
+    <article className="rounded-2xl border border-[var(--border)] bg-[var(--field)] p-4 sm:p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-xs font-bold text-red-300">
+          <p className="text-xs font-bold text-[var(--accent-text)]">
   {pedido.code}
 </p>
 
@@ -254,14 +254,14 @@ const productos =
   {productos}
 </h3>
 
-<p className="mt-1 text-sm text-zinc-400">
+<p className="mt-1 text-sm text-[var(--muted)]">
   {pedido.customerName || "Cliente sin nombre"}
 </p>
         </div>
         <EstadoCobro estado={estado} />
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-2 rounded-2xl bg-white/[0.03] p-3 text-sm sm:grid-cols-3 sm:gap-3 sm:p-4">
+      <div className="mt-5 grid grid-cols-1 gap-2 rounded-2xl bg-[var(--overlay)] p-3 text-sm sm:grid-cols-3 sm:gap-3 sm:p-4">
         <Dato
   titulo="Total"
   valor={moneda(pedido.totalAmount)}
@@ -270,31 +270,31 @@ const productos =
         <Dato titulo="Falta" valor={moneda(pendiente)} />
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-zinc-400">
-        <span className="rounded-full bg-white/5 px-2.5 py-1">
+      <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-[var(--muted)]">
+        <span className="rounded-full bg-[var(--overlay)] px-2.5 py-1">
   {cantidadTotal} u.
 </span>
 
-<span className="rounded-full bg-white/5 px-2.5 py-1">
+<span className="rounded-full bg-[var(--overlay)] px-2.5 py-1">
   {etiquetaVenta(pedido.saleType)}
 </span>
 
-<span className="rounded-full bg-white/5 px-2.5 py-1">
+<span className="rounded-full bg-[var(--overlay)] px-2.5 py-1">
   Estado: {etiquetaEstadoPedido(pedido.status)}
 </span>
       </div>
 
       {pagos.length > 0 && (
-        <div className="mt-5 border-t border-white/10 pt-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">Historial de cobros</p>
+        <div className="mt-5 border-t border-[var(--border)] pt-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">Historial de cobros</p>
           <div className="mt-3 space-y-2">
             {pagos.map((pago) => (
-              <div key={pago.id} className="flex items-center justify-between gap-3 rounded-xl bg-white/[0.03] px-3 py-2 text-sm">
+              <div key={pago.id} className="flex items-center justify-between gap-3 rounded-xl bg-[var(--overlay)] px-3 py-2 text-sm">
                 <div>
                   <strong>{moneda(pago.monto)}</strong>
-                  <p className="text-xs text-zinc-500">{fecha(pago.fecha)} · {pago.medioPago} · {etiquetaPago(pago.tipo)}</p>
+                  <p className="text-xs text-[var(--muted)]">{fecha(pago.fecha)} · {pago.medioPago} · {etiquetaPago(pago.tipo)}</p>
                 </div>
-                <button type="button" onClick={() => onEliminarPago(pago.id)} className="text-xs text-zinc-500 hover:text-red-300">
+                <button type="button" onClick={() => onEliminarPago(pago.id)} className="text-xs text-[var(--muted)] hover:text-[var(--accent-text)]">
                   Eliminar
                 </button>
               </div>
@@ -304,14 +304,14 @@ const productos =
       )}
 
       <div className="mt-5 grid gap-2 sm:grid-cols-2">
-        <button type="button" onClick={onEditar} className="rounded-xl border border-white/10 px-4 py-3 text-sm font-semibold hover:bg-white/5">
+        <button type="button" onClick={onEditar} className="rounded-xl border border-[var(--border)] px-4 py-3 text-sm font-semibold hover:bg-[var(--overlay)]">
           Editar total
         </button>
         <button
           type="button"
           onClick={onPago}
           disabled={pendiente <= 0}
-          className="rounded-xl bg-[#810404] px-4 py-3 text-sm font-semibold hover:bg-[#a00808] disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-semibold hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {pendiente > 0 ? "+ Registrar cobro" : "Pedido pagado ✓"}
         </button>
@@ -373,25 +373,25 @@ function PagoModal({
         <Campo titulo="Fecha" tipo="date" valor={fechaPago} onChange={setFechaPago} />
         <Campo titulo="Monto" tipo="number" valor={monto} onChange={setMonto} />
         <label>
-          <span className="text-sm font-semibold text-zinc-300">Tipo de cobro</span>
-          <select value={tipo} onChange={(e) => setTipo(e.target.value as TipoPagoPedido)} className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3">
+          <span className="text-sm font-semibold text-[var(--muted)]">Tipo de cobro</span>
+          <select value={tipo} onChange={(e) => setTipo(e.target.value as TipoPagoPedido)} className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3">
             <option value="seña">Seña</option>
             <option value="pago_final">Pago final</option>
             <option value="otro">Otro cobro</option>
           </select>
         </label>
         <label>
-          <span className="text-sm font-semibold text-zinc-300">Medio de pago</span>
-          <select value={medioPago} onChange={(e) => setMedioPago(e.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3">
+          <span className="text-sm font-semibold text-[var(--muted)]">Medio de pago</span>
+          <select value={medioPago} onChange={(e) => setMedioPago(e.target.value)} className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3">
             <option>Transferencia</option><option>Efectivo</option><option>Mercado Pago</option><option>Tarjeta</option><option>Otro</option>
           </select>
         </label>
         <label className="sm:col-span-2">
-          <span className="text-sm font-semibold text-zinc-300">Notas</span>
-          <textarea value={notas} onChange={(e) => setNotas(e.target.value)} rows={3} className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3" />
+          <span className="text-sm font-semibold text-[var(--muted)]">Notas</span>
+          <textarea value={notas} onChange={(e) => setNotas(e.target.value)} rows={3} className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3" />
         </label>
       </div>
-      <div className="mt-5 rounded-2xl bg-white/[0.04] p-4 text-sm">
+      <div className="mt-5 rounded-2xl bg-[var(--overlay)] p-4 text-sm">
         Pendiente antes del cobro: <strong>{moneda(pendiente)}</strong>
       </div>
       <Acciones onClose={onClose} onSave={guardar} texto="Guardar cobro" />
@@ -456,13 +456,13 @@ function EditarTotalModal({
 }`} onClose={onClose}>
       <div className="grid gap-4 sm:grid-cols-2">
         <label>
-          <span className="text-sm font-semibold text-zinc-300">Tipo de venta</span>
+          <span className="text-sm font-semibold text-[var(--muted)]">Tipo de venta</span>
           <select
   value={tipo}
   onChange={(e) =>
     setTipo(e.target.value as SaleType)
   }
-  className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3"
+  className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3"
 >
   <option value="wholesale">Mayorista</option>
   <option value="retail">Minorista</option>
@@ -471,20 +471,20 @@ function EditarTotalModal({
         </label>
         <Campo titulo="Total acordado" tipo="number" valor={total} onChange={setTotal} />
       </div>
-      <p className="mt-4 text-sm text-zinc-400">Ya cobrado: {moneda(pagado)}</p>
+      <p className="mt-4 text-sm text-[var(--muted)]">Ya cobrado: {moneda(pagado)}</p>
       <Acciones onClose={onClose} onSave={guardar} texto="Guardar cambios" />
     </Modal>
   );
 }
 
 function Modal({ titulo, subtitulo, onClose, children }: { titulo: string; subtitulo: string; onClose: () => void; children: React.ReactNode }) {
-  return <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-black/75 p-0 backdrop-blur-sm sm:items-center sm:p-4"><div className="max-h-[92vh] w-full overflow-y-auto rounded-t-[1.5rem] border border-white/10 bg-[#181818] p-5 sm:my-6 sm:max-w-2xl sm:rounded-[2rem] sm:p-6 rounded-[2rem] border border-white/10 bg-[#181818] p-6"><div className="flex items-start justify-between"><div><p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">{subtitulo}</p><h2 className="mt-2 text-2xl font-bold">{titulo}</h2></div><button type="button" onClick={onClose} className="rounded-lg border border-white/10 px-3 py-2">✕</button></div><div className="mt-6">{children}</div></div></div>;
+  return <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-black/75 p-0 backdrop-blur-sm sm:items-center sm:p-4"><div className="max-h-[92vh] w-full overflow-y-auto rounded-t-[1.5rem] border border-[var(--border)] bg-[var(--card)] p-5 sm:my-6 sm:max-w-2xl sm:rounded-[2rem] sm:p-6 rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6"><div className="flex items-start justify-between"><div><p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)]">{subtitulo}</p><h2 className="mt-2 text-2xl font-bold">{titulo}</h2></div><button type="button" onClick={onClose} className="rounded-lg border border-[var(--border)] px-3 py-2">✕</button></div><div className="mt-6">{children}</div></div></div>;
 }
-function Acciones({ onClose, onSave, texto }: { onClose: () => void; onSave: () => void; texto: string }) { return <div className="mt-6 flex justify-end gap-3"><button type="button" onClick={onClose} className="rounded-xl border border-white/10 px-5 py-3">Cancelar</button><button type="button" onClick={onSave} className="rounded-xl bg-[#810404] px-6 py-3 font-semibold">{texto}</button></div>; }
-function Campo({ titulo, valor, tipo, onChange }: { titulo: string; valor: string; tipo: "date" | "number"; onChange: (valor: string) => void }) { return <label><span className="text-sm font-semibold text-zinc-300">{titulo}</span><input type={tipo} min={tipo === "number" ? 0 : undefined} value={valor} onChange={(e) => onChange(e.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3" /></label>; }
-function Resumen({ titulo, valor, destacado = false }: { titulo: string; valor: string; destacado?: boolean }) { return <article className={`rounded-2xl border p-5 ${destacado ? "border-red-900 bg-red-950/20" : "border-white/10 bg-[#181818]"}`}><p className="text-sm text-zinc-400">{titulo}</p><strong className="mt-2 block text-2xl">{valor}</strong></article>; }
-function Dato({ titulo, valor }: { titulo: string; valor: string }) { return <div><p className="text-xs text-zinc-500">{titulo}</p><strong className="mt-1 block">{valor}</strong></div>; }
-function EstadoCobro({ estado }: { estado: "pendiente" | "parcial" | "pagado" }) { const clases = estado === "pagado" ? "bg-emerald-950 text-emerald-300" : estado === "parcial" ? "bg-amber-950 text-amber-300" : "bg-red-950 text-red-300"; return <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${clases}`}>{estado === "pagado" ? "Pagado" : estado === "parcial" ? "Pago parcial" : "Sin cobrar"}</span>; }
+function Acciones({ onClose, onSave, texto }: { onClose: () => void; onSave: () => void; texto: string }) { return <div className="mt-6 flex justify-end gap-3"><button type="button" onClick={onClose} className="rounded-xl border border-[var(--border)] px-5 py-3">Cancelar</button><button type="button" onClick={onSave} className="rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold">{texto}</button></div>; }
+function Campo({ titulo, valor, tipo, onChange }: { titulo: string; valor: string; tipo: "date" | "number"; onChange: (valor: string) => void }) { return <label><span className="text-sm font-semibold text-[var(--muted)]">{titulo}</span><input type={tipo} min={tipo === "number" ? 0 : undefined} value={valor} onChange={(e) => onChange(e.target.value)} className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3" /></label>; }
+function Resumen({ titulo, valor, destacado = false }: { titulo: string; valor: string; destacado?: boolean }) { return <article className={`rounded-2xl border p-5 ${destacado ? "border-red-900 bg-red-950/20" : "border-[var(--border)] bg-[var(--card)]"}`}><p className="text-sm text-[var(--muted)]">{titulo}</p><strong className="mt-2 block text-2xl">{valor}</strong></article>; }
+function Dato({ titulo, valor }: { titulo: string; valor: string }) { return <div><p className="text-xs text-[var(--muted)]">{titulo}</p><strong className="mt-1 block">{valor}</strong></div>; }
+function EstadoCobro({ estado }: { estado: "pendiente" | "parcial" | "pagado" }) { const clases = estado === "pagado" ? "bg-emerald-950 text-emerald-300" : estado === "parcial" ? "bg-amber-950 text-amber-300" : "bg-red-950 text-[var(--accent-text)]"; return <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${clases}`}>{estado === "pagado" ? "Pagado" : estado === "parcial" ? "Pago parcial" : "Sin cobrar"}</span>; }
 function obtenerEstadoCobro(total: number, pagado: number) { if (total > 0 && pagado >= total) return "pagado" as const; if (pagado > 0) return "parcial" as const; return "pendiente" as const; }
 function etiquetaVenta(tipo: SaleType) {
   return tipo === "retail"

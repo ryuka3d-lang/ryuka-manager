@@ -237,8 +237,8 @@ export default function FairForm({
   return (
     <div className="mt-6">
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.7fr)]">
-      <section className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-5 md:p-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
+      <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 md:p-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
           Datos del evento
         </p>
 
@@ -257,7 +257,7 @@ export default function FairForm({
           />
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-zinc-400">
+            <label className="text-sm text-[var(--muted)]">
               Tipo de feria
             </label>
 
@@ -266,7 +266,7 @@ export default function FairForm({
               onChange={(evento) =>
                 setTipo(evento.target.value)
               }
-              className="rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+              className="rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
             >
               <option value="">
                 Seleccioná un tipo
@@ -314,7 +314,7 @@ export default function FairForm({
           />
 
           <div className="flex flex-col gap-2 md:col-span-2">
-            <label className="text-sm text-zinc-400">
+            <label className="text-sm text-[var(--muted)]">
               Estado
             </label>
 
@@ -326,7 +326,7 @@ export default function FairForm({
                     .value as FeriaGuardada["estado"]
                 )
               }
-              className="rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+              className="rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
             >
               <option value="planificada">
                 Planificada
@@ -341,7 +341,7 @@ export default function FairForm({
           </div>
 
           <div className="flex flex-col gap-2 md:col-span-2">
-            <label className="text-sm text-zinc-400">
+            <label className="text-sm text-[var(--muted)]">
               Notas
             </label>
 
@@ -352,7 +352,7 @@ export default function FairForm({
               }
               rows={4}
               placeholder="Objetivo, público, ideas, costos del stand..."
-              className="rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+              className="rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
             />
           </div>
         </div>
@@ -361,7 +361,7 @@ export default function FairForm({
           <button
             type="button"
             onClick={guardar}
-            className="rounded-xl bg-[#810404] px-6 py-3 font-semibold hover:bg-[#a00808]"
+            className="rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold hover:bg-[var(--accent-hover)]"
           >
             Guardar feria
           </button>
@@ -369,15 +369,15 @@ export default function FairForm({
           <button
             type="button"
             onClick={onCancelar}
-            className="rounded-xl border border-[#3a3a3a] px-6 py-3 font-semibold"
+            className="rounded-xl border border-[var(--border)] px-6 py-3 font-semibold"
           >
             Cancelar
           </button>
         </div>
       </section>
 
-      <section className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-5 md:p-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
+      <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 md:p-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
           Producción para stock
         </p>
 
@@ -385,7 +385,7 @@ export default function FairForm({
           Productos a llevar
         </h2>
 
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-[var(--muted)]">
           Definí el objetivo de unidades por producto.
         </p>
 
@@ -395,7 +395,7 @@ export default function FairForm({
             onChange={(evento) =>
               setProductoId(evento.target.value)
             }
-            className="w-full rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+            className="w-full rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
           >
             <option value="">
               Seleccioná un producto
@@ -420,13 +420,13 @@ export default function FairForm({
                 setCantidad(evento.target.value)
               }
               placeholder="Cantidad"
-              className="min-w-0 flex-1 rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+              className="min-w-0 flex-1 rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
             />
 
             <button
               type="button"
               onClick={agregarProducto}
-              className="rounded-xl border border-[#810404] px-4 py-3 font-semibold text-red-200 hover:bg-red-950/30"
+              className="rounded-xl border border-[var(--accent)] px-4 py-3 font-semibold text-red-200 hover:bg-red-950/30"
             >
               Agregar
             </button>
@@ -435,7 +435,7 @@ export default function FairForm({
 
         <div className="mt-5 space-y-3">
           {productosFeria.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-[#353535] p-5 text-center text-sm text-zinc-500">
+            <div className="rounded-xl border border-dashed border-[#353535] p-5 text-center text-sm text-[var(--muted)]">
               Todavía no agregaste productos.
             </div>
           ) : (
@@ -443,10 +443,10 @@ export default function FairForm({
               (producto, indice) => (
                 <div
                   key={`${producto.productId}-${indice}`}
-                  className="flex items-center justify-between gap-4 rounded-xl border border-[#303030] bg-[#111] p-4"
+                  className="flex items-center justify-between gap-4 rounded-xl border border-[var(--border)] bg-[#111] p-4"
                 >
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold text-red-300">
+                    <p className="text-xs font-semibold text-[var(--accent-text)]">
                       {producto.codigo}
                     </p>
 
@@ -454,11 +454,11 @@ export default function FairForm({
                       {producto.nombre}
                     </p>
 
-                    <p className="mt-1 text-sm text-zinc-400">
+                    <p className="mt-1 text-sm text-[var(--muted)]">
                       Objetivo: {producto.cantidadObjetivo} · Faltan: {Math.max(0, producto.cantidadObjetivo - producto.cantidadPreparada)}
                     </p>
 
-                    <label className="mt-3 block text-xs text-zinc-500">
+                    <label className="mt-3 block text-xs text-[var(--muted)]">
                       Ya preparados
                     </label>
                     <input
@@ -479,7 +479,7 @@ export default function FairForm({
                           )
                         );
                       }}
-                      className="mt-1 w-28 rounded-lg border border-[#353535] bg-[#151515] px-3 py-2 text-sm outline-none focus:border-[#810404]"
+                      className="mt-1 w-28 rounded-lg border border-[#353535] bg-[var(--field)] px-3 py-2 text-sm outline-none focus:border-[var(--accent)]"
                     />
                   </div>
 
@@ -488,7 +488,7 @@ export default function FairForm({
                     onClick={() =>
                       quitarProducto(indice)
                     }
-                    className="rounded-lg border border-red-900 px-3 py-2 text-xs font-semibold text-red-300 hover:bg-red-950/30"
+                    className="rounded-lg border border-red-900 px-3 py-2 text-xs font-semibold text-[var(--accent-text)] hover:bg-red-950/30"
                   >
                     Quitar
                   </button>
@@ -498,12 +498,12 @@ export default function FairForm({
           )}
         </div>
 
-        <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
-          <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+        <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--overlay)] p-4">
+          <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
             Próxima evolución
           </p>
 
-          <p className="mt-2 text-sm leading-6 text-zinc-300">
+          <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
             Acá vamos a sumar las recomendaciones automáticas
             según el tipo de feria y las búsquedas en las páginas
             de modelos 3D que usan habitualmente.
@@ -543,7 +543,7 @@ function Campo({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm text-zinc-400">
+      <label className="text-sm text-[var(--muted)]">
         {label}
       </label>
 
@@ -554,7 +554,7 @@ function Campo({
           onChange(evento.target.value)
         }
         placeholder={placeholder}
-        className="rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+        className="rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
       />
     </div>
   );

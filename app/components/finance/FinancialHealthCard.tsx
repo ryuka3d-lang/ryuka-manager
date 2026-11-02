@@ -18,15 +18,15 @@ export default function FinancialHealthCard({
     centro.disponibleParaRetirar > 0;
 
   return (
-    <section className="mt-6 overflow-hidden rounded-[2rem] border border-white/10 bg-[#181818]">
-      <div className="border-b border-white/10 bg-[radial-gradient(circle_at_top_right,_rgba(129,4,4,0.35),_transparent_45%),#181818] p-6 lg:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-red-300">
+    <section className="mt-6 overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--card)]">
+      <div className="border-b border-[var(--border)] bg-[radial-gradient(circle_at_top_right,_rgba(129,4,4,0.35),_transparent_45%),#181818] p-6 lg:p-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-text)]">
           Salud financiera
         </p>
 
         <div className="mt-3 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm text-[var(--muted)]">
               Disponible para retirar
             </p>
 
@@ -112,14 +112,14 @@ function Objetivo({
   const completo = estado.completo;
 
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#111] p-4">
+    <article className="rounded-2xl border border-[var(--border)] bg-[#111] p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-semibold">
             {icono} {titulo}
           </p>
 
-          <p className="mt-1 text-xs text-zinc-500">
+          <p className="mt-1 text-xs text-[var(--muted)]">
             {subtitulo}
           </p>
         </div>
@@ -141,17 +141,17 @@ function Objetivo({
             {moneda(estado.cubierto)}
           </strong>
 
-          <span className="text-xs text-zinc-500">
+          <span className="text-xs text-[var(--muted)]">
             de {moneda(estado.objetivo)}
           </span>
         </div>
 
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/5">
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--overlay)]">
           <div
             className={`h-full rounded-full ${
               completo
                 ? "bg-emerald-500"
-                : "bg-[#810404]"
+                : "bg-[var(--accent)]"
             }`}
             style={{
               width: `${Math.max(
@@ -162,7 +162,7 @@ function Objetivo({
           />
         </div>
 
-        <p className="mt-3 text-xs text-zinc-400">
+        <p className="mt-3 text-xs text-[var(--muted)]">
           {completo
             ? "✅ Cubierto"
             : `Faltan ${moneda(
@@ -182,8 +182,8 @@ function MiniDato({
   valor: string;
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-black/20 p-3">
-      <p className="text-xs text-zinc-500">
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--overlay)] p-3">
+      <p className="text-xs text-[var(--muted)]">
         {titulo}
       </p>
 

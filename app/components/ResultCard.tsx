@@ -5,8 +5,8 @@ type Props = {
 
 export default function ResultCard({ titulo, valor }: Props) {
   return (
-    <div className="bg-[#1b1b1b] border border-[#2b2b2b] rounded-2xl p-5">
-      <p className="text-gray-400 text-sm">
+    <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5">
+      <p className="text-[var(--muted)] text-sm">
         {titulo}
       </p>
 

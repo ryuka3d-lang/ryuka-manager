@@ -139,16 +139,16 @@ export default function FeriasPage() {
   }
 
   return (
-    <main className="p-5 text-white md:p-8 lg:p-10">
+    <main className="p-5 text-[var(--text)] md:p-8 lg:p-10">
       <PageHeader
         titulo="Ferias"
         subtitulo="Planificá qué llevar, cuánto producir y qué aprender de cada evento."
       />
 
-      <section className="mt-6 rounded-2xl border border-[#2b2b2b] bg-[#171717] p-5">
+      <section className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--field)] p-5">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
               Planificación
             </p>
 
@@ -156,7 +156,7 @@ export default function FeriasPage() {
               Próximas ferias
             </h2>
 
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-sm text-[var(--muted)]">
               {ferias.length} ferias guardadas
             </p>
           </div>
@@ -169,7 +169,7 @@ export default function FeriasPage() {
                   setBusqueda(evento.target.value)
                 }
                 placeholder="Buscar feria..."
-                className="rounded-xl border border-[#2b2b2b] bg-[#111] px-4 py-3 text-sm outline-none focus:border-[#810404]"
+                className="rounded-xl border border-[var(--border)] bg-[#111] px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
               />
             )}
 
@@ -180,7 +180,7 @@ export default function FeriasPage() {
                   ? cerrarFormulario
                   : abrirNueva
               }
-              className="rounded-xl bg-[#810404] px-5 py-3 text-sm font-semibold transition hover:bg-[#a00808]"
+              className="rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-semibold transition hover:bg-[var(--accent-hover)]"
             >
               {mostrarFormulario
                 ? "Cerrar"
@@ -198,12 +198,12 @@ export default function FeriasPage() {
           onCancelar={cerrarFormulario}
         />
       ) : feriasFiltradas.length === 0 ? (
-        <div className="mt-8 rounded-2xl border border-dashed border-[#343434] bg-[#171717] p-10 text-center">
-          <p className="font-semibold text-zinc-300">
+        <div className="mt-8 rounded-2xl border border-dashed border-[#343434] bg-[var(--field)] p-10 text-center">
+          <p className="font-semibold text-[var(--muted)]">
             Todavía no hay ferias cargadas.
           </p>
 
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-2 text-sm text-[var(--muted)]">
             Creá la primera para empezar a planificar la
             producción para stock.
           </p>

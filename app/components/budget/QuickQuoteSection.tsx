@@ -59,9 +59,9 @@ export default function QuickQuoteSection({
     preciosSugeridos.minoristaUnitario;
 
   return (
-    <section className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-5 md:p-6">
+    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 md:p-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
           Sin producto previo
         </p>
 
@@ -69,7 +69,7 @@ export default function QuickQuoteSection({
           Presupuesto rápido
         </h2>
 
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-[var(--muted)]">
           Calculá sin cargar un producto. Los precios se calculan automáticamente con los márgenes de configuración.
         </p>
       </div>
@@ -139,14 +139,14 @@ export default function QuickQuoteSection({
         />
       </div>
 
-      <div className="mt-6 rounded-xl border border-[#3a3a3a] bg-[#151515] p-4">
-        <p className="text-sm font-semibold text-gray-300">
+      <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--field)] p-4">
+        <p className="text-sm font-semibold text-[var(--muted)]">
           Precios calculados automáticamente
         </p>
 
         <div className="mt-3 grid gap-3 md:grid-cols-2">
-          <div className="rounded-lg border border-[#2b2b2b] bg-[#101010] p-3">
-            <p className="text-xs text-gray-500">
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3">
+            <p className="text-xs text-[var(--muted)]">
               Mayorista sugerido
             </p>
 
@@ -167,8 +167,8 @@ export default function QuickQuoteSection({
             />
           </div>
 
-          <div className="rounded-lg border border-[#2b2b2b] bg-[#101010] p-3">
-            <p className="text-xs text-gray-500">
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg)] p-3">
+            <p className="text-xs text-[var(--muted)]">
               Minorista sugerido
             </p>
 
@@ -190,14 +190,14 @@ export default function QuickQuoteSection({
           </div>
         </div>
 
-        <p className="mt-3 text-xs text-gray-500">
+        <p className="mt-3 text-xs text-[var(--muted)]">
           Si dejás los campos vacíos, se usan los precios sugeridos calculados con los márgenes de configuración.
         </p>
       </div>
 
       {accesoriosDisponibles.length > 0 && (
         <div className="mt-5">
-          <label className="text-sm font-semibold text-gray-300">
+          <label className="text-sm font-semibold text-[var(--muted)]">
             Accesorios (opcional)
           </label>
 
@@ -207,7 +207,7 @@ export default function QuickQuoteSection({
               onChange={(evento) =>
                 setAccesorioSeleccionadoId(evento.target.value)
               }
-              className="flex-1 rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+              className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
             >
               <option value="">Elegí un accesorio...</option>
               {accesoriosNoAgregados.map((opcion) => (
@@ -226,7 +226,7 @@ export default function QuickQuoteSection({
                 }
               }}
               disabled={!accesorioSeleccionadoId}
-              className="rounded-xl bg-[#810404] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#a00808] disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--text)] transition hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               + Agregar
             </button>
@@ -237,7 +237,7 @@ export default function QuickQuoteSection({
               {datos.accesorios.map((accesorio) => (
                 <div
                   key={accesorio.id}
-                  className="grid grid-cols-[1fr_180px_120px] items-center gap-4 rounded-xl border border-[#2b2b2b] bg-[#151515] p-4"
+                  className="grid grid-cols-[1fr_180px_120px] items-center gap-4 rounded-xl border border-[var(--border)] bg-[var(--field)] p-4"
                 >
                   <span className="font-medium">{accesorio.nombre}</span>
 
@@ -248,7 +248,7 @@ export default function QuickQuoteSection({
                         modo: evento.target.value as any,
                       })
                     }
-                    className="rounded-xl border border-[#2b2b2b] bg-[#101010] px-3 py-2 outline-none focus:border-[#810404]"
+                    className="rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 outline-none focus:border-[var(--accent)]"
                   >
                     <option value="porUnidad">Por unidad</option>
                     <option value="porPedido">Por pedido</option>
@@ -263,7 +263,7 @@ export default function QuickQuoteSection({
                         cantidad: evento.target.value,
                       })
                     }
-                    className="rounded-xl border border-[#2b2b2b] bg-[#101010] px-3 py-2 outline-none focus:border-[#810404]"
+                    className="rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 py-2 outline-none focus:border-[var(--accent)]"
                   />
                 </div>
               ))}
@@ -275,7 +275,7 @@ export default function QuickQuoteSection({
       <button
         type="button"
         onClick={onAgregar}
-        className="mt-6 w-full rounded-xl bg-[#810404] px-6 py-3 font-semibold text-white transition hover:bg-[#a00808]"
+        className="mt-6 w-full rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold text-[var(--text)] transition hover:bg-[var(--accent-hover)]"
       >
         Agregar al presupuesto
       </button>

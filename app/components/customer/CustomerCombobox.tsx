@@ -47,9 +47,9 @@ export default function CustomerCombobox({ clientes, clienteId, value, onChange 
 
   return (
     <div className="relative">
-      <label className="mb-2 block text-sm text-gray-400">Cliente</label>
+      <label className="mb-2 block text-sm text-[var(--muted)]">Cliente</label>
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted)]" />
         <input
           value={busqueda}
           placeholder="Buscá por nombre, empresa o teléfono"
@@ -60,44 +60,44 @@ export default function CustomerCombobox({ clientes, clienteId, value, onChange 
             onChange(siguiente, undefined);
             setAbierto(true);
           }}
-          className="w-full rounded-xl border border-[#2b2b2b] bg-[#151515] py-3 pl-10 pr-20 outline-none transition focus:border-[#810404]"
+          className="w-full rounded-xl border border-[var(--border)] bg-[var(--field)] py-3 pl-10 pr-20 outline-none transition focus:border-[var(--accent)]"
         />
         <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-1">
           {busqueda && (
-            <button type="button" onClick={limpiar} className="rounded-md p-1 text-gray-500 hover:bg-white/5 hover:text-white" aria-label="Limpiar cliente">
+            <button type="button" onClick={limpiar} className="rounded-md p-1 text-[var(--muted)] hover:bg-[var(--overlay)] hover:text-[var(--text)]" aria-label="Limpiar cliente">
               <X className="h-4 w-4" />
             </button>
           )}
-          <button type="button" onClick={() => setAbierto((actual) => !actual)} className="rounded-md p-1 text-gray-500 hover:bg-white/5 hover:text-white" aria-label="Mostrar clientes">
+          <button type="button" onClick={() => setAbierto((actual) => !actual)} className="rounded-md p-1 text-[var(--muted)] hover:bg-[var(--overlay)] hover:text-[var(--text)]" aria-label="Mostrar clientes">
             <ChevronDown className="h-4 w-4" />
           </button>
         </div>
       </div>
 
       {abierto && (
-        <div className="absolute z-30 mt-2 max-h-80 w-full overflow-auto rounded-xl border border-[#333] bg-[#181818] p-2 shadow-2xl">
-          <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <div className="absolute z-30 mt-2 max-h-80 w-full overflow-auto rounded-xl border border-[#333] bg-[var(--card)] p-2 shadow-2xl">
+          <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
             {busqueda ? "Coincidencias" : "Clientes recientes"}
           </p>
           {resultados.map((cliente) => {
             const nombre = nombreCompleto(cliente);
             const seleccionado = cliente.id === clienteId;
             return (
-              <button key={cliente.id} type="button" onClick={() => elegir(cliente)} className="flex w-full items-center justify-between rounded-lg px-3 py-3 text-left hover:bg-white/5">
+              <button key={cliente.id} type="button" onClick={() => elegir(cliente)} className="flex w-full items-center justify-between rounded-lg px-3 py-3 text-left hover:bg-[var(--overlay)]">
                 <div className="min-w-0">
-                  <p className="truncate font-medium text-white">{nombre}</p>
-                  <p className="truncate text-xs text-gray-500">{cliente.empresa || cliente.telefono || cliente.email || cliente.id}</p>
+                  <p className="truncate font-medium text-[var(--text)]">{nombre}</p>
+                  <p className="truncate text-xs text-[var(--muted)]">{cliente.empresa || cliente.telefono || cliente.email || cliente.id}</p>
                 </div>
                 {seleccionado && <Check className="h-4 w-4 text-red-400" />}
               </button>
             );
           })}
           {resultados.length === 0 && (
-            <div className="px-3 py-4 text-sm text-gray-400">
+            <div className="px-3 py-4 text-sm text-[var(--muted)]">
               No encontramos ese cliente. Podés escribir el nombre y guardar el presupuesto igualmente.
             </div>
           )}
-          <a href="/clientes" className="mt-1 flex items-center gap-2 rounded-lg border border-dashed border-[#3a3a3a] px-3 py-3 text-sm text-gray-300 hover:border-[#810404] hover:text-white">
+          <a href="/clientes" className="mt-1 flex items-center gap-2 rounded-lg border border-dashed border-[var(--border)] px-3 py-3 text-sm text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--text)]">
             <UserPlus className="h-4 w-4" /> Administrar clientes
           </a>
         </div>

@@ -130,17 +130,17 @@ export default function FinanzasPage() {
   }
 
   return (
-    <main className="flex min-h-screen bg-[#101010] text-white">
+    <main className="flex min-h-screen bg-[var(--bg)] text-[var(--text)]">
 
       <section className="min-w-0 flex-1 p-4 sm:p-6 lg:p-10">
-        <header className="rounded-3xl border border-white/10 bg-[#181818] p-5 sm:p-7 lg:rounded-[2rem] lg:p-10">
+        <header className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-5 sm:p-7 lg:rounded-[2rem] lg:p-10">
           <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-300">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
                 Control del dinero
               </p>
               <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Caja y finanzas</h1>
-              <p className="mt-4 max-w-2xl text-zinc-300">
+              <p className="mt-4 max-w-2xl text-[var(--muted)]">
                 Registrá cobros, señas, gastos y retiros. Las compras aparecen automáticamente como egresos.
               </p>
             </div>
@@ -149,14 +149,14 @@ export default function FinanzasPage() {
               <button
                 type="button"
                 onClick={() => abrirNuevo("egreso")}
-                className="min-h-12 rounded-xl border border-white/10 px-3 py-3 text-sm font-semibold hover:bg-white/5 sm:px-5"
+                className="min-h-12 rounded-xl border border-[var(--border)] px-3 py-3 text-sm font-semibold hover:bg-[var(--overlay)] sm:px-5"
               >
                 − Egreso
               </button>
               <button
                 type="button"
                 onClick={() => abrirNuevo("ingreso")}
-                className="min-h-12 rounded-xl bg-[#810404] px-3 py-3 text-sm font-semibold hover:bg-[#a00808] sm:px-5"
+                className="min-h-12 rounded-xl bg-[var(--accent)] px-3 py-3 text-sm font-semibold hover:bg-[var(--accent-hover)] sm:px-5"
               >
                 + Ingreso
               </button>
@@ -182,11 +182,11 @@ export default function FinanzasPage() {
           </div>
         )}
 
-        <section className="mt-8 rounded-3xl border border-white/10 bg-[#181818] p-4 sm:p-6 lg:rounded-[2rem]">
+        <section className="mt-8 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 sm:p-6 lg:rounded-[2rem]">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <h2 className="text-xl font-bold">Movimientos</h2>
-              <p className="mt-1 text-sm text-zinc-400">
+              <p className="mt-1 text-sm text-[var(--muted)]">
                 En el período filtrado: {moneda(resumenFiltrado.ingresos)} ingresados y {moneda(resumenFiltrado.egresos)} gastados.
               </p>
             </div>
@@ -197,13 +197,13 @@ export default function FinanzasPage() {
                   type="month"
                   value={mesFiltro}
                   onChange={(evento) => setMesFiltro(evento.target.value)}
-                  className="min-h-12 rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
+                  className="min-h-12 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-sm"
                   aria-label="Filtrar por mes"
                 />
                 <select
                   value={tipoFiltro}
                   onChange={(evento) => setTipoFiltro(evento.target.value as "todos" | TipoMovimientoCaja)}
-                  className="min-h-12 rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
+                  className="min-h-12 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-sm"
                   aria-label="Filtrar por tipo"
                 >
                   <option value="todos">Todos</option>
@@ -214,7 +214,7 @@ export default function FinanzasPage() {
                   value={busqueda}
                   onChange={(evento) => setBusqueda(evento.target.value)}
                   placeholder="Buscar concepto, categoría..."
-                  className="min-h-12 rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm"
+                  className="min-h-12 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-sm"
                   aria-label="Buscar movimientos"
                 />
               </div>
@@ -223,7 +223,7 @@ export default function FinanzasPage() {
                 <button
                   type="button"
                   onClick={limpiarFiltros}
-                  className="mt-2 text-xs font-semibold text-zinc-400 underline decoration-white/20 underline-offset-4 hover:text-white"
+                  className="mt-2 text-xs font-semibold text-[var(--muted)] underline decoration-white/20 underline-offset-4 hover:text-[var(--text)]"
                 >
                   Restablecer filtros
                 </button>
@@ -237,7 +237,7 @@ export default function FinanzasPage() {
                 <p className="text-sm font-semibold text-amber-200">
                   {cantidadManuales} movimiento{cantidadManuales === 1 ? "" : "s"} manual{cantidadManuales === 1 ? "" : "es"}
                 </p>
-                <p className="mt-1 text-xs text-zinc-500">
+                <p className="mt-1 text-xs text-[var(--muted)]">
                   Podés limpiar los movimientos de prueba sin afectar compras ni cobros automáticos.
                 </p>
               </div>
@@ -256,7 +256,7 @@ export default function FinanzasPage() {
           )}
 
           {filtrados.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-dashed border-white/15 p-10 text-center text-zinc-400">
+            <div className="mt-6 rounded-2xl border border-dashed border-white/15 p-10 text-center text-[var(--muted)]">
               No hay movimientos para estos filtros.
             </div>
           ) : (
@@ -264,7 +264,7 @@ export default function FinanzasPage() {
               {filtrados.map((movimiento) => (
                 <article
                   key={movimiento.id}
-                  className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-[#121212] p-4 sm:p-5 md:flex-row md:items-center md:justify-between"
+                  className="flex flex-col gap-4 rounded-2xl border border-[var(--border)] bg-[var(--field)] p-4 sm:p-5 md:flex-row md:items-center md:justify-between"
                 >
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
@@ -272,12 +272,12 @@ export default function FinanzasPage() {
                         className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                           movimiento.tipo === "ingreso"
                             ? "bg-emerald-950 text-emerald-300"
-                            : "bg-red-950 text-red-300"
+                            : "bg-red-950 text-[var(--accent-text)]"
                         }`}
                       >
                         {movimiento.tipo === "ingreso" ? "Ingreso" : "Egreso"}
                       </span>
-                      <span className="rounded-full bg-white/5 px-2.5 py-1 text-xs text-zinc-400">
+                      <span className="rounded-full bg-[var(--overlay)] px-2.5 py-1 text-xs text-[var(--muted)]">
                         {movimiento.categoria}
                       </span>
                       {movimiento.origen === "compra" && (
@@ -298,19 +298,19 @@ export default function FinanzasPage() {
                     </div>
 
                     <h3 className="mt-2 truncate font-bold">{movimiento.concepto}</h3>
-                    <p className="mt-1 text-sm text-zinc-400">
+                    <p className="mt-1 text-sm text-[var(--muted)]">
                       {fecha(movimiento.fecha)} · {movimiento.medioPago}
                       {movimiento.referencia ? ` · ${movimiento.referencia}` : ""}
                     </p>
                     {movimiento.notas && (
-                      <p className="mt-2 text-xs text-zinc-500">{movimiento.notas}</p>
+                      <p className="mt-2 text-xs text-[var(--muted)]">{movimiento.notas}</p>
                     )}
                   </div>
 
                   <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between md:justify-end">
                     <strong
                       className={`text-lg ${
-                        movimiento.tipo === "ingreso" ? "text-emerald-300" : "text-red-300"
+                        movimiento.tipo === "ingreso" ? "text-emerald-300" : "text-[var(--accent-text)]"
                       }`}
                     >
                       {movimiento.tipo === "ingreso" ? "+" : "−"} {moneda(movimiento.monto)}
@@ -324,7 +324,7 @@ export default function FinanzasPage() {
                             setMovimientoEditando(movimiento);
                             setModalAbierto(true);
                           }}
-                          className="rounded-lg border border-white/10 px-3 py-2 text-sm text-zinc-300 hover:bg-white/5"
+                          className="rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--muted)] hover:bg-[var(--overlay)]"
                         >
                           Editar
                         </button>
@@ -336,7 +336,7 @@ export default function FinanzasPage() {
                               recargar();
                             }
                           }}
-                          className="rounded-lg border border-white/10 px-3 py-2 text-sm text-zinc-400 hover:text-white"
+                          className="rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--muted)] hover:text-[var(--text)]"
                         >
                           Eliminar
                         </button>
@@ -420,25 +420,25 @@ function MovimientoModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm">
-      <div className="my-4 w-full max-w-2xl rounded-3xl border border-white/10 bg-[#181818] p-4 sm:my-6 sm:rounded-[2rem] sm:p-6">
+      <div className="my-4 w-full max-w-2xl rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 sm:my-6 sm:rounded-[2rem] sm:p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)]">
               {esEdicion ? "Editar movimiento" : "Nuevo movimiento"}
             </p>
             <h2 className="mt-2 text-2xl font-bold">Caja</h2>
           </div>
-          <button type="button" onClick={onClose} className="rounded-lg border border-white/10 px-3 py-2">
+          <button type="button" onClick={onClose} className="rounded-lg border border-[var(--border)] px-3 py-2">
             ✕
           </button>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 rounded-xl bg-[#101010] p-1">
+        <div className="mt-6 grid grid-cols-2 rounded-xl bg-[var(--bg)] p-1">
           <button
             type="button"
             onClick={() => cambiarTipo("ingreso")}
             className={`rounded-lg px-4 py-3 font-semibold ${
-              tipo === "ingreso" ? "bg-emerald-800" : "text-zinc-400"
+              tipo === "ingreso" ? "bg-emerald-800" : "text-[var(--muted)]"
             }`}
           >
             + Ingreso
@@ -447,7 +447,7 @@ function MovimientoModal({
             type="button"
             onClick={() => cambiarTipo("egreso")}
             className={`rounded-lg px-4 py-3 font-semibold ${
-              tipo === "egreso" ? "bg-[#810404]" : "text-zinc-400"
+              tipo === "egreso" ? "bg-[var(--accent)]" : "text-[var(--muted)]"
             }`}
           >
             − Egreso
@@ -459,21 +459,21 @@ function MovimientoModal({
           <Campo titulo="Monto *" tipo="number" valor={monto} onChange={setMonto} />
 
           <label className="sm:col-span-2">
-            <span className="text-sm font-semibold text-zinc-300">Concepto *</span>
+            <span className="text-sm font-semibold text-[var(--muted)]">Concepto *</span>
             <input
               value={concepto}
               onChange={(evento) => setConcepto(evento.target.value)}
               placeholder={tipo === "ingreso" ? "Ej.: Seña pedido de llaveros" : "Ej.: Pago de electricidad"}
-              className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3"
+              className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3"
             />
           </label>
 
           <label>
-            <span className="text-sm font-semibold text-zinc-300">Categoría</span>
+            <span className="text-sm font-semibold text-[var(--muted)]">Categoría</span>
             <select
               value={categoria}
               onChange={(evento) => setCategoria(evento.target.value)}
-              className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3"
+              className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3"
             >
               {categorias.map((opcion) => (
                 <option key={opcion} value={opcion}>
@@ -484,11 +484,11 @@ function MovimientoModal({
           </label>
 
           <label>
-            <span className="text-sm font-semibold text-zinc-300">Medio de pago</span>
+            <span className="text-sm font-semibold text-[var(--muted)]">Medio de pago</span>
             <select
               value={medioPago}
               onChange={(evento) => setMedioPago(evento.target.value)}
-              className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3"
+              className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3"
             >
               {mediosPago.map((opcion) => (
                 <option key={opcion}>{opcion}</option>
@@ -503,21 +503,21 @@ function MovimientoModal({
           />
 
           <label>
-            <span className="text-sm font-semibold text-zinc-300">Notas</span>
+            <span className="text-sm font-semibold text-[var(--muted)]">Notas</span>
             <textarea
               value={notas}
               onChange={(evento) => setNotas(evento.target.value)}
               rows={3}
-              className="mt-2 w-full resize-none rounded-xl border border-white/10 bg-[#101010] px-4 py-3"
+              className="mt-2 w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3"
             />
           </label>
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:justify-end sm:gap-3">
-          <button type="button" onClick={onClose} className="rounded-xl border border-white/10 px-5 py-3">
+          <button type="button" onClick={onClose} className="rounded-xl border border-[var(--border)] px-5 py-3">
             Cancelar
           </button>
-          <button type="button" onClick={guardar} className="rounded-xl bg-[#810404] px-6 py-3 font-semibold">
+          <button type="button" onClick={guardar} className="rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold">
             Guardar movimiento
           </button>
         </div>
@@ -539,14 +539,14 @@ function Campo({
 }) {
   return (
     <label>
-      <span className="text-sm font-semibold text-zinc-300">{titulo}</span>
+      <span className="text-sm font-semibold text-[var(--muted)]">{titulo}</span>
       <input
         type={tipo}
         value={valor}
         min={tipo === "number" ? "0" : undefined}
         step={tipo === "number" ? "0.01" : undefined}
         onChange={(evento) => onChange(evento.target.value)}
-        className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3"
+        className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3"
       />
     </label>
   );
@@ -564,10 +564,10 @@ function Resumen({
   return (
     <article
       className={`rounded-2xl border p-5 ${
-        destacado ? "border-red-900 bg-[#201313]" : "border-white/10 bg-[#181818]"
+        destacado ? "border-red-900 bg-[var(--card-accent)]" : "border-[var(--border)] bg-[var(--card)]"
       }`}
     >
-      <p className="text-sm text-zinc-400">{titulo}</p>
+      <p className="text-sm text-[var(--muted)]">{titulo}</p>
       <p className="mt-2 text-2xl font-bold">{valor}</p>
     </article>
   );

@@ -51,12 +51,12 @@ export default function FairProductAssistant({
 
   if (!tipo) {
     return (
-      <section className="mt-6 rounded-2xl border border-dashed border-[#343434] bg-[#171717] p-6 text-center">
-        <p className="font-semibold text-zinc-300">
+      <section className="mt-6 rounded-2xl border border-dashed border-[#343434] bg-[var(--field)] p-6 text-center">
+        <p className="font-semibold text-[var(--muted)]">
           Elegí el tipo de feria para activar el asistente.
         </p>
 
-        <p className="mt-2 text-sm text-zinc-500">
+        <p className="mt-2 text-sm text-[var(--muted)]">
           Ryuka va a cruzar el público del evento con tu catálogo
           y te va a preparar ideas para buscar nuevos modelos.
         </p>
@@ -65,10 +65,10 @@ export default function FairProductAssistant({
   }
 
   return (
-    <section className="mt-6 rounded-2xl border border-[#2b2b2b] bg-[#171717] p-5 md:p-6">
+    <section className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--field)] p-5 md:p-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
             Asistente de productos
           </p>
 
@@ -76,7 +76,7 @@ export default function FairProductAssistant({
             ¿Qué conviene llevar?
           </h2>
 
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-[var(--muted)]">
             {tipo}
             {publicoEstimado > 0
               ? ` · Público estimado: ${publicoEstimado.toLocaleString(
@@ -86,7 +86,7 @@ export default function FairProductAssistant({
           </p>
         </div>
 
-        <span className="w-fit rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-zinc-400">
+        <span className="w-fit rounded-full border border-[var(--border)] bg-[var(--overlay)] px-3 py-1 text-xs text-[var(--muted)]">
           Printables · MakerWorld · Cults3D
         </span>
       </div>
@@ -97,14 +97,14 @@ export default function FairProductAssistant({
             De tu catálogo
           </h3>
 
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-[var(--muted)]">
             Ryuka busca coincidencias con el tipo de feria y
             prioriza recetas relativamente rápidas o livianas.
           </p>
 
           <div className="mt-4 space-y-3">
             {catalogo.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-[#353535] p-4 text-sm text-zinc-500">
+              <div className="rounded-xl border border-dashed border-[#353535] p-4 text-sm text-[var(--muted)]">
                 Todavía no encontré coincidencias fuertes en tu catálogo.
                 Podés usar las ideas de la derecha para buscar productos nuevos.
               </div>
@@ -112,9 +112,9 @@ export default function FairProductAssistant({
               catalogo.map(({ producto, motivo }) => (
                 <article
                   key={producto.id}
-                  className="rounded-xl border border-[#303030] bg-[#111] p-4"
+                  className="rounded-xl border border-[var(--border)] bg-[#111] p-4"
                 >
-                  <p className="text-xs font-semibold text-red-300">
+                  <p className="text-xs font-semibold text-[var(--accent-text)]">
                     {producto.codigo}
                   </p>
 
@@ -122,20 +122,20 @@ export default function FairProductAssistant({
                     {producto.nombre}
                   </p>
 
-                  <p className="mt-2 text-xs text-zinc-500">
+                  <p className="mt-2 text-xs text-[var(--muted)]">
                     {motivo}
                   </p>
 
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs text-zinc-400">
-                    <span className="rounded-full border border-white/10 px-2 py-1">
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs text-[var(--muted)]">
+                    <span className="rounded-full border border-[var(--border)] px-2 py-1">
                       {producto.cantidadPorCama || "?"} por cama
                     </span>
 
-                    <span className="rounded-full border border-white/10 px-2 py-1">
+                    <span className="rounded-full border border-[var(--border)] px-2 py-1">
                       {producto.pesoPorCama || "0"} g/cama
                     </span>
 
-                    <span className="rounded-full border border-white/10 px-2 py-1">
+                    <span className="rounded-full border border-[var(--border)] px-2 py-1">
                       {producto.horas || "0"} h {producto.minutos || "0"} min
                     </span>
                   </div>
@@ -150,7 +150,7 @@ export default function FairProductAssistant({
             Ideas para sumar
           </h3>
 
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-[var(--muted)]">
             Elegí una idea y abrí la misma búsqueda directamente
             en las tres páginas que usan.
           </p>
@@ -166,15 +166,15 @@ export default function FairProductAssistant({
                 }}
                 className={`rounded-xl border p-4 text-left transition ${
                   indice === ideaSeleccionada
-                    ? "border-[#810404] bg-red-950/20"
-                    : "border-[#303030] bg-[#111] hover:border-[#444]"
+                    ? "border-[var(--accent)] bg-red-950/20"
+                    : "border-[var(--border)] bg-[#111] hover:border-[#444]"
                 }`}
               >
                 <p className="font-semibold">
                   {item.titulo}
                 </p>
 
-                <p className="mt-2 text-xs leading-5 text-zinc-500">
+                <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
                   {item.descripcion}
                 </p>
               </button>
@@ -182,7 +182,7 @@ export default function FairProductAssistant({
           </div>
 
           {idea && (
-            <div className="mt-5 rounded-xl border border-white/10 bg-[#111] p-4">
+            <div className="mt-5 rounded-xl border border-[var(--border)] bg-[#111] p-4">
               <p className="text-sm font-semibold">
                 Búsqueda sugerida
               </p>
@@ -198,7 +198,7 @@ export default function FairProductAssistant({
                     className={`rounded-full border px-3 py-2 text-xs transition ${
                       terminoActual === busqueda
                         ? "border-red-800 bg-red-950/30 text-red-200"
-                        : "border-white/10 text-zinc-400 hover:text-white"
+                        : "border-[var(--border)] text-[var(--muted)] hover:text-[var(--text)]"
                     }`}
                   >
                     {busqueda}
@@ -214,7 +214,7 @@ export default function FairProductAssistant({
                   )
                 }
                 placeholder="O escribí tu propia búsqueda..."
-                className="mt-4 w-full rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 text-sm outline-none focus:border-[#810404]"
+                className="mt-4 w-full rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
               />
 
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -281,7 +281,7 @@ function SearchLink({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="rounded-xl border border-[#3a3a3a] bg-[#181818] px-4 py-3 text-center text-sm font-semibold transition hover:border-[#810404] hover:bg-red-950/20"
+      className="rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-center text-sm font-semibold transition hover:border-[var(--accent)] hover:bg-red-950/20"
     >
       Buscar en {label} ↗
     </a>

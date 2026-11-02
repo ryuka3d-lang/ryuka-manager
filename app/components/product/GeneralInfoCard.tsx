@@ -17,7 +17,7 @@ export default function GeneralInfoCard({
   setProducto,
 }: Props) {
   return (
-    <div className="rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <h2 className="mb-6 text-xl font-bold">
         📦 Información general
       </h2>

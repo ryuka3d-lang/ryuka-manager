@@ -43,9 +43,9 @@ export default function MultiProductBudgetSummary({
   onGuardar,
 }: Props) {
   return (
-    <section className="rounded-2xl border border-[#2b2b2b] bg-[#171717] p-5 md:p-6">
+    <section className="rounded-2xl border border-[var(--border)] bg-[var(--field)] p-5 md:p-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
           Presupuesto completo
         </p>
 
@@ -53,7 +53,7 @@ export default function MultiProductBudgetSummary({
           Productos agregados
         </h2>
 
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-[var(--muted)]">
           {cliente
             ? `Cliente: ${cliente}`
             : "Elegí un cliente para guardar el presupuesto."}
@@ -62,11 +62,11 @@ export default function MultiProductBudgetSummary({
 
       {items.length === 0 ? (
         <div className="mt-6 rounded-xl border border-dashed border-[#353535] bg-[#111] p-6 text-center">
-          <p className="font-semibold text-gray-300">
+          <p className="font-semibold text-[var(--muted)]">
             Todavía no agregaste productos.
           </p>
 
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-[var(--muted)]">
             Configurá el primer producto y tocá “Agregar
             producto”.
           </p>
@@ -76,11 +76,11 @@ export default function MultiProductBudgetSummary({
           {items.map((item, indice) => (
             <article
               key={`${item.productId}-${indice}`}
-              className="rounded-xl border border-[#303030] bg-[#111] p-4"
+              className="rounded-xl border border-[var(--border)] bg-[#111] p-4"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold text-red-300">
+                  <p className="text-xs font-semibold text-[var(--accent-text)]">
                     {item.productCode}
                   </p>
 
@@ -88,7 +88,7 @@ export default function MultiProductBudgetSummary({
                     {item.productName}
                   </h3>
 
-                  <p className="mt-1 text-sm text-gray-400">
+                  <p className="mt-1 text-sm text-[var(--muted)]">
                     {item.quantity} unidades
                   </p>
                 </div>
@@ -98,7 +98,7 @@ export default function MultiProductBudgetSummary({
                   onClick={() =>
                     onEliminarItem(indice)
                   }
-                  className="rounded-lg border border-red-900 px-3 py-2 text-xs font-semibold text-red-300 hover:bg-red-950/30"
+                  className="rounded-lg border border-red-900 px-3 py-2 text-xs font-semibold text-[var(--accent-text)] hover:bg-red-950/30"
                 >
                   Quitar
                 </button>
@@ -182,7 +182,7 @@ export default function MultiProductBudgetSummary({
         disabled={
           items.length === 0 || !cliente.trim()
         }
-        className="mt-6 w-full rounded-xl bg-[#810404] px-6 py-3 font-semibold transition hover:bg-[#a00808] disabled:cursor-not-allowed disabled:opacity-40"
+        className="mt-6 w-full rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold transition hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:opacity-40"
       >
         Guardar presupuesto completo
       </button>
@@ -198,8 +198,8 @@ function Dato({
   valor: string;
 }) {
   return (
-    <div className="rounded-lg bg-white/[0.03] p-3">
-      <p className="text-xs text-gray-500">
+    <div className="rounded-lg bg-[var(--overlay)] p-3">
+      <p className="text-xs text-[var(--muted)]">
         {titulo}
       </p>
 
@@ -218,8 +218,8 @@ function Total({
   valor: string;
 }) {
   return (
-    <div className="rounded-xl border border-[#303030] bg-[#111] p-4">
-      <p className="text-sm text-gray-500">
+    <div className="rounded-xl border border-[var(--border)] bg-[#111] p-4">
+      <p className="text-sm text-[var(--muted)]">
         {titulo}
       </p>
 

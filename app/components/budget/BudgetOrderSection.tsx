@@ -44,9 +44,9 @@ export default function BudgetOrderSection({
   onPresupuestoChange,
 }: Props) {
   return (
-    <section className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-5 md:p-6">
+    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 md:p-6">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
           Producto a agregar
         </p>
 
@@ -54,7 +54,7 @@ export default function BudgetOrderSection({
           Datos del presupuesto
         </h2>
 
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-[var(--muted)]">
           Elegí el cliente una sola vez. Después agregá todos
           los productos que necesite el presupuesto.
         </p>
@@ -74,7 +74,7 @@ export default function BudgetOrderSection({
         />
 
         <div className="flex flex-col gap-2">
-          <label className="text-sm text-gray-400">
+          <label className="text-sm text-[var(--muted)]">
             Producto
           </label>
 
@@ -85,7 +85,7 @@ export default function BudgetOrderSection({
                 evento.target.value
               )
             }
-            className="rounded-xl border border-[#2b2b2b] bg-[#151515] px-4 py-3 outline-none focus:border-[#810404]"
+            className="rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)]"
           >
             <option value="">
               Seleccioná un producto
@@ -113,8 +113,8 @@ export default function BudgetOrderSection({
           }
         />
 
-        <details className="rounded-xl border border-[#2b2b2b] bg-[#151515] p-4">
-          <summary className="cursor-pointer text-sm font-medium text-gray-300">
+        <details className="rounded-xl border border-[var(--border)] bg-[var(--field)] p-4">
+          <summary className="cursor-pointer text-sm font-medium text-[var(--muted)]">
             Agregar trabajo manual extra
           </summary>
 

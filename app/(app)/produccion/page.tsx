@@ -152,10 +152,10 @@ export default function ProduccionPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#101010] text-white">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
       <section className="min-w-0 p-4 sm:p-6 lg:p-10">
-        <header className="rounded-[1.5rem] border border-white/10 bg-[#181818] p-5 sm:rounded-[2rem] sm:p-7 lg:p-10">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-300">
+        <header className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)] p-5 sm:rounded-[2rem] sm:p-7 lg:p-10">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
             Centro de operaciones
           </p>
 
@@ -163,7 +163,7 @@ export default function ProduccionPage() {
             Producción
           </h1>
 
-          <p className="mt-4 text-zinc-300">
+          <p className="mt-4 text-[var(--muted)]">
             Las órdenes vienen de Pedidos y se guardan en Supabase.
             Al iniciar elegís las bobinas y Ryuka registra el consumo real.
           </p>
@@ -176,16 +176,16 @@ export default function ProduccionPage() {
         )}
 
         {cargando ? (
-          <section className="mt-8 rounded-[2rem] border border-white/10 bg-[#181818] p-10 text-center text-zinc-400">
+          <section className="mt-8 rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-10 text-center text-[var(--muted)]">
             Cargando producción...
           </section>
         ) : pedidos.length === 0 ? (
-          <section className="mt-8 rounded-[2rem] border border-dashed border-white/15 bg-[#181818] p-10 text-center">
+          <section className="mt-8 rounded-[2rem] border border-dashed border-white/15 bg-[var(--card)] p-10 text-center">
             <h2 className="text-2xl font-bold">
               Todavía no hay órdenes de producción
             </h2>
 
-            <p className="mt-2 text-zinc-400">
+            <p className="mt-2 text-[var(--muted)]">
               Convertí un presupuesto en pedido para generar una.
             </p>
           </section>
@@ -207,8 +207,8 @@ export default function ProduccionPage() {
                       }
                       className={`min-w-max rounded-xl border px-4 py-3 text-sm font-semibold transition ${
                         activo
-                          ? "border-[#810404] bg-[#810404] text-white"
-                          : "border-white/10 bg-[#181818] text-zinc-400"
+                          ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--text)]"
+                          : "border-[var(--border)] bg-[var(--card)] text-[var(--muted)]"
                       }`}
                     >
                       {columna.icono} {columna.titulo} ·{" "}
@@ -218,7 +218,7 @@ export default function ProduccionPage() {
                 })}
               </div>
 
-              <div className="mt-3 rounded-3xl border border-white/10 bg-[#181818] p-4">
+              <div className="mt-3 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
                 {columnas
                   .filter(
                     (columna) =>
@@ -247,7 +247,7 @@ export default function ProduccionPage() {
                       {pedidosPorEstado[
                         columna.estado
                       ].length === 0 && (
-                        <p className="py-8 text-center text-sm text-zinc-500">
+                        <p className="py-8 text-center text-sm text-[var(--muted)]">
                           No hay órdenes en esta etapa.
                         </p>
                       )}
@@ -261,14 +261,14 @@ export default function ProduccionPage() {
               {columnas.map((columna) => (
                 <section
                   key={columna.estado}
-                  className="min-w-0 rounded-3xl border border-white/10 bg-[#181818] p-4"
+                  className="min-w-0 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4"
                 >
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                  <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
                     <h2 className="font-bold">
                       {columna.icono} {columna.titulo}
                     </h2>
 
-                    <span className="rounded-full bg-white/5 px-2.5 py-1 text-xs">
+                    <span className="rounded-full bg-[var(--overlay)] px-2.5 py-1 text-xs">
                       {
                         pedidosPorEstado[
                           columna.estado
@@ -333,8 +333,8 @@ function PedidoCard({
   );
 
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#121212] p-4 sm:p-5">
-      <p className="text-xs font-bold text-red-300">
+    <article className="rounded-2xl border border-[var(--border)] bg-[var(--field)] p-4 sm:p-5">
+      <p className="text-xs font-bold text-[var(--accent-text)]">
         {pedido.code}
         {pedido.orderCode ? ` · ${pedido.orderCode}` : ""}
       </p>
@@ -350,11 +350,11 @@ function PedidoCard({
           : "Orden sin productos"}
       </h3>
 
-      <p className="mt-1 text-sm text-zinc-400">
+      <p className="mt-1 text-sm text-[var(--muted)]">
         {pedido.customerName}
       </p>
 
-      <div className="mt-4 space-y-2 border-t border-white/10 pt-4 text-xs">
+      <div className="mt-4 space-y-2 border-t border-[var(--border)] pt-4 text-xs">
         <Fila
           titulo="Cantidad"
           valor={`${cantidad} u.`}
@@ -379,8 +379,8 @@ function PedidoCard({
       </div>
 
       {pedido.consumptions.length > 0 && (
-        <div className="mt-4 rounded-xl bg-white/[0.03] p-3">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500">
+        <div className="mt-4 rounded-xl bg-[var(--overlay)] p-3">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
             Bobinas utilizadas
           </p>
 
@@ -389,12 +389,12 @@ function PedidoCard({
               key={consumo.id}
               className="border-b border-white/5 py-2 last:border-0"
             >
-              <p className="text-xs font-semibold text-zinc-300">
+              <p className="text-xs font-semibold text-[var(--muted)]">
                 {consumo.spoolCode} · {consumo.material}{" "}
                 {consumo.color}
               </p>
 
-              <p className="mt-1 text-xs text-zinc-500">
+              <p className="mt-1 text-xs text-[var(--muted)]">
                 {consumo.grams.toLocaleString("es-AR", {
                   maximumFractionDigits: 1,
                 })}{" "}
@@ -404,9 +404,9 @@ function PedidoCard({
           ))}
 
           {costoReal > 0 && (
-            <p className="mt-3 border-t border-white/5 pt-3 text-xs text-zinc-400">
+            <p className="mt-3 border-t border-white/5 pt-3 text-xs text-[var(--muted)]">
               Costo real:{" "}
-              <strong className="text-zinc-200">
+              <strong className="text-[var(--text)]">
                 {costoReal.toLocaleString("es-AR", {
                   style: "currency",
                   currency: "ARS",
@@ -423,7 +423,7 @@ function PedidoCard({
           type="button"
           onClick={onAvanzar}
           disabled={avanzando}
-          className="mt-4 min-h-12 w-full rounded-xl bg-[#810404] px-4 py-3 text-sm font-semibold hover:bg-[#a00808] disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-4 min-h-12 w-full rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-semibold hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {avanzando
             ? "Guardando..."
@@ -449,9 +449,9 @@ function Fila({
 }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <span className="text-zinc-500">{titulo}</span>
+      <span className="text-[var(--muted)]">{titulo}</span>
 
-      <strong className="text-zinc-300">{valor}</strong>
+      <strong className="text-[var(--muted)]">{valor}</strong>
     </div>
   );
 }

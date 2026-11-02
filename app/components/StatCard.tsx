@@ -23,26 +23,26 @@ export default function StatCard({
       : Math.min(100, Math.max(0, progreso));
 
   return (
-    <article className="group rounded-3xl border border-white/10 bg-[#191919] p-6 transition hover:-translate-y-1 hover:border-[#810404]/70">
+    <article className="group rounded-3xl border border-[var(--border)] bg-[#191919] p-6 transition hover:-translate-y-1 hover:border-[var(--accent)]/70">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-zinc-400">
+          <p className="text-sm font-medium text-[var(--muted)]">
             {pregunta}
           </p>
 
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-white">
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-[var(--text)]">
             {valor}
           </h2>
         </div>
 
         {icono && (
-          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#810404]/20 text-xl">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[var(--accent)]/20 text-xl">
             {icono}
           </div>
         )}
       </div>
 
-      <p className="mt-3 text-sm leading-6 text-zinc-300">
+      <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
         {respuesta}
       </p>
 
@@ -50,21 +50,21 @@ export default function StatCard({
         <div className="mt-5">
           <div className="h-2 overflow-hidden rounded-full bg-white/10">
             <div
-              className="h-full rounded-full bg-[#810404] transition-all"
+              className="h-full rounded-full bg-[var(--accent)] transition-all"
               style={{
                 width: `${progresoSeguro}%`,
               }}
             />
           </div>
 
-          <p className="mt-2 text-xs text-zinc-500">
+          <p className="mt-2 text-xs text-[var(--muted)]">
             {progresoSeguro.toFixed(0)}% del objetivo
           </p>
         </div>
       )}
 
       {etiqueta && (
-        <span className="mt-5 inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-zinc-300">
+        <span className="mt-5 inline-flex rounded-full border border-[var(--border)] bg-[var(--overlay)] px-3 py-1 text-xs font-medium text-[var(--muted)]">
           {etiqueta}
         </span>
       )}

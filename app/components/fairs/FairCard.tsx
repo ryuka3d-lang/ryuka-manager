@@ -25,7 +25,7 @@ export default function FairCard({
   const unidades = totalUnidadesFeria(feria);
 
   return (
-    <article className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-5">
+    <article className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
           <span className={badge(feria.estado)}>
@@ -36,13 +36,13 @@ export default function FairCard({
             {feria.nombre}
           </h2>
 
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-[var(--muted)]">
             {feria.tipo}
             {feria.lugar ? ` · ${feria.lugar}` : ""}
           </p>
         </div>
 
-        <p className="text-sm font-semibold text-red-300">
+        <p className="text-sm font-semibold text-[var(--accent-text)]">
           {feria.fecha
             ? new Intl.DateTimeFormat("es-AR").format(
                 new Date(
@@ -92,7 +92,7 @@ export default function FairCard({
             .map((producto, indice) => (
               <div
                 key={`${producto.productId}-${indice}`}
-                className="flex items-center justify-between gap-4 rounded-lg bg-white/[0.03] px-3 py-2 text-sm"
+                className="flex items-center justify-between gap-4 rounded-lg bg-[var(--overlay)] px-3 py-2 text-sm"
               >
                 <span className="truncate">
                   {producto.nombre}
@@ -105,7 +105,7 @@ export default function FairCard({
             ))}
 
           {feria.productos.length > 4 && (
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-[var(--muted)]">
               + {feria.productos.length - 4} productos más
             </p>
           )}
@@ -118,11 +118,11 @@ export default function FairCard({
         horasImpresionDia={horasImpresionDia}
       />
 
-      <div className="mt-5 flex gap-3 border-t border-[#303030] pt-5">
+      <div className="mt-5 flex gap-3 border-t border-[var(--border)] pt-5">
         <button
           type="button"
           onClick={() => onEditar(feria)}
-          className="flex-1 rounded-xl border border-[#3a3a3a] px-4 py-3 text-sm font-semibold hover:bg-white/[0.04]"
+          className="flex-1 rounded-xl border border-[var(--border)] px-4 py-3 text-sm font-semibold hover:bg-[var(--overlay)]"
         >
           Editar
         </button>
@@ -130,7 +130,7 @@ export default function FairCard({
         <button
           type="button"
           onClick={() => onEliminar(feria)}
-          className="rounded-xl border border-red-900 px-4 py-3 text-sm font-semibold text-red-300 hover:bg-red-950/30"
+          className="rounded-xl border border-red-900 px-4 py-3 text-sm font-semibold text-[var(--accent-text)] hover:bg-red-950/30"
         >
           Eliminar
         </button>
@@ -147,8 +147,8 @@ function Dato({
   valor: string;
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-[#111] p-3">
-      <p className="text-xs text-zinc-500">
+    <div className="rounded-xl border border-[var(--border)] bg-[#111] p-3">
+      <p className="text-xs text-[var(--muted)]">
         {titulo}
       </p>
 
@@ -175,14 +175,14 @@ function badge(
     "inline-flex rounded-full px-3 py-1 text-xs font-semibold";
 
   if (estado === "finalizada") {
-    return `${base} bg-zinc-800 text-zinc-300`;
+    return `${base} bg-zinc-800 text-[var(--muted)]`;
   }
 
   if (estado === "en_preparacion") {
     return `${base} bg-amber-950/60 text-amber-300`;
   }
 
-  return `${base} bg-red-950/60 text-red-300`;
+  return `${base} bg-red-950/60 text-[var(--accent-text)]`;
 }
 
 function moneda(valor: number) {

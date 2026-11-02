@@ -11,8 +11,8 @@ export default function Button({
     <button
       onClick={onClick}
       className="
-        bg-red-700
-        hover:bg-red-600
+        bg-[var(--accent)]
+        hover:bg-[var(--accent-hover)]
         transition
         rounded-xl
         px-6

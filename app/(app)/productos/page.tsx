@@ -403,7 +403,7 @@ export default function ProductosPage() {
   }
 
   return (
-    <main className="p-5 text-white md:p-8 lg:p-10">
+    <main className="p-5 text-[var(--text)] md:p-8 lg:p-10">
       <PageHeader
         titulo={
           productoEditando
@@ -445,7 +445,7 @@ export default function ProductosPage() {
               type="button"
               onClick={() => void guardar()}
               disabled={guardando}
-              className="rounded-xl bg-[#810404] px-6 py-3 font-semibold transition hover:bg-[#a00808] disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold transition hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {guardando
                 ? "Guardando..."
@@ -458,7 +458,7 @@ export default function ProductosPage() {
               type="button"
               onClick={() => cerrarFormulario()}
               disabled={guardando}
-              className="rounded-xl border border-[#3a3a3a] px-6 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl border border-[var(--border)] px-6 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             >
               Cancelar
             </button>

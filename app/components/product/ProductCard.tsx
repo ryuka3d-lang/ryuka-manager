@@ -18,9 +18,9 @@ export default function ProductCard({
   onEliminar,
 }: Props) {
   return (
-    <article className="flex flex-col rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-5 transition hover:-translate-y-0.5 hover:border-[#444]">
+    <article className="flex flex-col rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 transition hover:-translate-y-0.5 hover:border-[#444]">
       <div className="min-w-0">
-        <p className="text-xs font-semibold text-red-300">
+        <p className="text-xs font-semibold text-[var(--accent-text)]">
           {producto.codigo}
         </p>
 
@@ -28,7 +28,7 @@ export default function ProductCard({
           {producto.nombre}
         </h3>
 
-        <p className="mt-1 text-sm text-gray-400">
+        <p className="mt-1 text-sm text-[var(--muted)]">
           {producto.categoria || "Sin categoría"}
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function ProductCard({
           {producto.materiales.map((material, indice) => (
             <span
               key={`${material.id}-${indice}`}
-              className="rounded-full border border-[#353535] bg-[#151515] px-3 py-1 text-xs text-gray-300"
+              className="rounded-full border border-[#353535] bg-[var(--field)] px-3 py-1 text-xs text-[var(--muted)]"
             >
               {material.material} {material.color}
             </span>
@@ -71,11 +71,11 @@ export default function ProductCard({
         </div>
       )}
 
-      <div className="mt-auto flex gap-3 border-t border-[#303030] pt-5">
+      <div className="mt-auto flex gap-3 border-t border-[var(--border)] pt-5">
         <button
           type="button"
           onClick={() => onEditar(producto)}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#3a3a3a] px-4 py-3 text-sm font-semibold transition hover:bg-white/[0.04]"
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[var(--border)] px-4 py-3 text-sm font-semibold transition hover:bg-[var(--overlay)]"
         >
           <Pencil className="h-4 w-4" />
           Editar
@@ -85,7 +85,7 @@ export default function ProductCard({
           type="button"
           onClick={() => onEliminar(producto)}
           disabled={eliminando}
-          className="flex items-center justify-center gap-2 rounded-xl border border-red-900 px-4 py-3 text-sm font-semibold text-red-300 transition hover:bg-red-950/30 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex items-center justify-center gap-2 rounded-xl border border-red-900 px-4 py-3 text-sm font-semibold text-[var(--accent-text)] transition hover:bg-red-950/30 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Trash2 className="h-4 w-4" />
           {eliminando ? "Eliminando..." : "Eliminar"}

@@ -73,13 +73,13 @@ export default function BudgetProductionSection({
         };
 
   return (
-    <section className="mt-8 rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+    <section className="mt-8 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <h2 className="text-xl font-bold">
         Producción
       </h2>
 
       <div className="mt-6">
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-[var(--muted)]">
           Horas de impresión por día
         </p>
 
@@ -98,8 +98,8 @@ export default function BudgetProductionSection({
                 Number(
                   horasImpresionDiaPedido
                 ) === horas
-                  ? "rounded-xl bg-red-700 px-5 py-3 font-semibold"
-                  : "rounded-xl border border-[#3a3a3a] bg-[#151515] px-5 py-3 font-semibold transition hover:border-red-700"
+                  ? "rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold"
+                  : "rounded-xl border border-[var(--border)] bg-[var(--field)] px-5 py-3 font-semibold transition hover:border-[var(--accent)]"
               }
             >
               {horas} h
@@ -115,8 +115,8 @@ export default function BudgetProductionSection({
             }
             className={
               usarHorasPersonalizadas
-                ? "rounded-xl bg-red-700 px-5 py-3 font-semibold"
-                : "rounded-xl border border-[#3a3a3a] bg-[#151515] px-5 py-3 font-semibold transition hover:border-red-700"
+                ? "rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold"
+                : "rounded-xl border border-[var(--border)] bg-[var(--field)] px-5 py-3 font-semibold transition hover:border-[var(--accent)]"
             }
           >
             Personalizado
@@ -134,7 +134,7 @@ export default function BudgetProductionSection({
               onChange={onCambiarHoras}
             />
 
-            <p className="mt-2 text-xs text-gray-500">
+            <p className="mt-2 text-xs text-[var(--muted)]">
               Ingresá un valor entre 1 y 24
               horas.
             </p>
@@ -188,7 +188,7 @@ export default function BudgetProductionSection({
             {avisoFilamento.titulo}
           </h3>
 
-          <p className="mt-2 text-sm text-gray-300">
+          <p className="mt-2 text-sm text-[var(--muted)]">
             {avisoFilamento.texto}
           </p>
         </div>

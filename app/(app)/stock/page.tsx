@@ -115,18 +115,18 @@ export default function StockPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#101010] text-white">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
       <section className="min-w-0 p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
-        <header className="rounded-[1.5rem] border border-white/10 bg-[#181818] p-5 sm:rounded-[2rem] sm:p-7 lg:p-10">
+        <header className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)] p-5 sm:rounded-[2rem] sm:p-7 lg:p-10">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300 sm:text-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)] sm:text-sm">
                 Inventario
               </p>
               <h1 className="mt-2 text-2xl font-bold sm:mt-3 sm:text-4xl">
                 Bobinas de filamento
               </h1>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-zinc-300 sm:mt-4 sm:text-base sm:leading-7">
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--muted)] sm:mt-4 sm:text-base sm:leading-7">
                 Controlá el peso disponible y revisá los movimientos de cada bobina.
               </p>
             </div>
@@ -134,7 +134,7 @@ export default function StockPage() {
             <button
               type="button"
               onClick={abrirNueva}
-              className="w-full rounded-xl bg-[#810404] px-5 py-3.5 font-semibold transition hover:bg-[#a00808] active:scale-[0.99] lg:w-auto lg:px-6"
+              className="w-full rounded-xl bg-[var(--accent)] px-5 py-3.5 font-semibold transition hover:bg-[var(--accent-hover)] active:scale-[0.99] lg:w-auto lg:px-6"
             >
               + Nueva bobina
             </button>
@@ -156,11 +156,11 @@ export default function StockPage() {
           />
         </section>
 
-        <section className="mt-4 rounded-[1.5rem] border border-white/10 bg-[#181818] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-6">
+        <section className="mt-4 rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-6">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-lg font-bold sm:text-xl">Bobinas actuales</h2>
-              <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
+              <p className="mt-1 text-xs text-[var(--muted)] sm:text-sm">
                 {cargando ? "Cargando..." : `${bobinasFiltradas.length} resultado${bobinasFiltradas.length === 1 ? "" : "s"}`}
               </p>
             </div>
@@ -170,18 +170,18 @@ export default function StockPage() {
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               placeholder="Buscar material, color, marca o código..."
-              className="w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3 text-sm outline-none transition placeholder:text-zinc-600 focus:border-[#810404] md:max-w-md"
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3 text-sm outline-none transition placeholder:text-zinc-600 focus:border-[var(--accent)] md:max-w-md"
             />
           </div>
 
           {cargando ? (
             <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {[1, 2, 3].map((item) => (
-                <div key={item} className="h-64 animate-pulse rounded-2xl border border-white/10 bg-[#111111]" />
+                <div key={item} className="h-64 animate-pulse rounded-2xl border border-[var(--border)] bg-[#111111]" />
               ))}
             </div>
           ) : bobinasFiltradas.length === 0 ? (
-            <div className="mt-5 rounded-2xl border border-dashed border-white/10 p-8 text-center text-sm text-zinc-500 sm:p-10">
+            <div className="mt-5 rounded-2xl border border-dashed border-[var(--border)] p-8 text-center text-sm text-[var(--muted)] sm:p-10">
               {busqueda.trim()
                 ? "No encontramos bobinas que coincidan con la búsqueda."
                 : "Todavía no hay bobinas registradas en la nube."}
@@ -241,9 +241,9 @@ function Resumen({
   alerta?: boolean;
 }) {
   return (
-    <article className={`rounded-2xl border bg-[#181818] p-4 sm:p-5 ${alerta ? "border-amber-900/60" : "border-white/10"}`}>
-      <p className="text-xs text-zinc-500 sm:text-sm">{titulo}</p>
-      <p className={`mt-2 text-2xl font-bold sm:mt-3 sm:text-2xl ${alerta ? "text-amber-300" : "text-white"}`}>
+    <article className={`rounded-2xl border bg-[var(--card)] p-4 sm:p-5 ${alerta ? "border-amber-900/60" : "border-[var(--border)]"}`}>
+      <p className="text-xs text-[var(--muted)] sm:text-sm">{titulo}</p>
+      <p className={`mt-2 text-2xl font-bold sm:mt-3 sm:text-2xl ${alerta ? "text-amber-300" : "text-[var(--text)]"}`}>
         {valor}
       </p>
       <p className="mt-1 text-xs text-zinc-600">{detalle}</p>

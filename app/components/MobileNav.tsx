@@ -47,7 +47,7 @@ export default function MobileNav() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-white/10 bg-[#810404] px-4 py-3 text-white shadow-lg lg:hidden">
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-[var(--border)] bg-[var(--accent)] px-4 py-3 text-[var(--text)] shadow-lg lg:hidden">
         <Link href="/" className="leading-none" aria-label="Ir al inicio de Ryuka Manager">
           <strong className="text-lg tracking-wide">RYUKA</strong>
           <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-red-200">
@@ -60,7 +60,7 @@ export default function MobileNav() {
           onClick={() => setAbierto(true)}
           aria-label="Abrir menú de navegación"
           aria-expanded={abierto}
-          className="min-h-11 rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold"
+          className="min-h-11 rounded-xl border border-white/20 bg-[var(--overlay)] px-4 py-2 text-sm font-semibold"
         >
           ☰ Menú
         </button>
@@ -68,7 +68,7 @@ export default function MobileNav() {
 
       <nav
         aria-label="Navegación principal móvil"
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#151515]/95 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_30px_rgba(0,0,0,0.35)] backdrop-blur lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--border)] bg-[var(--field)]/95 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_30px_rgba(0,0,0,0.35)] backdrop-blur lg:hidden"
       >
         <div className="mx-auto grid max-w-lg grid-cols-4 gap-1">
           {enlaces.map(([href, icono, label]) => {
@@ -82,8 +82,8 @@ export default function MobileNav() {
                 aria-current={activo ? "page" : undefined}
                 className={`flex min-h-14 flex-col items-center justify-center rounded-xl px-1 text-[10px] font-semibold transition active:scale-95 ${
                   activo
-                    ? "bg-[#810404] text-white"
-                    : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                    ? "bg-[var(--accent)] text-[var(--text)]"
+                    : "text-[var(--muted)] hover:bg-[var(--overlay)] hover:text-[var(--text)]"
                 }`}
               >
                 <span className="text-lg leading-none" aria-hidden="true">
@@ -103,11 +103,11 @@ export default function MobileNav() {
           role="presentation"
         >
           <nav
-            className="ml-auto flex h-full w-[88%] max-w-sm flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-[#181818] shadow-2xl"
+            className="ml-auto flex h-full w-[88%] max-w-sm flex-col overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--card)] shadow-2xl"
             onClick={(evento) => evento.stopPropagation()}
             aria-label="Menú completo"
           >
-            <div className="flex items-center justify-between bg-[#810404] px-5 py-5">
+            <div className="flex items-center justify-between bg-[var(--accent)] px-5 py-5">
               <div>
                 <strong className="text-2xl">RYUKA</strong>
                 <p className="text-[10px] uppercase tracking-[0.18em] text-red-200">
@@ -126,7 +126,7 @@ export default function MobileNav() {
             </div>
 
             <div className="flex-1 overflow-y-auto p-3 overscroll-contain">
-              <p className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">
+              <p className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
                 Secciones
               </p>
 
@@ -145,8 +145,8 @@ export default function MobileNav() {
                       aria-current={activo ? "page" : undefined}
                       className={`flex min-h-12 items-center gap-3 rounded-xl px-4 py-3.5 text-sm font-semibold transition active:scale-[0.99] ${
                         activo
-                          ? "bg-white/10 text-white"
-                          : "text-zinc-300 hover:bg-white/5"
+                          ? "bg-white/10 text-[var(--text)]"
+                          : "text-[var(--muted)] hover:bg-[var(--overlay)]"
                       }`}
                     >
                       <span className="w-6 text-center text-lg" aria-hidden="true">

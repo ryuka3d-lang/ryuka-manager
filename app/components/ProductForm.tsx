@@ -10,10 +10,10 @@ type Props = { producto: Producto; setProducto: SetProducto };
 
 function SeccionPlegable({ titulo, resumen, children, abierta = false }: { titulo: string; resumen: string; children: React.ReactNode; abierta?: boolean }) {
   return (
-    <details open={abierta} className="group overflow-hidden rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b]">
+    <details open={abierta} className="group overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)]">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 hover:bg-white/[0.02]">
-        <div><h2 className="font-semibold text-white">{titulo}</h2><p className="mt-1 text-sm text-gray-500">{resumen}</p></div>
-        <span className="text-xl text-gray-500 transition group-open:rotate-45">+</span>
+        <div><h2 className="font-semibold text-[var(--text)]">{titulo}</h2><p className="mt-1 text-sm text-[var(--muted)]">{resumen}</p></div>
+        <span className="text-xl text-[var(--muted)] transition group-open:rotate-45">+</span>
       </summary>
       <div className="border-t border-[#292929] p-1">{children}</div>
     </details>

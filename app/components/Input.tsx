@@ -15,7 +15,7 @@ export default function Input({
 }: Props) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm text-gray-400">
+      <label className="text-sm text-[var(--muted)]">
         {label}
       </label>
 
@@ -25,9 +25,9 @@ export default function Input({
         value={value ?? ""}
         onChange={(e) => onChange?.(e.target.value)}
         className="
-          bg-[#1b1b1b]
+          bg-[var(--card)]
           border
-          border-[#2b2b2b]
+          border-[var(--border)]
           rounded-xl
           px-4
           py-3

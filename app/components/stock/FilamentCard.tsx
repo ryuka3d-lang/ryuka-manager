@@ -45,16 +45,16 @@ export default function FilamentCard({
       : 0;
 
   return (
-    <article className="rounded-2xl border border-white/10 bg-[#111111] p-4 transition hover:border-white/15 sm:p-5">
+    <article className="rounded-2xl border border-[var(--border)] bg-[#111111] p-4 transition hover:border-white/15 sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-red-300">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent-text)]">
             {bobina.id}
           </p>
           <h3 className="mt-1.5 truncate text-lg font-bold sm:mt-2 sm:text-xl">
             {bobina.material} {bobina.color}
           </h3>
-          <p className="mt-1 truncate text-sm text-zinc-500">
+          <p className="mt-1 truncate text-sm text-[var(--muted)]">
             {bobina.marca || "Sin marca"}
           </p>
         </div>
@@ -71,21 +71,21 @@ export default function FilamentCard({
           {bobina.pesoActualGramos.toLocaleString("es-AR", {
             maximumFractionDigits: 1,
           })}
-          <span className="ml-1 text-base font-normal text-zinc-500">g</span>
+          <span className="ml-1 text-base font-normal text-[var(--muted)]">g</span>
         </p>
         <span className="text-xs text-zinc-600">
           {porcentaje.toFixed(0)}% restante
         </span>
       </div>
 
-      <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/5">
+      <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--overlay)]">
         <div
-          className={`h-full rounded-full transition-all ${stockBajo ? "bg-amber-500" : "bg-[#810404]"}`}
+          className={`h-full rounded-full transition-all ${stockBajo ? "bg-amber-500" : "bg-[var(--accent)]"}`}
           style={{ width: `${porcentaje}%` }}
         />
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-zinc-500">
+      <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-[var(--muted)]">
         <p>Peso inicial</p>
         <p className="text-right">{bobina.pesoInicialGramos} g</p>
         <p>Costo por gramo</p>
@@ -102,7 +102,7 @@ export default function FilamentCard({
         type="button"
         onClick={onHistorial}
         disabled={ocupado}
-        className="mt-5 w-full rounded-xl border border-white/10 px-3 py-3 text-sm font-semibold transition hover:border-[#810404] disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-5 w-full rounded-xl border border-[var(--border)] px-3 py-3 text-sm font-semibold transition hover:border-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-50"
       >
         Ver historial
       </button>
@@ -120,7 +120,7 @@ export default function FilamentCard({
           type="button"
           onClick={onSalida}
           disabled={ocupado}
-          className="min-h-11 rounded-xl bg-red-950/30 px-3 py-2.5 text-sm font-semibold text-red-300 transition hover:bg-red-950/50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-11 rounded-xl bg-red-950/30 px-3 py-2.5 text-sm font-semibold text-[var(--accent-text)] transition hover:bg-red-950/50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {procesando === claveSalida ? "Guardando..." : "− Salida"}
         </button>
@@ -128,7 +128,7 @@ export default function FilamentCard({
           type="button"
           onClick={onEditar}
           disabled={ocupado}
-          className="min-h-11 rounded-xl border border-white/10 px-3 py-2.5 text-sm font-semibold transition hover:border-white/20 disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-11 rounded-xl border border-[var(--border)] px-3 py-2.5 text-sm font-semibold transition hover:border-white/20 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Editar
         </button>
@@ -136,7 +136,7 @@ export default function FilamentCard({
           type="button"
           onClick={onEliminar}
           disabled={ocupado}
-          className="min-h-11 rounded-xl border border-white/10 px-3 py-2.5 text-sm font-semibold text-zinc-500 transition hover:border-red-900/50 hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-11 rounded-xl border border-[var(--border)] px-3 py-2.5 text-sm font-semibold text-[var(--muted)] transition hover:border-red-900/50 hover:text-[var(--accent-text)] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {procesando === claveEliminar ? "Eliminando..." : "Eliminar"}
         </button>

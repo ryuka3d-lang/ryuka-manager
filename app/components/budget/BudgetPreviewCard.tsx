@@ -54,9 +54,9 @@ export default function BudgetPreviewCard({
     trabajoManualMinutos % 60;
 
   return (
-    <section className="mt-8 rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+    <section className="mt-8 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <div>
-        <p className="text-sm font-semibold text-red-300">
+        <p className="text-sm font-semibold text-[var(--accent-text)]">
           VISTA PREVIA
         </p>
 
@@ -64,14 +64,14 @@ export default function BudgetPreviewCard({
           Resumen del presupuesto
         </h2>
 
-        <p className="mt-2 text-sm text-gray-400">
+        <p className="mt-2 text-sm text-[var(--muted)]">
           Este resumen será la base para el PDF y el mensaje de
           WhatsApp.
         </p>
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <div className="rounded-xl border border-[#303030] bg-[#151515] p-6">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--field)] p-6">
           <h3 className="text-lg font-bold">
             Pedido
           </h3>
@@ -98,7 +98,7 @@ export default function BudgetPreviewCard({
           </div>
         </div>
 
-        <div className="rounded-xl border border-[#303030] bg-[#151515] p-6">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--field)] p-6">
           <h3 className="text-lg font-bold">
             Producción
           </h3>
@@ -132,7 +132,7 @@ export default function BudgetPreviewCard({
         </div>
       </div>
 
-      <div className="mt-6 rounded-xl border border-[#303030] bg-[#151515] p-6">
+      <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--field)] p-6">
         <h3 className="text-lg font-bold">
           Valores calculados
         </h3>
@@ -178,8 +178,8 @@ function FilaResumen({
   valor,
 }: FilaResumenProps) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-[#303030] pb-3 last:border-b-0 last:pb-0">
-      <span className="text-sm text-gray-400">
+    <div className="flex items-center justify-between gap-4 border-b border-[var(--border)] pb-3 last:border-b-0 last:pb-0">
+      <span className="text-sm text-[var(--muted)]">
         {titulo}
       </span>
 
@@ -202,8 +202,8 @@ function ResumenPrecio({
   detalle,
 }: ResumenPrecioProps) {
   return (
-    <div className="rounded-xl border border-[#353535] bg-[#1b1b1b] p-5">
-      <p className="text-sm text-gray-400">
+    <div className="rounded-xl border border-[#353535] bg-[var(--card)] p-5">
+      <p className="text-sm text-[var(--muted)]">
         {titulo}
       </p>
 
@@ -212,7 +212,7 @@ function ResumenPrecio({
       </p>
 
       {detalle && (
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-[var(--muted)]">
           {detalle}
         </p>
       )}

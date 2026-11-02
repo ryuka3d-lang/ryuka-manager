@@ -48,7 +48,7 @@ export default function BudgetCostsSection({
 }: Props) {
   return (
     <>
-      <section className="mt-8 rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+      <section className="mt-8 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
         <h2 className="text-xl font-bold">
           Costos
         </h2>
@@ -70,15 +70,15 @@ export default function BudgetCostsSection({
               valor={resultado.costoAmortizacion}
             />
 
-            <div className="rounded-xl border border-[#303030] bg-[#151515] p-4 text-sm">
-              <p className="font-semibold text-white">
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--field)] p-4 text-sm">
+              <p className="font-semibold text-[var(--text)]">
                 Detalle del trabajo manual
               </p>
 
-              <div className="mt-3 space-y-2 text-gray-400">
+              <div className="mt-3 space-y-2 text-[var(--muted)]">
                 <p>
                   Base por cama:{" "}
-                  <span className="text-white">
+                  <span className="text-[var(--text)]">
                     {Math.floor(
                       minutosManualPorCama / 60
                     )}{" "}
@@ -88,14 +88,14 @@ export default function BudgetCostsSection({
 
                 <p>
                   Camas necesarias:{" "}
-                  <span className="text-white">
+                  <span className="text-[var(--text)]">
                     {camasCalculadas}
                   </span>
                 </p>
 
                 <p>
                   Trabajo manual base:{" "}
-                  <span className="text-white">
+                  <span className="text-[var(--text)]">
                     {Math.floor(
                       minutosTrabajoManualBase / 60
                     )}{" "}
@@ -105,7 +105,7 @@ export default function BudgetCostsSection({
 
                 <p>
                   Trabajo extra:{" "}
-                  <span className="text-white">
+                  <span className="text-[var(--text)]">
                     {Math.floor(
                       minutosTrabajoExtra / 60
                     )}{" "}
@@ -113,7 +113,7 @@ export default function BudgetCostsSection({
                   </span>
                 </p>
 
-                <p className="border-t border-[#303030] pt-2 font-semibold text-white">
+                <p className="border-t border-[var(--border)] pt-2 font-semibold text-[var(--text)]">
                   Trabajo total:{" "}
                   {Math.floor(
                     minutosTrabajoPersonalTotal / 60
@@ -197,8 +197,8 @@ function FilaCosto({
       <span
         className={
           destacado
-            ? "font-bold text-white"
-            : "text-gray-400"
+            ? "font-bold text-[var(--text)]"
+            : "text-[var(--muted)]"
         }
       >
         {nombre}

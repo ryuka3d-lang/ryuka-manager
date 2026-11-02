@@ -122,13 +122,13 @@ export default function SaleSimulatorCard({
   ]);
 
   return (
-    <section className="mt-8 rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+    <section className="mt-8 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <div>
         <h2 className="text-xl font-bold">
           Precio de venta
         </h2>
 
-        <p className="mt-2 text-sm text-gray-400">
+        <p className="mt-2 text-sm text-[var(--muted)]">
           Ajustá el precio por unidad y Ryuka calculará el
           total final y la ganancia real del pedido.
         </p>
@@ -228,10 +228,10 @@ function SimuladorVenta({
     );
 
   return (
-    <article className="rounded-xl border border-[#303030] bg-[#151515] p-6">
+    <article className="rounded-xl border border-[var(--border)] bg-[var(--field)] p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-[var(--muted)]">
             Tipo de venta
           </p>
 
@@ -240,12 +240,12 @@ function SimuladorVenta({
           </h3>
         </div>
 
-        <span className="rounded-full border border-[#3a3a3a] bg-[#1b1b1b] px-3 py-1 text-sm text-gray-300">
+        <span className="rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1 text-sm text-[var(--muted)]">
           +{porcentajeAplicado}%
         </span>
       </div>
 
-      <div className="mt-6 rounded-xl border border-[#303030] bg-[#1b1b1b] p-5">
+      <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
         <p className="text-sm font-semibold">
           Precio calculado por Ryuka
         </p>
@@ -268,7 +268,7 @@ function SimuladorVenta({
       </div>
 
       <div className="mt-5">
-        <label className="text-sm text-gray-400">
+        <label className="text-sm text-[var(--muted)]">
           Precio final por unidad
         </label>
 
@@ -288,7 +288,7 @@ function SimuladorVenta({
             rounded-xl
             border
             border-red-900
-            bg-[#1b1b1b]
+            bg-[var(--card)]
             px-4
             py-4
             text-2xl
@@ -311,7 +311,7 @@ function SimuladorVenta({
                 )
               )
             }
-            className="rounded-lg border border-[#3a3a3a] px-3 py-2 text-sm transition hover:border-red-700"
+            className="rounded-lg border border-[var(--border)] px-3 py-2 text-sm transition hover:border-[var(--accent)]"
           >
             Redondeo cercano
           </button>
@@ -323,7 +323,7 @@ function SimuladorVenta({
                 String(precioRedondeado)
               )
             }
-            className="rounded-lg border border-[#3a3a3a] px-3 py-2 text-sm transition hover:border-red-700"
+            className="rounded-lg border border-[var(--border)] px-3 py-2 text-sm transition hover:border-[var(--accent)]"
           >
             Usar sugerido
           </button>
@@ -337,7 +337,7 @@ function SimuladorVenta({
                 )
               )
             }
-            className="rounded-lg border border-[#3a3a3a] px-3 py-2 text-sm transition hover:border-red-700"
+            className="rounded-lg border border-[var(--border)] px-3 py-2 text-sm transition hover:border-[var(--accent)]"
           >
             Usar calculado
           </button>
@@ -345,7 +345,7 @@ function SimuladorVenta({
       </div>
 
       <div className="mt-6 rounded-xl border border-red-900 bg-red-950/20 p-5">
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-[var(--muted)]">
           Total final del pedido
         </p>
 
@@ -355,7 +355,7 @@ function SimuladorVenta({
           )}
         </p>
 
-        <p className="mt-2 text-sm text-gray-400">
+        <p className="mt-2 text-sm text-[var(--muted)]">
           {cantidad} unidades ×{" "}
           {formatearDinero(
             Number(precioFinalUnitario) || 0
@@ -411,8 +411,8 @@ function FilaVenta({
   negativo = false,
 }: FilaVentaProps) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-[#303030] pb-3 last:border-b-0 last:pb-0">
-      <span className="text-sm text-gray-400">
+    <div className="flex items-center justify-between gap-4 border-b border-[var(--border)] pb-3 last:border-b-0 last:pb-0">
+      <span className="text-sm text-[var(--muted)]">
         {titulo}
       </span>
 

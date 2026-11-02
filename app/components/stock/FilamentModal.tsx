@@ -74,24 +74,24 @@ export default function FilamentModal({ bobina, onClose, onSaved }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border border-white/10 bg-[#181818] p-6 text-white">
+      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 text-[var(--text)]">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)]">
               {bobina ? "Editar bobina" : "Nueva bobina"}
             </p>
             <h2 className="mt-2 text-2xl font-bold">Datos del filamento</h2>
           </div>
-          <button type="button" onClick={onClose} className="rounded-lg border border-white/10 px-3 py-2">✕</button>
+          <button type="button" onClick={onClose} className="rounded-lg border border-[var(--border)] px-3 py-2">✕</button>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <label>
-            <span className="text-sm font-semibold text-zinc-300">Material</span>
+            <span className="text-sm font-semibold text-[var(--muted)]">Material</span>
             <select
               value={material}
               onChange={(e) => setMaterial(e.target.value)}
-              className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3"
+              className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3"
             >
               {["PLA","PETG","TPU","ABS","ASA","OTRO"].map((m) => (
                 <option key={m} value={m}>{m}</option>
@@ -109,12 +109,12 @@ export default function FilamentModal({ bobina, onClose, onSaved }: Props) {
         </div>
 
         <div className="mt-6 flex justify-end gap-3">
-          <button type="button" onClick={onClose} className="rounded-xl border border-white/10 px-5 py-3">Cancelar</button>
+          <button type="button" onClick={onClose} className="rounded-xl border border-[var(--border)] px-5 py-3">Cancelar</button>
           <button
             type="button"
             disabled={guardando}
             onClick={() => void guardar()}
-            className="rounded-xl bg-[#810404] px-6 py-3 font-semibold disabled:opacity-50"
+            className="rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold disabled:opacity-50"
           >
             {guardando ? "Guardando..." : "Guardar bobina"}
           </button>
@@ -137,13 +137,13 @@ function Campo({
 }) {
   return (
     <label>
-      <span className="text-sm font-semibold text-zinc-300">{titulo}</span>
+      <span className="text-sm font-semibold text-[var(--muted)]">{titulo}</span>
       <input
         type={tipo}
         value={valor}
         min={tipo === "number" ? "0" : undefined}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3"
+        className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3"
       />
     </label>
   );

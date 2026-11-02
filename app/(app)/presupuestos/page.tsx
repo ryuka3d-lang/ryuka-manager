@@ -112,21 +112,21 @@ export default function PresupuestosPage() {
   }
 
   return (
-    <main className="p-5 text-white md:p-8 lg:p-10">
+    <main className="p-5 text-[var(--text)] md:p-8 lg:p-10">
       <PageHeader
         titulo="Nuevo Presupuesto"
         subtitulo="Agregá uno o varios productos y calculá el pedido completo."
       />
 
       <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center">
-        <div className="flex gap-2 rounded-xl border border-[#2b2b2b] bg-[#171717] p-1 md:w-fit">
+        <div className="flex gap-2 rounded-xl border border-[var(--border)] bg-[var(--field)] p-1 md:w-fit">
           <button
             type="button"
             onClick={() => setVista("nuevo")}
             className={`rounded-lg px-4 py-2 text-sm font-semibold ${
               vista === "nuevo"
-                ? "bg-[#810404] text-white"
-                : "text-gray-400 hover:text-white"
+                ? "bg-[var(--accent)] text-[var(--text)]"
+                : "text-[var(--muted)] hover:text-[var(--text)]"
             }`}
           >
             Nuevo presupuesto
@@ -137,8 +137,8 @@ export default function PresupuestosPage() {
             onClick={() => setVista("guardados")}
             className={`rounded-lg px-4 py-2 text-sm font-semibold ${
               vista === "guardados"
-                ? "bg-[#810404] text-white"
-                : "text-gray-400 hover:text-white"
+                ? "bg-[var(--accent)] text-[var(--text)]"
+                : "text-[var(--muted)] hover:text-[var(--text)]"
             }`}
           >
             Guardados ({presupuestosGuardados.length})
@@ -153,8 +153,8 @@ export default function PresupuestosPage() {
             }
             className={`rounded-xl px-5 py-2 text-sm font-semibold transition ${
               modoRapido
-                ? "bg-red-700 text-white"
-                : "border border-[#3a3a3a] bg-[#151515] text-gray-300 hover:border-red-700"
+                ? "bg-[var(--accent)] text-[var(--text)]"
+                : "border border-[var(--border)] bg-[var(--field)] text-[var(--muted)] hover:border-[var(--accent)]"
             }`}
           >
             {modoRapido
@@ -218,7 +218,7 @@ export default function PresupuestosPage() {
                 }
               />
 
-              <details className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-4">
+              <details className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
                 <summary className="cursor-pointer font-semibold">
                   Accesorios de este producto
                 </summary>
@@ -238,7 +238,7 @@ export default function PresupuestosPage() {
                 </div>
               </details>
 
-              <details className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-4">
+              <details className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
                 <summary className="cursor-pointer font-semibold">
                   Producción de este producto
                 </summary>
@@ -286,7 +286,7 @@ export default function PresupuestosPage() {
             <div className="space-y-4 xl:sticky xl:top-6">
               <details
                 open
-                className="rounded-2xl border border-[#2b2b2b] bg-[#1b1b1b] p-4"
+                className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4"
               >
                 <summary className="cursor-pointer font-semibold">
                   Desglose de costos

@@ -151,10 +151,10 @@ export default function FilamentSelectionModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/75 p-4 backdrop-blur-sm">
-      <div className="my-6 w-full max-w-2xl rounded-[2rem] border border-white/10 bg-[#181818] p-6 text-white">
+      <div className="my-6 w-full max-w-2xl rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 text-[var(--text)]">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)]">
               Iniciar impresión
             </p>
 
@@ -162,7 +162,7 @@ export default function FilamentSelectionModal({
               Elegí las bobinas
             </h2>
 
-            <p className="mt-2 text-sm text-zinc-400">
+            <p className="mt-2 text-sm text-[var(--muted)]">
               {pedido.productoNombre} ·{" "}
               {pedido.id}
             </p>
@@ -172,7 +172,7 @@ export default function FilamentSelectionModal({
             type="button"
             onClick={onClose}
             disabled={iniciando}
-            className="rounded-lg border border-white/10 px-3 py-2 disabled:opacity-50"
+            className="rounded-lg border border-[var(--border)] px-3 py-2 disabled:opacity-50"
           >
             ✕
           </button>
@@ -192,7 +192,7 @@ export default function FilamentSelectionModal({
                   key={
                     requerimiento.clave
                   }
-                  className="rounded-2xl border border-white/10 bg-[#111111] p-5"
+                  className="rounded-2xl border border-[var(--border)] bg-[#111111] p-5"
                 >
                   <h3 className="font-bold">
                     {
@@ -201,7 +201,7 @@ export default function FilamentSelectionModal({
                     {requerimiento.color}
                   </h3>
 
-                  <p className="mt-1 text-sm text-zinc-500">
+                  <p className="mt-1 text-sm text-[var(--muted)]">
                     Necesitás{" "}
                     {requerimiento.gramos.toLocaleString(
                       "es-AR",
@@ -229,7 +229,7 @@ export default function FilamentSelectionModal({
                         })
                       )
                     }
-                    className="mt-4 w-full rounded-xl border border-white/10 bg-[#0d0d0d] px-4 py-3 outline-none focus:border-[#810404] disabled:opacity-50"
+                    className="mt-4 w-full rounded-xl border border-[var(--border)] bg-[var(--field)] px-4 py-3 outline-none focus:border-[var(--accent)] disabled:opacity-50"
                   >
                     <option value="">
                       Seleccionar
@@ -292,7 +292,7 @@ export default function FilamentSelectionModal({
             type="button"
             onClick={onClose}
             disabled={iniciando}
-            className="rounded-xl border border-white/10 px-5 py-3 disabled:opacity-50"
+            className="rounded-xl border border-[var(--border)] px-5 py-3 disabled:opacity-50"
           >
             Cancelar
           </button>
@@ -303,7 +303,7 @@ export default function FilamentSelectionModal({
               void iniciar()
             }
             disabled={iniciando}
-            className="rounded-xl bg-[#810404] px-6 py-3 font-semibold disabled:opacity-50"
+            className="rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold disabled:opacity-50"
           >
             {iniciando
               ? "Iniciando..."

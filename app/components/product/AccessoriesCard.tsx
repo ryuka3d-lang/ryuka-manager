@@ -81,21 +81,21 @@ export default function AccessoriesCard({
   }
 
   return (
-    <div className="rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <div className="mb-6">
         <h2 className="text-xl font-bold">
           📦 Accesorios por defecto
         </h2>
 
-        <p className="mt-2 text-sm text-gray-400">
+        <p className="mt-2 text-sm text-[var(--muted)]">
           Elegí qué accesorios usa este producto y cómo se
           calcula su cantidad.
         </p>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-[#2b2b2b]">
+      <div className="overflow-x-auto rounded-xl border border-[var(--border)]">
         <div className="min-w-[700px]">
-          <div className="grid grid-cols-[70px_1fr_180px_140px] gap-4 bg-[#151515] px-4 py-3 text-sm font-semibold text-gray-300">
+          <div className="grid grid-cols-[70px_1fr_180px_140px] gap-4 bg-[var(--field)] px-4 py-3 text-sm font-semibold text-[var(--muted)]">
             <span>Activo</span>
             <span>Accesorio</span>
             <span>Modo</span>
@@ -105,7 +105,7 @@ export default function AccessoriesCard({
           {producto.accesorios.map((accesorio, indice) => (
             <div
               key={`${accesorio.id}-${indice}`}
-              className="grid grid-cols-[70px_1fr_180px_140px] items-center gap-4 border-t border-[#2b2b2b] px-4 py-4"
+              className="grid grid-cols-[70px_1fr_180px_140px] items-center gap-4 border-t border-[var(--border)] px-4 py-4"
             >
               <input
                 type="checkbox"
@@ -115,14 +115,14 @@ export default function AccessoriesCard({
                     activo: evento.target.checked,
                   })
                 }
-                className="h-5 w-5 accent-[#810404]"
+                className="h-5 w-5 accent-[var(--accent)]"
               />
 
               <span
                 className={
                   accesorio.activo
-                    ? "font-medium text-white"
-                    : "text-gray-500"
+                    ? "font-medium text-[var(--text)]"
+                    : "text-[var(--muted)]"
                 }
               >
                 {accesorio.nombre}
@@ -139,14 +139,14 @@ export default function AccessoriesCard({
                 className="
                   rounded-xl
                   border
-                  border-[#2b2b2b]
-                  bg-[#151515]
+                  border-[var(--border)]
+                  bg-[var(--field)]
                   px-3
                   py-2
                   outline-none
                   disabled:cursor-not-allowed
                   disabled:opacity-40
-                  focus:border-[#810404]
+                  focus:border-[var(--accent)]
                 "
               >
                 <option value="porUnidad">
@@ -172,14 +172,14 @@ export default function AccessoriesCard({
                 className="
                   rounded-xl
                   border
-                  border-[#2b2b2b]
-                  bg-[#151515]
+                  border-[var(--border)]
+                  bg-[var(--field)]
                   px-3
                   py-2
                   outline-none
                   disabled:cursor-not-allowed
                   disabled:opacity-40
-                  focus:border-[#810404]
+                  focus:border-[var(--accent)]
                 "
               />
             </div>
@@ -188,9 +188,9 @@ export default function AccessoriesCard({
       </div>
 
       {accesoriosDisponibles.length > 0 && (
-        <div className="mt-5 flex flex-col gap-3 rounded-xl border border-[#2b2b2b] bg-[#151515] p-4 sm:flex-row sm:items-end">
+        <div className="mt-5 flex flex-col gap-3 rounded-xl border border-[var(--border)] bg-[var(--field)] p-4 sm:flex-row sm:items-end">
           <label className="flex-1">
-            <span className="text-sm font-semibold text-gray-300">
+            <span className="text-sm font-semibold text-[var(--muted)]">
               Agregar accesorio al producto
             </span>
 
@@ -202,12 +202,12 @@ export default function AccessoriesCard({
                 w-full
                 rounded-xl
                 border
-                border-[#2b2b2b]
-                bg-[#101010]
+                border-[var(--border)]
+                bg-[var(--bg)]
                 px-3
                 py-2
                 outline-none
-                focus:border-[#810404]
+                focus:border-[var(--accent)]
               "
             >
               <option value="" disabled>
@@ -245,23 +245,23 @@ export default function AccessoriesCard({
               agregarAccesorio(selector.value);
               selector.value = "";
             }}
-            className="rounded-xl bg-[#810404] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#a00808]"
+            className="rounded-xl bg-[var(--accent)] px-5 py-2 text-sm font-semibold text-[var(--text)] transition hover:bg-[var(--accent-hover)]"
           >
             + Agregar
           </button>
         </div>
       )}
 
-      <div className="mt-5 rounded-xl border border-[#2b2b2b] bg-[#151515] p-4 text-sm text-gray-400">
+      <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--field)] p-4 text-sm text-[var(--muted)]">
         <p>
-          <strong className="text-white">
+          <strong className="text-[var(--text)]">
             Por unidad:
           </strong>{" "}
           la cantidad se multiplica por las unidades del pedido.
         </p>
 
         <p className="mt-2">
-          <strong className="text-white">
+          <strong className="text-[var(--text)]">
             Por pedido:
           </strong>{" "}
           se utiliza una cantidad fija, por ejemplo una caja y
@@ -269,7 +269,7 @@ export default function AccessoriesCard({
         </p>
 
         <p className="mt-2">
-          <strong className="text-white">
+          <strong className="text-[var(--text)]">
             Tip:
           </strong>{" "}
           los accesorios personalizados se crean en

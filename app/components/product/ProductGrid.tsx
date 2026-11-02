@@ -20,12 +20,12 @@ export default function ProductGrid({
 }: Props) {
   if (productos.length === 0 && !cargando) {
     return (
-      <div className="mt-8 rounded-2xl border border-dashed border-[#343434] bg-[#171717] p-10 text-center">
-        <p className="font-semibold text-gray-300">
+      <div className="mt-8 rounded-2xl border border-dashed border-[#343434] bg-[var(--field)] p-10 text-center">
+        <p className="font-semibold text-[var(--muted)]">
           No encontramos productos.
         </p>
 
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-[var(--muted)]">
           Probá con otra búsqueda o creá un producto nuevo.
         </p>
       </div>

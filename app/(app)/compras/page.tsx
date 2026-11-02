@@ -49,18 +49,18 @@ export default function ComprasPage() {
   ).length;
 
   return (
-    <main className="min-h-screen bg-[#101010] text-white">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
       
 
       <section className="min-w-0 flex-1 p-3 sm:p-5 lg:p-10">
-        <header className="rounded-[1.5rem] border border-white/10 bg-[#181818] p-5 sm:rounded-[2rem] sm:p-7 lg:p-10">
+        <header className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)] p-5 sm:rounded-[2rem] sm:p-7 lg:p-10">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-red-300">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
                 Abastecimiento
               </p>
               <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Compras</h1>
-              <p className="mt-4 max-w-2xl text-zinc-300">
+              <p className="mt-4 max-w-2xl text-[var(--muted)]">
                 Registrá filamentos e insumos. Las compras de filamento crean las bobinas automáticamente.
               </p>
             </div>
@@ -68,7 +68,7 @@ export default function ComprasPage() {
             <button
               type="button"
               onClick={() => setMostrarFormulario(true)}
-              className="w-full rounded-xl bg-[#810404] px-5 py-3 font-semibold hover:bg-[#a00808] sm:w-auto"
+              className="w-full rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold hover:bg-[var(--accent-hover)] sm:w-auto"
             >
               + Nueva compra
             </button>
@@ -82,24 +82,24 @@ export default function ComprasPage() {
         </section>
 
         {insumos.length > 0 && (
-          <section className="mt-6 rounded-[1.5rem] border border-white/10 bg-[#181818] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-6">
+          <section className="mt-6 rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-6">
             <h2 className="text-xl font-bold">Stock de insumos</h2>
             <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {insumos.map((insumo) => {
                 const bajo = insumo.cantidadActual <= insumo.stockMinimo;
                 return (
-                  <article key={insumo.id} className="rounded-2xl border border-white/10 bg-[#121212] p-4">
+                  <article key={insumo.id} className="rounded-2xl border border-[var(--border)] bg-[var(--field)] p-4">
                     <div className="flex justify-between gap-4">
                       <div>
-                        <p className="text-xs font-bold text-red-300">{insumo.id}</p>
+                        <p className="text-xs font-bold text-[var(--accent-text)]">{insumo.id}</p>
                         <h3 className="mt-1 font-bold">{insumo.nombre}</h3>
                       </div>
                       {bajo && <span className="h-fit rounded-full bg-amber-950 px-3 py-1 text-xs text-amber-300">Stock bajo</span>}
                     </div>
                     <p className="mt-4 text-2xl font-bold">
-                      {numero(insumo.cantidadActual)} <span className="text-sm font-normal text-zinc-400">{insumo.unidad}</span>
+                      {numero(insumo.cantidadActual)} <span className="text-sm font-normal text-[var(--muted)]">{insumo.unidad}</span>
                     </p>
-                    <p className="mt-2 text-xs text-zinc-500">Costo promedio: {moneda(insumo.costoUnitarioPromedio)} por {insumo.unidad}</p>
+                    <p className="mt-2 text-xs text-[var(--muted)]">Costo promedio: {moneda(insumo.costoUnitarioPromedio)} por {insumo.unidad}</p>
                   </article>
                 );
               })}
@@ -107,36 +107,36 @@ export default function ComprasPage() {
           </section>
         )}
 
-        <section className="mt-6 rounded-[1.5rem] border border-white/10 bg-[#181818] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-6">
+        <section className="mt-6 rounded-[1.5rem] border border-[var(--border)] bg-[var(--card)] p-4 sm:mt-8 sm:rounded-[2rem] sm:p-6">
           <h2 className="text-xl font-bold">Historial de compras</h2>
 
           {cargando ? (
             <div className="mt-5 grid gap-3">
               {[1, 2, 3].map((item) => (
-                <div key={item} className="h-24 animate-pulse rounded-2xl bg-white/5" />
+                <div key={item} className="h-24 animate-pulse rounded-2xl bg-[var(--overlay)]" />
               ))}
             </div>
           ) : compras.length === 0 ? (
-            <div className="mt-5 rounded-2xl border border-dashed border-white/15 p-8 text-center text-zinc-400">
+            <div className="mt-5 rounded-2xl border border-dashed border-white/15 p-8 text-center text-[var(--muted)]">
               Todavía no registraste compras.
             </div>
           ) : (
             <div className="mt-5 space-y-3">
               {compras.map((compra) => (
-                <article key={compra.id} className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-[#121212] p-4 sm:p-5 md:flex-row md:items-center md:justify-between">
+                <article key={compra.id} className="flex flex-col gap-4 rounded-2xl border border-[var(--border)] bg-[var(--field)] p-4 sm:p-5 md:flex-row md:items-center md:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-bold text-red-300">{compra.id}</span>
-                      <span className="rounded-full bg-white/5 px-2.5 py-1 text-xs">
+                      <span className="text-xs font-bold text-[var(--accent-text)]">{compra.id}</span>
+                      <span className="rounded-full bg-[var(--overlay)] px-2.5 py-1 text-xs">
                         {compra.tipo === "filamento" ? "🧵 Filamento" : "📦 Insumo"}
                       </span>
                     </div>
                     <h3 className="mt-2 font-bold">{compra.descripcion}</h3>
-                    <p className="mt-1 text-sm text-zinc-400">
+                    <p className="mt-1 text-sm text-[var(--muted)]">
                       {compra.proveedor || "Sin proveedor"} · {fecha(compra.fecha)} · {numero(compra.cantidad)} u.
                     </p>
                     {compra.bobinasCreadas.length > 0 && (
-                      <p className="mt-2 text-xs text-zinc-500">Bobinas creadas: {compra.bobinasCreadas.join(", ")}</p>
+                      <p className="mt-2 text-xs text-[var(--muted)]">Bobinas creadas: {compra.bobinasCreadas.join(", ")}</p>
                     )}
                   </div>
 
@@ -150,7 +150,7 @@ export default function ComprasPage() {
                           recargar();
                         }
                       }}
-                      className="rounded-xl border border-white/10 px-3 py-2.5 text-sm font-semibold text-zinc-400 hover:text-white"
+                      className="rounded-xl border border-[var(--border)] px-3 py-2.5 text-sm font-semibold text-[var(--muted)] hover:text-[var(--text)]"
                     >
                       Eliminar
                     </button>
@@ -239,18 +239,18 @@ function CompraModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-black/75 p-0 backdrop-blur-sm sm:items-center sm:p-4">
-      <div className="my-0 max-h-[95vh] w-full overflow-y-auto rounded-t-[1.75rem] border border-white/10 bg-[#181818] p-5 sm:my-6 sm:max-w-3xl sm:rounded-[2rem] sm:p-6">
+      <div className="my-0 max-h-[95vh] w-full overflow-y-auto rounded-t-[1.75rem] border border-[var(--border)] bg-[var(--card)] p-5 sm:my-6 sm:max-w-3xl sm:rounded-[2rem] sm:p-6">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-red-300">Nueva compra</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--accent-text)]">Nueva compra</p>
             <h2 className="mt-2 text-2xl font-bold">Registrar abastecimiento</h2>
           </div>
-          <button type="button" onClick={onClose} className="rounded-lg border border-white/10 px-3 py-2">✕</button>
+          <button type="button" onClick={onClose} className="rounded-lg border border-[var(--border)] px-3 py-2">✕</button>
         </div>
 
-        <div className="mt-5 grid grid-cols-2 rounded-xl bg-[#101010] p-1 sm:mt-6">
-          <button type="button" onClick={() => setTipo("filamento")} className={`rounded-lg px-4 py-3 font-semibold ${tipo === "filamento" ? "bg-[#810404]" : "text-zinc-400"}`}>🧵 Filamento</button>
-          <button type="button" onClick={() => setTipo("insumo")} className={`rounded-lg px-4 py-3 font-semibold ${tipo === "insumo" ? "bg-[#810404]" : "text-zinc-400"}`}>📦 Insumo</button>
+        <div className="mt-5 grid grid-cols-2 rounded-xl bg-[var(--bg)] p-1 sm:mt-6">
+          <button type="button" onClick={() => setTipo("filamento")} className={`rounded-lg px-4 py-3 font-semibold ${tipo === "filamento" ? "bg-[var(--accent)]" : "text-[var(--muted)]"}`}>🧵 Filamento</button>
+          <button type="button" onClick={() => setTipo("insumo")} className={`rounded-lg px-4 py-3 font-semibold ${tipo === "insumo" ? "bg-[var(--accent)]" : "text-[var(--muted)]"}`}>📦 Insumo</button>
         </div>
 
         <div className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4">
@@ -259,7 +259,7 @@ function CompraModal({
 
           {tipo === "filamento" ? (
             <>
-              <label><span className="text-sm font-semibold text-zinc-300">Material</span><select value={material} onChange={(e) => setMaterial(e.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3"><option>PLA</option><option>PETG</option><option>TPU</option><option>ABS</option><option>ASA</option><option>OTRO</option></select></label>
+              <label><span className="text-sm font-semibold text-[var(--muted)]">Material</span><select value={material} onChange={(e) => setMaterial(e.target.value)} className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3"><option>PLA</option><option>PETG</option><option>TPU</option><option>ABS</option><option>ASA</option><option>OTRO</option></select></label>
               <Campo titulo="Color *" valor={color} onChange={setColor} />
               <Campo titulo="Marca" valor={marca} onChange={setMarca} />
               <Campo titulo="Cantidad de bobinas" tipo="number" valor={cantidad} onChange={setCantidad} />
@@ -279,11 +279,11 @@ function CompraModal({
           <Campo titulo="Medio de pago" valor={medioPago} onChange={setMedioPago} />
         </div>
 
-        <label className="mt-4 block"><span className="text-sm font-semibold text-zinc-300">Notas</span><textarea value={notas} onChange={(e) => setNotas(e.target.value)} rows={3} className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3" /></label>
+        <label className="mt-4 block"><span className="text-sm font-semibold text-[var(--muted)]">Notas</span><textarea value={notas} onChange={(e) => setNotas(e.target.value)} rows={3} className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3" /></label>
 
         <div className="mt-5 flex flex-col-reverse gap-2 sm:mt-6 sm:flex-row sm:justify-end sm:gap-3">
-          <button type="button" onClick={onClose} className="w-full rounded-xl border border-white/10 px-5 py-3 sm:w-auto">Cancelar</button>
-          <button type="button" onClick={guardar} className="w-full rounded-xl bg-[#810404] px-6 py-3 font-semibold sm:w-auto">Guardar compra</button>
+          <button type="button" onClick={onClose} className="w-full rounded-xl border border-[var(--border)] px-5 py-3 sm:w-auto">Cancelar</button>
+          <button type="button" onClick={guardar} className="w-full rounded-xl bg-[var(--accent)] px-6 py-3 font-semibold sm:w-auto">Guardar compra</button>
         </div>
       </div>
     </div>
@@ -291,11 +291,11 @@ function CompraModal({
 }
 
 function Campo({ titulo, valor, tipo = "text", onChange }: { titulo: string; valor: string; tipo?: "text" | "number" | "date"; onChange: (valor: string) => void }) {
-  return <label><span className="text-sm font-semibold text-zinc-300">{titulo}</span><input type={tipo} value={valor} min={tipo === "number" ? "0" : undefined} onChange={(e) => onChange(e.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-[#101010] px-4 py-3" /></label>;
+  return <label><span className="text-sm font-semibold text-[var(--muted)]">{titulo}</span><input type={tipo} value={valor} min={tipo === "number" ? "0" : undefined} onChange={(e) => onChange(e.target.value)} className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3" /></label>;
 }
 
 function Resumen({ titulo, valor }: { titulo: string; valor: string }) {
-  return <article className="rounded-2xl border border-white/10 bg-[#181818] p-5"><p className="text-sm text-zinc-400">{titulo}</p><p className="mt-2 text-2xl font-bold">{valor}</p></article>;
+  return <article className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5"><p className="text-sm text-[var(--muted)]">{titulo}</p><p className="mt-2 text-2xl font-bold">{valor}</p></article>;
 }
 
 function moneda(valor: number) {

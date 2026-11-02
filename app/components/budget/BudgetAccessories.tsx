@@ -25,25 +25,25 @@ export default function BudgetAccessoriesSection({
   }
 
   return (
-    <section className="mt-8 rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+    <section className="mt-8 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <h2 className="text-xl font-bold">
         Accesorios de este presupuesto
       </h2>
 
-      <p className="mt-2 text-sm text-gray-400">
+      <p className="mt-2 text-sm text-[var(--muted)]">
         Los cambios realizados acá no modifican
         el producto original.
       </p>
 
       {accesorios.length === 0 ? (
-        <p className="mt-6 text-sm text-gray-400">
+        <p className="mt-6 text-sm text-[var(--muted)]">
           Este producto no tiene accesorios
           configurados.
         </p>
       ) : (
-        <div className="mt-6 overflow-x-auto rounded-xl border border-[#303030]">
+        <div className="mt-6 overflow-x-auto rounded-xl border border-[var(--border)]">
           <div className="min-w-[720px]">
-            <div className="grid grid-cols-[80px_1fr_190px_150px] gap-4 bg-[#151515] px-4 py-3 text-sm font-semibold text-gray-300">
+            <div className="grid grid-cols-[80px_1fr_190px_150px] gap-4 bg-[var(--field)] px-4 py-3 text-sm font-semibold text-[var(--muted)]">
               <span>Incluir</span>
               <span>Accesorio</span>
               <span>Modo</span>
@@ -53,7 +53,7 @@ export default function BudgetAccessoriesSection({
             {accesorios.map((accesorio) => (
               <div
                 key={accesorio.id}
-                className="grid grid-cols-[80px_1fr_190px_150px] items-center gap-4 border-t border-[#303030] px-4 py-4"
+                className="grid grid-cols-[80px_1fr_190px_150px] items-center gap-4 border-t border-[var(--border)] px-4 py-4"
               >
                 <input
                   type="checkbox"
@@ -67,14 +67,14 @@ export default function BudgetAccessoriesSection({
                       }
                     )
                   }
-                  className="h-5 w-5 accent-[#810404]"
+                  className="h-5 w-5 accent-[var(--accent)]"
                 />
 
                 <span
                   className={
                     accesorio.activo
-                      ? "font-medium text-white"
-                      : "text-gray-500"
+                      ? "font-medium text-[var(--text)]"
+                      : "text-[var(--muted)]"
                   }
                 >
                   {accesorio.nombre}
@@ -96,13 +96,13 @@ export default function BudgetAccessoriesSection({
                   className="
                     rounded-xl
                     border
-                    border-[#303030]
-                    bg-[#151515]
+                    border-[var(--border)]
+                    bg-[var(--field)]
                     px-3
                     py-2
                     outline-none
                     disabled:opacity-40
-                    focus:border-[#810404]
+                    focus:border-[var(--accent)]
                   "
                 >
                   <option value="porUnidad">
@@ -131,13 +131,13 @@ export default function BudgetAccessoriesSection({
                   className="
                     rounded-xl
                     border
-                    border-[#303030]
-                    bg-[#151515]
+                    border-[var(--border)]
+                    bg-[var(--field)]
                     px-3
                     py-2
                     outline-none
                     disabled:opacity-40
-                    focus:border-[#810404]
+                    focus:border-[var(--accent)]
                   "
                 />
               </div>

@@ -27,7 +27,7 @@ export default function ProductToolbar({
   onCerrarFormulario,
 }: Props) {
   return (
-    <div className="mt-8 rounded-2xl border border-[#2b2b2b] bg-[#171717] p-4 md:flex md:items-center md:justify-between md:gap-4">
+    <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--field)] p-4 md:flex md:items-center md:justify-between md:gap-4">
       <div>
         <h2 className="text-lg font-semibold">
           {mostrarFormulario
@@ -37,7 +37,7 @@ export default function ProductToolbar({
             : "Mis productos"}
         </h2>
 
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-[var(--muted)]">
           {cargando
             ? "Sincronizando productos..."
             : `${cantidadProductos} productos guardados`}
@@ -47,7 +47,7 @@ export default function ProductToolbar({
       <div className="mt-4 flex flex-col gap-3 sm:flex-row md:mt-0">
         {!mostrarFormulario && (
           <div className="relative min-w-64">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted)]" />
 
             <input
               value={busqueda}
@@ -55,7 +55,7 @@ export default function ProductToolbar({
                 onBusquedaChange(evento.target.value)
               }
               placeholder="Buscar producto..."
-              className="w-full rounded-xl border border-[#2b2b2b] bg-[#111] py-3 pl-10 pr-4 text-sm outline-none focus:border-[#810404]"
+              className="w-full rounded-xl border border-[var(--border)] bg-[#111] py-3 pl-10 pr-4 text-sm outline-none focus:border-[var(--accent)]"
             />
           </div>
         )}

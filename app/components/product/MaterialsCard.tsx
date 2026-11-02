@@ -70,14 +70,14 @@ export default function MaterialsCard({
   }
 
   return (
-    <section className="rounded-xl border border-[#2b2b2b] bg-[#1b1b1b] p-6">
+    <section className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="text-xl font-bold">
             🧵 Filamentos del producto
           </h2>
 
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">
             Indicá el material, color y los gramos utilizados por cama.
             Esto permite elegir las bobinas correctas cuando comienza la impresión.
           </p>
@@ -86,14 +86,14 @@ export default function MaterialsCard({
         <button
           type="button"
           onClick={agregarMaterial}
-          className="rounded-xl bg-[#810404] px-4 py-3 text-sm font-semibold transition hover:bg-[#a00808]"
+          className="rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-semibold transition hover:bg-[var(--accent-hover)]"
         >
           + Agregar filamento
         </button>
       </div>
 
       {producto.materiales.length === 0 ? (
-        <div className="mt-6 rounded-xl border border-dashed border-[#353535] p-6 text-center text-sm text-gray-500">
+        <div className="mt-6 rounded-xl border border-dashed border-[#353535] p-6 text-center text-sm text-[var(--muted)]">
           Todavía no agregaste filamentos a esta receta.
         </div>
       ) : (
@@ -102,10 +102,10 @@ export default function MaterialsCard({
             (material) => (
               <article
                 key={material.id}
-                className="grid gap-3 rounded-xl border border-[#303030] bg-[#151515] p-4 md:grid-cols-[1fr_1fr_1fr_auto]"
+                className="grid gap-3 rounded-xl border border-[var(--border)] bg-[var(--field)] p-4 md:grid-cols-[1fr_1fr_1fr_auto]"
               >
                 <label>
-                  <span className="text-xs font-semibold text-gray-400">
+                  <span className="text-xs font-semibold text-[var(--muted)]">
                     Material
                   </span>
 
@@ -120,7 +120,7 @@ export default function MaterialsCard({
                         }
                       )
                     }
-                    className="mt-2 w-full rounded-lg border border-[#353535] bg-[#101010] px-3 py-3 outline-none focus:border-[#810404]"
+                    className="mt-2 w-full rounded-lg border border-[#353535] bg-[var(--bg)] px-3 py-3 outline-none focus:border-[var(--accent)]"
                   >
                     <option value="PLA">PLA</option>
                     <option value="PETG">
@@ -136,7 +136,7 @@ export default function MaterialsCard({
                 </label>
 
                 <label>
-                  <span className="text-xs font-semibold text-gray-400">
+                  <span className="text-xs font-semibold text-[var(--muted)]">
                     Color
                   </span>
 
@@ -152,12 +152,12 @@ export default function MaterialsCard({
                       )
                     }
                     placeholder="Ej: Blanco"
-                    className="mt-2 w-full rounded-lg border border-[#353535] bg-[#101010] px-3 py-3 outline-none focus:border-[#810404]"
+                    className="mt-2 w-full rounded-lg border border-[#353535] bg-[var(--bg)] px-3 py-3 outline-none focus:border-[var(--accent)]"
                   />
                 </label>
 
                 <label>
-                  <span className="text-xs font-semibold text-gray-400">
+                  <span className="text-xs font-semibold text-[var(--muted)]">
                     Gramos por cama
                   </span>
 
@@ -178,7 +178,7 @@ export default function MaterialsCard({
                       )
                     }
                     placeholder="0"
-                    className="mt-2 w-full rounded-lg border border-[#353535] bg-[#101010] px-3 py-3 outline-none focus:border-[#810404]"
+                    className="mt-2 w-full rounded-lg border border-[#353535] bg-[var(--bg)] px-3 py-3 outline-none focus:border-[var(--accent)]"
                   />
                 </label>
 
@@ -189,7 +189,7 @@ export default function MaterialsCard({
                       material.id
                     )
                   }
-                  className="self-end rounded-lg border border-red-950 px-4 py-3 text-sm text-red-300 transition hover:bg-red-950/30"
+                  className="self-end rounded-lg border border-red-950 px-4 py-3 text-sm text-[var(--accent-text)] transition hover:bg-red-950/30"
                 >
                   Eliminar
                 </button>
@@ -199,9 +199,9 @@ export default function MaterialsCard({
         </div>
       )}
 
-      <div className="mt-5 rounded-xl border border-white/5 bg-black/20 p-4">
+      <div className="mt-5 rounded-xl border border-white/5 bg-[var(--overlay)] p-4">
         <div className="flex items-center justify-between gap-4 text-sm">
-          <span className="text-gray-400">
+          <span className="text-[var(--muted)]">
             Total detallado por cama
           </span>
 
