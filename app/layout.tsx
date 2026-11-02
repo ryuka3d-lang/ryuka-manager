@@ -30,12 +30,6 @@ export default function RootLayout({
   return (
     <html lang="es" className="h-full antialiased">
       <body className="min-h-full">
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              'try{if(localStorage.getItem("ryuka-tema")==="claro"){document.documentElement.classList.add("light");}}catch(e){}',
-          }}
-        />
         <CloudSyncProvider>
           <ServiceWorkerRegister />
           {children}

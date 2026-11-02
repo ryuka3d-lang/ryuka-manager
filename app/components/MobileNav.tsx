@@ -47,10 +47,10 @@ export default function MobileNav() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-[var(--border)] bg-[var(--accent)] px-4 py-3 text-[var(--text)] shadow-lg lg:hidden">
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-[var(--border)] bg-[var(--accent)] px-4 py-3 text-white shadow-lg lg:hidden">
         <Link href="/" className="leading-none" aria-label="Ir al inicio de Ryuka Manager">
           <strong className="text-lg tracking-wide">RYUKA</strong>
-          <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-red-200">
+          <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-white/70">
             Manager
           </p>
         </Link>
@@ -60,7 +60,7 @@ export default function MobileNav() {
           onClick={() => setAbierto(true)}
           aria-label="Abrir menú de navegación"
           aria-expanded={abierto}
-          className="min-h-11 rounded-xl border border-white/20 bg-[var(--overlay)] px-4 py-2 text-sm font-semibold"
+          className="min-h-11 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold"
         >
           ☰ Menú
         </button>
@@ -80,13 +80,13 @@ export default function MobileNav() {
                 key={href}
                 href={href}
                 aria-current={activo ? "page" : undefined}
-                className={`flex min-h-14 flex-col items-center justify-center rounded-xl px-1 text-[10px] font-semibold transition active:scale-95 ${
+                className={`flex min-h-14 flex-col items-center justify-center rounded-xl px-1 text-[11px] font-semibold transition active:scale-95 ${
                   activo
-                    ? "bg-[var(--accent)] text-[var(--text)]"
+                    ? "bg-[var(--accent)] text-white"
                     : "text-[var(--muted)] hover:bg-[var(--overlay)] hover:text-[var(--text)]"
                 }`}
               >
-                <span className="text-lg leading-none" aria-hidden="true">
+                <span className="text-xl leading-none" aria-hidden="true">
                   {icono}
                 </span>
                 <span className="mt-1 truncate">{label}</span>
@@ -107,10 +107,10 @@ export default function MobileNav() {
             onClick={(evento) => evento.stopPropagation()}
             aria-label="Menú completo"
           >
-            <div className="flex items-center justify-between bg-[var(--accent)] px-5 py-5">
+            <div className="flex items-center justify-between bg-[var(--accent)] px-5 py-5 text-white">
               <div>
                 <strong className="text-2xl">RYUKA</strong>
-                <p className="text-[10px] uppercase tracking-[0.18em] text-red-200">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-white/70">
                   Manager
                 </p>
               </div>

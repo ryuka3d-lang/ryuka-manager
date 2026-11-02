@@ -14,7 +14,6 @@ import {
   restaurarConfiguracion,
   type RyukaConfig,
 } from "@/lib/settings-service";
-import ThemeToggle from "@/app/components/ThemeToggle";
 
 type CampoConfiguracion = {
   clave: keyof RyukaConfig;
@@ -353,21 +352,7 @@ export default function ConfiguracionPage() {
           </div>
         </header>
 
-        <section className="mt-8 rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6">
-          <h2 className="text-xl font-bold">
-            Apariencia
-          </h2>
-
-          <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-            Elegí entre modo oscuro moderno y modo claro limpio.
-            La preferencia queda guardada en este dispositivo.
-          </p>
-
-          <div className="mt-4">
-            <ThemeToggle />
-          </div>
-        </section>
-
+  
         <div className="mt-8 space-y-6">
           <SeccionConfiguracion
             titulo="Material y máquina"
