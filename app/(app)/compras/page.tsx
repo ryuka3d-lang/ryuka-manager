@@ -117,7 +117,7 @@ export default function ComprasPage() {
               ))}
             </div>
           ) : compras.length === 0 ? (
-            <div className="mt-5 rounded-2xl border border-dashed border-white/15 p-8 text-center text-[var(--muted)]">
+            <div className="mt-5 rounded-2xl border border-dashed border-[var(--border)] p-8 text-center text-[var(--muted)]">
               Todavía no registraste compras.
             </div>
           ) : (

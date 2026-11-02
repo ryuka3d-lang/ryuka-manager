@@ -223,7 +223,7 @@ export default function FinanzasPage() {
                 <button
                   type="button"
                   onClick={limpiarFiltros}
-                  className="mt-2 text-xs font-semibold text-[var(--muted)] underline decoration-white/20 underline-offset-4 hover:text-[var(--text)]"
+                  className="mt-2 text-xs font-semibold text-[var(--muted)] underline decoration-[var(--border)] underline-offset-4 hover:text-[var(--text)]"
                 >
                   Restablecer filtros
                 </button>
@@ -256,7 +256,7 @@ export default function FinanzasPage() {
           )}
 
           {filtrados.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-dashed border-white/15 p-10 text-center text-[var(--muted)]">
+            <div className="mt-6 rounded-2xl border border-dashed border-[var(--border)] p-10 text-center text-[var(--muted)]">
               No hay movimientos para estos filtros.
             </div>
           ) : (

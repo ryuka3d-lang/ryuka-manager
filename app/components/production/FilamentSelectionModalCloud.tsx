@@ -235,7 +235,7 @@ export default function FilamentSelectionModalCloud({
         </div>
 
         {cargandoBobinas && (
-          <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/[0.02] p-4 text-sm text-[var(--muted)]">
+          <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--overlay)] p-4 text-sm text-[var(--muted)]">
             Cargando bobinas de Stock...
           </div>
         )}

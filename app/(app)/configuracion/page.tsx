@@ -484,7 +484,7 @@ export default function ConfiguracionPage() {
               </div>
             )}
 
-            <div className="mt-6 grid gap-3 rounded-2xl border border-dashed border-white/15 bg-[var(--overlay)] p-4 md:grid-cols-[1fr_180px_auto] md:items-end">
+            <div className="mt-6 grid gap-3 rounded-2xl border border-dashed border-[var(--border)] bg-[var(--overlay)] p-4 md:grid-cols-[1fr_180px_auto] md:items-end">
               <label className="block">
                 <span className="text-sm font-semibold text-[var(--muted)]">
                   Nuevo accesorio
@@ -547,7 +547,7 @@ export default function ConfiguracionPage() {
           />
         </div>
 
-        <div className="sticky bottom-4 mt-8 flex flex-col gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)]/95 p-4 shadow-2xl backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+        <div className="sticky bottom-4 mt-8 flex flex-col gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-2xl backdrop-blur sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-semibold">
               {guardado

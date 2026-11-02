@@ -270,7 +270,7 @@ function SearchLink({
 }) {
   if (disabled) {
     return (
-      <span className="cursor-not-allowed rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3 text-center text-sm font-semibold text-zinc-600">
+      <span className="cursor-not-allowed rounded-xl border border-white/5 bg-[var(--overlay)] px-4 py-3 text-center text-sm font-semibold text-zinc-600">
         {label}
       </span>
     );

@@ -161,7 +161,7 @@ export default function Sidebar() {
       </nav>
 
       <footer className="border-t border-[var(--border)] p-4">
-        <div className="rounded-2xl border border-white/15 bg-black/10 p-4">
+        <div className="rounded-2xl border border-[var(--border)] bg-black/10 p-4">
           <CloudStatus />
 
           <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-red-200">

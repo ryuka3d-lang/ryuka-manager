@@ -482,7 +482,7 @@ export default function FairCandidates({
                           candidato.estado ===
                             "convertido"
                         }
-                        className="rounded-lg border border-[var(--accent)] bg-red-950/20 px-3 py-2 text-xs font-semibold text-red-200 transition hover:bg-red-950/40 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/[0.02] disabled:text-zinc-600"
+                        className="rounded-lg border border-[var(--accent)] bg-red-950/20 px-3 py-2 text-xs font-semibold text-red-200 transition hover:bg-red-950/40 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-[var(--overlay)] disabled:text-zinc-600"
                       >
                         {candidato.licencia ===
                         "no_comercial"

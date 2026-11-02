@@ -152,7 +152,7 @@ useEffect(() => {
               Cargando pedidos...
             </div>
           ) : filtrados.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-dashed border-white/15 p-8 text-center text-[var(--muted)] sm:p-10">
+            <div className="mt-6 rounded-2xl border border-dashed border-[var(--border)] p-8 text-center text-[var(--muted)] sm:p-10">
               No hay pedidos para mostrar. Crealos desde Presupuestos.
             </div>
           ) : (

@@ -112,7 +112,7 @@ export default function Home() {
 
               <Link
                 href="/productos"
-                className="rounded-2xl border border-white/15 bg-[var(--overlay)] px-5 py-3 text-sm font-semibold transition hover:bg-white/10"
+                className="rounded-2xl border border-[var(--border)] bg-[var(--overlay)] px-5 py-3 text-sm font-semibold transition hover:bg-white/10"
               >
                 Ver productos
               </Link>

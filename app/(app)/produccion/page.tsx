@@ -180,7 +180,7 @@ export default function ProduccionPage() {
             Cargando producción...
           </section>
         ) : pedidos.length === 0 ? (
-          <section className="mt-8 rounded-[2rem] border border-dashed border-white/15 bg-[var(--card)] p-10 text-center">
+          <section className="mt-8 rounded-[2rem] border border-dashed border-[var(--border)] bg-[var(--card)] p-10 text-center">
             <h2 className="text-2xl font-bold">
               Todavía no hay órdenes de producción
             </h2>

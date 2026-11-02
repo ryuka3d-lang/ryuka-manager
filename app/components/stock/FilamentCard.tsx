@@ -45,7 +45,7 @@ export default function FilamentCard({
       : 0;
 
   return (
-    <article className="rounded-2xl border border-[var(--border)] bg-[#111111] p-4 transition hover:border-white/15 sm:p-5">
+    <article className="rounded-2xl border border-[var(--border)] bg-[#111111] p-4 transition hover:border-[var(--border)] sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent-text)]">
