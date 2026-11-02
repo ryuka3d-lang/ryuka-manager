@@ -49,6 +49,15 @@ function hoy() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function etiquetaMes(clave: string) {
+  if (!clave) return "Sin mes";
+
+  return new Intl.DateTimeFormat("es-AR", {
+    month: "long",
+    year: "numeric",
+  }).format(new Date(`${clave}-01T12:00:00`));
+}
+
 export default function FinanzasPage() {
   const [movimientos, setMovimientos] = useState<MovimientoCaja[]>([]);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -90,6 +99,54 @@ export default function FinanzasPage() {
         electricidadAReponer: config.electricidadAReponer,
       }),
     [movimientos, config]
+  );
+
+  const resumenMes = useMemo(() => {
+    const delMes = movimientos.filter((movimiento) =>
+      movimiento.fecha.startsWith(mesFiltro)
+    );
+
+    return obtenerResumenCaja(delMes);
+  }, [movimientos, mesFiltro]);
+
+  const ultimosDoceMeses = useMemo(() => {
+    const ahora = new Date();
+
+    const meses = Array.from({ length: 12 }, (_, indice) => {
+      const fecha = new Date(
+        ahora.getFullYear(),
+        ahora.getMonth() - indice,
+        1
+      );
+
+      return {
+        clave: `${fecha.getFullYear()}-${String(
+          fecha.getMonth() + 1
+        ).padStart(2, "0")}`,
+        ingresos: 0,
+        egresos: 0,
+      };
+    });
+
+    for (const movimiento of movimientos) {
+      const clave = movimiento.fecha.slice(0, 7);
+      const mes = meses.find((elemento) => elemento.clave === clave);
+
+      if (!mes) continue;
+
+      if (movimiento.tipo === "ingreso") {
+        mes.ingresos += movimiento.monto;
+      } else {
+        mes.egresos += movimiento.monto;
+      }
+    }
+
+    return meses;
+  }, [movimientos]);
+
+  const maximoMensual = Math.max(
+    1,
+    ...ultimosDoceMeses.flatMap((mes) => [mes.ingresos, mes.egresos])
   );
 
   const filtrados = useMemo(() => {
@@ -171,9 +228,89 @@ export default function FinanzasPage() {
 
         <section className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
           <Resumen titulo="Saldo total" valor={moneda(resumen.saldo)} destacado />
-          <Resumen titulo="Ingresos del mes" valor={moneda(resumen.ingresosMes)} />
-          <Resumen titulo="Egresos del mes" valor={moneda(resumen.egresosMes)} />
-          <Resumen titulo="Resultado del mes" valor={moneda(resumen.resultadoMes)} />
+          <Resumen titulo={`Ingresos de ${etiquetaMes(mesFiltro)}`} valor={moneda(resumenMes.ingresos)} />
+          <Resumen titulo={`Egresos de ${etiquetaMes(mesFiltro)}`} valor={moneda(resumenMes.egresos)} />
+          <Resumen
+            titulo="Resultado del mes"
+            valor={moneda(resumenMes.ingresos - resumenMes.egresos)}
+          />
+        </section>
+
+        <section className="mt-6 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 sm:p-6 lg:rounded-[2rem]">
+          <div>
+            <h2 className="text-xl font-bold">Resumen mensual</h2>
+            <p className="mt-1 text-sm text-[var(--muted)]">
+              Ingresos vs egresos de los últimos 12 meses. Tocá un mes para filtrar la lista de movimientos.
+            </p>
+          </div>
+
+          <div className="mt-4 grid gap-2">
+            {ultimosDoceMeses.map((mes) => {
+              const resultado = mes.ingresos - mes.egresos;
+              const activo = mes.clave === mesFiltro;
+
+              return (
+                <button
+                  key={mes.clave}
+                  type="button"
+                  onClick={() => setMesFiltro(mes.clave)}
+                  className={`w-full rounded-2xl border p-3 text-left transition sm:p-4 ${
+                    activo
+                      ? "border-[var(--accent)] bg-[var(--overlay)]"
+                      : "border-[var(--border)] bg-[var(--field)] hover:border-[var(--accent)]"
+                  }`}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-sm font-semibold capitalize">
+                      {etiquetaMes(mes.clave)}
+                    </span>
+
+                    <span
+                      className={`text-sm font-bold ${
+                        resultado >= 0 ? "text-emerald-300" : "text-red-300"
+                      }`}
+                    >
+                      {resultado >= 0 ? "+" : "−"} {moneda(Math.abs(resultado))}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                    <div>
+                      <div className="flex items-center justify-between text-xs text-[var(--muted)]">
+                        <span>Ingresos</span>
+                        <span className="font-semibold text-emerald-300">
+                          {moneda(mes.ingresos)}
+                        </span>
+                      </div>
+
+                      <div className="mt-1 h-2 overflow-hidden rounded-full bg-[var(--overlay)]">
+                        <div
+                          className="h-2 rounded-full bg-emerald-500"
+                          style={{ width: `${(mes.ingresos / maximoMensual) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between text-xs text-[var(--muted)]">
+                        <span>Egresos</span>
+                        <span className="font-semibold text-red-300">
+                          {moneda(mes.egresos)}
+                        </span>
+                      </div>
+
+                      <div className="mt-1 h-2 overflow-hidden rounded-full bg-[var(--overlay)]">
+                        <div
+                          className="h-2 rounded-full bg-red-500"
+                          style={{ width: `${(mes.egresos / maximoMensual) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </section>
 
         {resumen.saldo < 0 && (
@@ -272,7 +409,7 @@ export default function FinanzasPage() {
                         className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                           movimiento.tipo === "ingreso"
                             ? "bg-emerald-950 text-emerald-300"
-                            : "bg-red-950 text-[var(--accent-text)]"
+                            : "bg-red-950 text-red-300"
                         }`}
                       >
                         {movimiento.tipo === "ingreso" ? "Ingreso" : "Egreso"}
@@ -310,7 +447,7 @@ export default function FinanzasPage() {
                   <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between md:justify-end">
                     <strong
                       className={`text-lg ${
-                        movimiento.tipo === "ingreso" ? "text-emerald-300" : "text-[var(--accent-text)]"
+                        movimiento.tipo === "ingreso" ? "text-emerald-300" : "text-red-300"
                       }`}
                     >
                       {movimiento.tipo === "ingreso" ? "+" : "−"} {moneda(movimiento.monto)}
