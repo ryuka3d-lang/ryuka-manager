@@ -12,8 +12,13 @@ import {
   type MovimientoCaja,
   type TipoMovimientoCaja,
 } from "@/lib/finance-service";
-import { obtenerConfiguracion } from "@/lib/settings-service";
+import { 
+  obtenerConfiguracion, 
+  DEFAULT_RYUKA_CONFIG 
+} from "@/lib/settings-service";
 import FinancialHealthCard from "@/app/components/finance/FinancialHealthCard";
+
+const CORTE_KEY = "ryuka-fecha-inicio-caja";
 
 const categoriasIngreso = [
   "Venta",
@@ -59,22 +64,38 @@ function etiquetaMes(clave: string) {
 }
 
 export default function FinanzasPage() {
+  // 1. Bandera para asegurar que servidor y cliente rendericen igual al inicio
+  const [isMounted, setIsMounted] = useState(false);
+  
   const [movimientos, setMovimientos] = useState<MovimientoCaja[]>([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [movimientoEditando, setMovimientoEditando] = useState<MovimientoCaja | null>(null);
   const [tipoFiltro, setTipoFiltro] = useState<"todos" | TipoMovimientoCaja>("todos");
   const [mesFiltro, setMesFiltro] = useState(() => hoy().slice(0, 7));
   const [busqueda, setBusqueda] = useState("");
+  const [fechaInicioCaja, setFechaInicioCaja] = useState("");
+  
   const filtrosActivos = Boolean(busqueda.trim()) || tipoFiltro !== "todos" || mesFiltro !== hoy().slice(0, 7);
 
-  const cantidadManuales = useMemo(
-    () => movimientos.filter((movimiento) => movimiento.origen === "manual").length,
-    [movimientos]
+  // 2. Cargar datos reales solo después de que el componente se monta en el cliente
+  useEffect(() => {
+    setIsMounted(true);
+    setMovimientos(obtenerMovimientosCaja());
+    setFechaInicioCaja(localStorage.getItem(CORTE_KEY) || "");
+  }, []);
+
+  const movimientosVisibles = useMemo(
+    () =>
+      fechaInicioCaja
+        ? movimientos.filter((movimiento) => movimiento.fecha >= fechaInicioCaja)
+        : movimientos,
+    [movimientos, fechaInicioCaja]
   );
 
-  function recargar() {
-    setMovimientos(obtenerMovimientosCaja());
-  }
+  const cantidadManuales = useMemo(
+    () => movimientosVisibles.filter((movimiento) => movimiento.origen === "manual").length,
+    [movimientosVisibles]
+  );
 
   function limpiarFiltros() {
     setTipoFiltro("todos");
@@ -82,32 +103,51 @@ export default function FinanzasPage() {
     setBusqueda("");
   }
 
-  useEffect(() => {
-    recargar();
-  }, []);
+  function iniciarCajaDesdeCero() {
+    if (
+      !confirm(
+        "La caja ignorará todos los movimientos anteriores a hoy y arrancará desde cero. Tu historial de pedidos y compras NO se borra. ¿Continuar?"
+      )
+    ) {
+      return;
+    }
 
-  const resumen = useMemo(() => obtenerResumenCaja(movimientos), [movimientos]);
+    const fechaCorte = hoy();
+    localStorage.setItem(CORTE_KEY, fechaCorte);
+    setFechaInicioCaja(fechaCorte);
+    setMesFiltro(fechaCorte.slice(0, 7));
+  }
 
-  const config = useMemo(() => obtenerConfiguracion(), [movimientos]);
+  function quitarCorte() {
+    localStorage.removeItem(CORTE_KEY);
+    setFechaInicioCaja("");
+  }
+
+  // 3. Usar DEFAULT_RYUKA_CONFIG en el primer render para que coincida con el servidor
+  const config = useMemo(() => {
+    return isMounted ? obtenerConfiguracion() : DEFAULT_RYUKA_CONFIG;
+  }, [isMounted]);
+
+  const resumen = useMemo(() => obtenerResumenCaja(movimientosVisibles), [movimientosVisibles]);
 
   const centroFinanciero = useMemo(
     () =>
-      obtenerCentroFinanciero(movimientos, {
+      obtenerCentroFinanciero(movimientosVisibles, {
         sueldoMensual: config.sueldoMensual,
         monotributo: config.monotributo,
         reinversionPorcentaje: config.reinversionPorcentaje,
         electricidadAReponer: config.electricidadAReponer,
       }),
-    [movimientos, config]
+    [movimientosVisibles, config]
   );
 
   const resumenMes = useMemo(() => {
-    const delMes = movimientos.filter((movimiento) =>
+    const delMes = movimientosVisibles.filter((movimiento) =>
       movimiento.fecha.startsWith(mesFiltro)
     );
 
     return obtenerResumenCaja(delMes);
-  }, [movimientos, mesFiltro]);
+  }, [movimientosVisibles, mesFiltro]);
 
   const ultimosDoceMeses = useMemo(() => {
     const ahora = new Date();
@@ -128,7 +168,7 @@ export default function FinanzasPage() {
       };
     });
 
-    for (const movimiento of movimientos) {
+    for (const movimiento of movimientosVisibles) {
       const clave = movimiento.fecha.slice(0, 7);
       const mes = meses.find((elemento) => elemento.clave === clave);
 
@@ -142,7 +182,7 @@ export default function FinanzasPage() {
     }
 
     return meses;
-  }, [movimientos]);
+  }, [movimientosVisibles]);
 
   const maximoMensual = Math.max(
     1,
@@ -152,7 +192,7 @@ export default function FinanzasPage() {
   const filtrados = useMemo(() => {
     const texto = busqueda.trim().toLowerCase();
 
-    return movimientos.filter((movimiento) => {
+    return movimientosVisibles.filter((movimiento) => {
       const coincideTipo = tipoFiltro === "todos" || movimiento.tipo === tipoFiltro;
       const coincideMes = !mesFiltro || movimiento.fecha.startsWith(mesFiltro);
       const coincideTexto =
@@ -164,7 +204,7 @@ export default function FinanzasPage() {
 
       return coincideTipo && coincideMes && coincideTexto;
     });
-  }, [movimientos, tipoFiltro, mesFiltro, busqueda]);
+  }, [movimientosVisibles, tipoFiltro, mesFiltro, busqueda]);
 
   const resumenFiltrado = useMemo(() => obtenerResumenCaja(filtrados), [filtrados]);
 
@@ -221,10 +261,13 @@ export default function FinanzasPage() {
           </div>
         </header>
 
-        <FinancialHealthCard
-          centro={centroFinanciero}
-          reinversionPorcentaje={config.reinversionPorcentaje}
-        />
+        {/* Solo renderizamos esto cuando isMounted es true para evitar mismatch */}
+        {isMounted && (
+          <FinancialHealthCard
+            centro={centroFinanciero}
+            reinversionPorcentaje={config.reinversionPorcentaje}
+          />
+        )}
 
         <section className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
           <Resumen titulo="Saldo total" valor={moneda(resumen.saldo)} destacado />
@@ -237,11 +280,39 @@ export default function FinanzasPage() {
         </section>
 
         <section className="mt-6 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 sm:p-6 lg:rounded-[2rem]">
-          <div>
-            <h2 className="text-xl font-bold">Resumen mensual</h2>
-            <p className="mt-1 text-sm text-[var(--muted)]">
-              Ingresos vs egresos de los últimos 12 meses. Tocá un mes para filtrar la lista de movimientos.
-            </p>
+          <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+            <div>
+              <h2 className="text-xl font-bold">Resumen mensual</h2>
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                Ingresos vs egresos de los últimos 12 meses. Tocá un mes para filtrar la lista de movimientos.
+              </p>
+            </div>
+
+            {isMounted && (
+              fechaInicioCaja ? (
+                <div className="flex flex-wrap items-center gap-3 rounded-xl border border-emerald-800 bg-emerald-950/20 px-4 py-3">
+                  <span className="text-xs font-semibold text-emerald-300">
+                    🌱 Caja iniciada el {fecha(fechaInicioCaja)}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={quitarCorte}
+                    className="text-xs font-semibold text-emerald-200 underline decoration-emerald-700 underline-offset-4 hover:text-white"
+                  >
+                    Ver historia completa
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={iniciarCajaDesdeCero}
+                  className="min-h-11 rounded-xl border border-[var(--border)] px-4 py-2 text-sm font-semibold hover:bg-[var(--overlay)]"
+                >
+                  🌱 Iniciar caja desde cero
+                </button>
+              )
+            )}
           </div>
 
           <div className="mt-4 grid gap-2">
@@ -383,7 +454,7 @@ export default function FinanzasPage() {
                 onClick={() => {
                   if (!confirm("¿Eliminar TODOS los movimientos manuales de Caja? Esta acción no afecta compras ni cobros automáticos.")) return;
                   eliminarTodosMovimientosManualesCaja();
-                  recargar();
+                  setMovimientos(obtenerMovimientosCaja());
                 }}
                 className="w-full rounded-xl border border-amber-800/50 px-4 py-2.5 text-sm font-semibold text-amber-200 hover:bg-amber-950/30 sm:w-auto"
               >
@@ -470,7 +541,7 @@ export default function FinanzasPage() {
                           onClick={() => {
                             if (confirm("¿Eliminar este movimiento de caja?")) {
                               eliminarMovimientoCaja(movimiento.id);
-                              recargar();
+                              setMovimientos(obtenerMovimientosCaja());
                             }
                           }}
                           className="rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--muted)] hover:text-[var(--text)]"
@@ -497,7 +568,7 @@ export default function FinanzasPage() {
           onSaved={() => {
             setModalAbierto(false);
             setMovimientoEditando(null);
-            recargar();
+            setMovimientos(obtenerMovimientosCaja());
           }}
         />
       )}
