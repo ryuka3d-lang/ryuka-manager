@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import FilamentSelectionModalCloud from "@/app/components/production/FilamentSelectionModalCloud";
 import {
   avanzarEstadoProduccionNube,
+  cambiarEstadoProduccionNube,
   listarOrdenesProduccionNube,
   obtenerCostoRealProduccion,
   type EstadoProduccionNube,
@@ -16,59 +17,31 @@ const columnas: Array<{
   titulo: string;
   icono: string;
 }> = [
-  {
-    estado: "pending",
-    titulo: "Pendientes",
-    icono: "🟡",
-  },
-  {
-    estado: "printing",
-    titulo: "Imprimiendo",
-    icono: "🔵",
-  },
-  {
-    estado: "packing",
-    titulo: "Empaquetando",
-    icono: "🟠",
-  },
-  {
-    estado: "ready",
-    titulo: "Listos",
-    icono: "🟢",
-  },
-  {
-    estado: "delivered",
-    titulo: "Entregados",
-    icono: "✅",
-  },
+  { estado: "pending", titulo: "Pendientes", icono: "🟡" },
+  { estado: "printing", titulo: "Imprimiendo", icono: "🔵" },
+  { estado: "packing", titulo: "Empaquetando", icono: "🟠" },
+  { estado: "ready", titulo: "Listos", icono: "🟢" },
+  { estado: "delivered", titulo: "Entregados", icono: "✅" },
 ];
 
 export default function ProduccionPage() {
   const [pedidos, setPedidos] = useState<OrdenProduccionNube[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
-  const [estadoActivo, setEstadoActivo] =
-    useState<EstadoProduccionNube>("pending");
+  const [estadoActivo, setEstadoActivo] = useState<EstadoProduccionNube>("pending");
   const [avanzandoId, setAvanzandoId] = useState<string | null>(null);
+  const [retrocediendoId, setRetrocediendoId] = useState<string | null>(null);
 
-  const [pedidoParaIniciar, setPedidoParaIniciar] =
-    useState<OrdenProduccionNube | null>(null);
+  const [pedidoParaIniciar, setPedidoParaIniciar] = useState<OrdenProduccionNube | null>(null);
 
   async function recargar() {
     try {
       setError("");
-
       const data = await listarOrdenesProduccionNube();
-
       setPedidos(data);
     } catch (cause) {
       console.error(cause);
-
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : "No se pudo cargar Producción."
-      );
+      setError(cause instanceof Error ? cause.message : "No se pudo cargar Producción.");
     } finally {
       setCargando(false);
     }
@@ -77,12 +50,8 @@ export default function ProduccionPage() {
   useEffect(() => {
     void recargar();
 
-    const onFocus = () => {
-      void recargar();
-    };
-
+    const onFocus = () => { void recargar(); };
     window.addEventListener("focus", onFocus);
-
     const intervalo = window.setInterval(() => void recargar(), 15000);
 
     return () => {
@@ -98,19 +67,9 @@ export default function ProduccionPage() {
           resultado[columna.estado] = pedidos.filter(
             (pedido) => pedido.status === columna.estado
           );
-
           return resultado;
         },
-        {
-          pending: [],
-          printing: [],
-          packing: [],
-          ready: [],
-          delivered: [],
-        } as Record<
-          EstadoProduccionNube,
-          OrdenProduccionNube[]
-        >
+        { pending: [], printing: [], packing: [], ready: [], delivered: [] } as Record<EstadoProduccionNube, OrdenProduccionNube[]>
       ),
     [pedidos]
   );
@@ -122,32 +81,47 @@ export default function ProduccionPage() {
     }
 
     if (avanzandoId) return;
-
     setAvanzandoId(pedido.id);
 
     try {
       const actualizado = await avanzarEstadoProduccionNube(pedido);
-
       reemplazarPedido(actualizado);
       setEstadoActivo(actualizado.status);
     } catch (cause) {
       console.error(cause);
-
-      alert(
-        cause instanceof Error
-          ? cause.message
-          : "No se pudo avanzar la producción."
-      );
+      alert(cause instanceof Error ? cause.message : "No se pudo avanzar la producción.");
     } finally {
       setAvanzandoId(null);
     }
   }
 
+  async function retroceder(pedido: OrdenProduccionNube) {
+    const anterior = obtenerEstadoAnterior(pedido.status);
+    if (!anterior) return;
+    if (retrocediendoId) return;
+
+    const confirmar = window.confirm(
+      `¿Querés mover "${pedido.items.map((i) => i.productName).join(", ")}" de vuelta a ${obtenerTituloEstado(anterior)}?`
+    );
+    if (!confirmar) return;
+
+    setRetrocediendoId(pedido.id);
+
+    try {
+      const actualizado = await cambiarEstadoProduccionNube(pedido.id, anterior);
+      reemplazarPedido(actualizado);
+      setEstadoActivo(anterior);
+    } catch (cause) {
+      console.error(cause);
+      alert(cause instanceof Error ? cause.message : "No se pudo retroceder la producción.");
+    } finally {
+      setRetrocediendoId(null);
+    }
+  }
+
   function reemplazarPedido(actualizado: OrdenProduccionNube) {
     setPedidos((actuales) =>
-      actuales.map((pedido) =>
-        pedido.id === actualizado.id ? actualizado : pedido
-      )
+      actuales.map((pedido) => (pedido.id === actualizado.id ? actualizado : pedido))
     );
   }
 
@@ -158,11 +132,7 @@ export default function ProduccionPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--accent-text)]">
             Centro de operaciones
           </p>
-
-          <h1 className="mt-3 text-3xl font-bold sm:text-4xl">
-            Producción
-          </h1>
-
+          <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Producción</h1>
           <p className="mt-4 text-[var(--muted)]">
             Las órdenes vienen de Pedidos y se guardan en Supabase.
             Al iniciar elegís las bobinas y Ryuka registra el consumo real.
@@ -181,13 +151,8 @@ export default function ProduccionPage() {
           </section>
         ) : pedidos.length === 0 ? (
           <section className="mt-8 rounded-[2rem] border border-dashed border-[var(--border)] bg-[var(--card)] p-10 text-center">
-            <h2 className="text-2xl font-bold">
-              Todavía no hay órdenes de producción
-            </h2>
-
-            <p className="mt-2 text-[var(--muted)]">
-              Convertí un presupuesto en pedido para generar una.
-            </p>
+            <h2 className="text-2xl font-bold">Todavía no hay órdenes de producción</h2>
+            <p className="mt-2 text-[var(--muted)]">Convertí un presupuesto en pedido para generar una.</p>
           </section>
         ) : (
           <>
@@ -195,24 +160,19 @@ export default function ProduccionPage() {
             <section className="mt-6 xl:hidden">
               <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2">
                 {columnas.map((columna) => {
-                  const activo =
-                    estadoActivo === columna.estado;
-
+                  const activo = estadoActivo === columna.estado;
                   return (
                     <button
                       key={columna.estado}
                       type="button"
-                      onClick={() =>
-                        setEstadoActivo(columna.estado)
-                      }
+                      onClick={() => setEstadoActivo(columna.estado)}
                       className={`min-w-max rounded-xl border px-4 py-3 text-sm font-semibold transition ${
                         activo
                           ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--text)]"
                           : "border-[var(--border)] bg-[var(--card)] text-[var(--muted)]"
                       }`}
                     >
-                      {columna.icono} {columna.titulo} ·{" "}
-                      {pedidosPorEstado[columna.estado].length}
+                      {columna.icono} {columna.titulo} · {pedidosPorEstado[columna.estado].length}
                     </button>
                   );
                 })}
@@ -220,36 +180,21 @@ export default function ProduccionPage() {
 
               <div className="mt-3 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
                 {columnas
-                  .filter(
-                    (columna) =>
-                      columna.estado === estadoActivo
-                  )
+                  .filter((columna) => columna.estado === estadoActivo)
                   .map((columna) => (
-                    <div
-                      key={columna.estado}
-                      className="space-y-3"
-                    >
-                      {pedidosPorEstado[
-                        columna.estado
-                      ].map((pedido) => (
+                    <div key={columna.estado} className="space-y-3">
+                      {pedidosPorEstado[columna.estado].map((pedido) => (
                         <PedidoCard
                           key={pedido.id}
                           pedido={pedido}
-                          avanzando={
-                            avanzandoId === pedido.id
-                          }
-                          onAvanzar={() =>
-                            void avanzar(pedido)
-                          }
+                          avanzando={avanzandoId === pedido.id}
+                          retrocediendo={retrocediendoId === pedido.id}
+                          onAvanzar={() => void avanzar(pedido)}
+                          onRetroceder={() => void retroceder(pedido)}
                         />
                       ))}
-
-                      {pedidosPorEstado[
-                        columna.estado
-                      ].length === 0 && (
-                        <p className="py-8 text-center text-sm text-[var(--muted)]">
-                          No hay órdenes en esta etapa.
-                        </p>
+                      {pedidosPorEstado[columna.estado].length === 0 && (
+                        <p className="py-8 text-center text-sm text-[var(--muted)]">No hay órdenes en esta etapa.</p>
                       )}
                     </div>
                   ))}
@@ -259,37 +204,22 @@ export default function ProduccionPage() {
             {/* VISTA DESKTOP */}
             <section className="mt-8 hidden gap-5 xl:grid xl:grid-cols-5">
               {columnas.map((columna) => (
-                <section
-                  key={columna.estado}
-                  className="min-w-0 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4"
-                >
+                <section key={columna.estado} className="min-w-0 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
                   <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
-                    <h2 className="font-bold">
-                      {columna.icono} {columna.titulo}
-                    </h2>
-
+                    <h2 className="font-bold">{columna.icono} {columna.titulo}</h2>
                     <span className="rounded-full bg-[var(--overlay)] px-2.5 py-1 text-xs">
-                      {
-                        pedidosPorEstado[
-                          columna.estado
-                        ].length
-                      }
+                      {pedidosPorEstado[columna.estado].length}
                     </span>
                   </div>
-
                   <div className="mt-4 space-y-3">
-                    {pedidosPorEstado[
-                      columna.estado
-                    ].map((pedido) => (
+                    {pedidosPorEstado[columna.estado].map((pedido) => (
                       <PedidoCard
                         key={pedido.id}
                         pedido={pedido}
-                        avanzando={
-                          avanzandoId === pedido.id
-                        }
-                        onAvanzar={() =>
-                          void avanzar(pedido)
-                        }
+                        avanzando={avanzandoId === pedido.id}
+                        retrocediendo={retrocediendoId === pedido.id}
+                        onAvanzar={() => void avanzar(pedido)}
+                        onRetroceder={() => void retroceder(pedido)}
                       />
                     ))}
                   </div>
@@ -317,20 +247,20 @@ export default function ProduccionPage() {
 function PedidoCard({
   pedido,
   avanzando,
+  retrocediendo,
   onAvanzar,
+  onRetroceder,
 }: {
   pedido: OrdenProduccionNube;
   avanzando: boolean;
+  retrocediendo: boolean;
   onAvanzar: () => void;
+  onRetroceder: () => void;
 }) {
   const siguiente = obtenerSiguienteEstado(pedido.status);
-
+  const anterior = obtenerEstadoAnterior(pedido.status);
   const costoReal = obtenerCostoRealProduccion(pedido);
-
-  const cantidad = pedido.items.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const cantidad = pedido.items.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <article className="rounded-2xl border border-[var(--border)] bg-[var(--field)] p-4 sm:p-5">
@@ -341,40 +271,18 @@ function PedidoCard({
 
       <h3 className="mt-2 font-bold">
         {pedido.items.length > 0
-          ? pedido.items
-              .map(
-                (item) =>
-                  `${item.productName} × ${item.quantity}`
-              )
-              .join(", ")
+          ? pedido.items.map((item) => `${item.productName} × ${item.quantity}`).join(", ")
           : "Orden sin productos"}
       </h3>
 
-      <p className="mt-1 text-sm text-[var(--muted)]">
-        {pedido.customerName}
-      </p>
+      <p className="mt-1 text-sm text-[var(--muted)]">{pedido.customerName}</p>
 
       <div className="mt-4 space-y-2 border-t border-[var(--border)] pt-4 text-xs">
-        <Fila
-          titulo="Cantidad"
-          valor={`${cantidad} u.`}
-        />
-
-        <Fila
-          titulo="Tiempo"
-          valor={formatearTiempo(
-            pedido.plannedPrintMinutes
-          )}
-        />
-
+        <Fila titulo="Cantidad" valor={`${cantidad} u.`} />
+        <Fila titulo="Tiempo" valor={formatearTiempo(pedido.plannedPrintMinutes)} />
         <Fila
           titulo="Filamento"
-          valor={`${pedido.plannedWeightGrams.toLocaleString(
-            "es-AR",
-            {
-              maximumFractionDigits: 1,
-            }
-          )} g`}
+          valor={`${pedido.plannedWeightGrams.toLocaleString("es-AR", { maximumFractionDigits: 1 })} g`}
         />
       </div>
 
@@ -383,82 +291,70 @@ function PedidoCard({
           <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
             Bobinas utilizadas
           </p>
-
           {pedido.consumptions.map((consumo) => (
-            <div
-              key={consumo.id}
-              className="border-b border-white/5 py-2 last:border-0"
-            >
+            <div key={consumo.id} className="border-b border-white/5 py-2 last:border-0">
               <p className="text-xs font-semibold text-[var(--muted)]">
-                {consumo.spoolCode} · {consumo.material}{" "}
-                {consumo.color}
+                {consumo.spoolCode} · {consumo.material} {consumo.color}
               </p>
-
               <p className="mt-1 text-xs text-[var(--muted)]">
-                {consumo.grams.toLocaleString("es-AR", {
-                  maximumFractionDigits: 1,
-                })}{" "}
-                g utilizados
+                {consumo.grams.toLocaleString("es-AR", { maximumFractionDigits: 1 })} g utilizados
               </p>
             </div>
           ))}
-
           {costoReal > 0 && (
             <p className="mt-3 border-t border-white/5 pt-3 text-xs text-[var(--muted)]">
               Costo real:{" "}
               <strong className="text-[var(--text)]">
-                {costoReal.toLocaleString("es-AR", {
-                  style: "currency",
-                  currency: "ARS",
-                  maximumFractionDigits: 2,
-                })}
+                {costoReal.toLocaleString("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 2 })}
               </strong>
             </p>
           )}
         </div>
       )}
 
-      {siguiente && (
-        <button
-          type="button"
-          onClick={onAvanzar}
-          disabled={avanzando}
-          className="mt-4 min-h-12 w-full rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-semibold hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {avanzando
-            ? "Guardando..."
-            : obtenerTextoBoton(pedido.status)}
-        </button>
-      )}
+      <div className="mt-4 flex flex-col gap-2">
+        {siguiente && (
+          <button
+            type="button"
+            onClick={onAvanzar}
+            disabled={avanzando}
+            className="min-h-12 w-full rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-semibold hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {avanzando ? "Guardando..." : obtenerTextoBoton(pedido.status)}
+          </button>
+        )}
 
-      {!siguiente && (
-        <div className="mt-4 rounded-xl border border-emerald-900 bg-emerald-950/20 px-4 py-3 text-center text-sm font-semibold text-emerald-300">
-          Pedido entregado ✓
-        </div>
-      )}
+        {anterior && anterior !== "pending" && (
+          <button
+            type="button"
+            onClick={onRetroceder}
+            disabled={retrocediendo}
+            className="min-h-10 w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-xs font-semibold text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--text)] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {retrocediendo ? "Volviendo..." : `↩ Volver a ${obtenerTituloEstado(anterior)}`}
+          </button>
+        )}
+
+        {!siguiente && (
+          <div className="rounded-xl border border-emerald-900 bg-emerald-950/20 px-4 py-3 text-center text-sm font-semibold text-emerald-300">
+            Pedido entregado ✓
+          </div>
+        )}
+      </div>
     </article>
   );
 }
 
-function Fila({
-  titulo,
-  valor,
-}: {
-  titulo: string;
-  valor: string;
-}) {
+function Fila({ titulo, valor }: { titulo: string; valor: string }) {
   return (
     <div className="flex items-center justify-between gap-3">
       <span className="text-[var(--muted)]">{titulo}</span>
-
       <strong className="text-[var(--muted)]">{valor}</strong>
     </div>
   );
 }
 
-function obtenerSiguienteEstado(
-  estado: EstadoProduccionNube
-): EstadoProduccionNube | null {
+function obtenerSiguienteEstado(estado: EstadoProduccionNube): EstadoProduccionNube | null {
   return {
     pending: "printing",
     printing: "packing",
@@ -468,9 +364,27 @@ function obtenerSiguienteEstado(
   }[estado] as EstadoProduccionNube | null;
 }
 
-function obtenerTextoBoton(
-  estado: EstadoProduccionNube
-) {
+function obtenerEstadoAnterior(estado: EstadoProduccionNube): EstadoProduccionNube | null {
+  return {
+    pending: null,
+    printing: "pending",
+    packing: "printing",
+    ready: "packing",
+    delivered: "ready",
+  }[estado] as EstadoProduccionNube | null;
+}
+
+function obtenerTituloEstado(estado: EstadoProduccionNube): string {
+  return {
+    pending: "Pendientes",
+    printing: "Imprimiendo",
+    packing: "Empaquetando",
+    ready: "Listos",
+    delivered: "Entregados",
+  }[estado];
+}
+
+function obtenerTextoBoton(estado: EstadoProduccionNube) {
   return {
     pending: "▶ Elegir bobinas e iniciar",
     printing: "✓ Finalizar impresión",
@@ -483,10 +397,6 @@ function obtenerTextoBoton(
 function formatearTiempo(minutos: number) {
   const horas = Math.floor(minutos / 60);
   const resto = Math.round(minutos % 60);
-
-  if (horas <= 0) {
-    return `${resto} min`;
-  }
-
+  if (horas <= 0) return `${resto} min`;
   return `${horas} h ${resto} min`;
 }

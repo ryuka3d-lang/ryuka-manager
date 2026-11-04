@@ -872,3 +872,36 @@ export function obtenerCostoRealProduccion(
     0
   );
 }
+
+export async function cambiarEstadoProduccionNube(
+  productionId: string,
+  nuevoEstado: EstadoProduccionNube
+): Promise<OrdenProduccionNube> {
+  const supabase = createClient();
+
+  const { error } = await supabase.rpc(
+    "advance_production_order",
+    {
+      p_production_order_id: productionId,
+      p_next_status: nuevoEstado,
+    }
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const refreshed = await listarOrdenesProduccionNube();
+
+  const updated = refreshed.find(
+    (item) => item.id === productionId
+  );
+
+  if (!updated) {
+    throw new Error(
+      "La orden se actualizó, pero no pudo volver a cargarse."
+    );
+  }
+
+  return updated;
+}

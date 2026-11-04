@@ -35,6 +35,10 @@ import {
   type ClienteGuardado,
 } from "../../lib/client-service";
 
+import {
+  obtenerCatalogoAccesorios,
+} from "../../lib/settings-service";
+
 import type { Accesorio } from "../types/producto";
 import type { PrecioFinalVenta } from "../components/budget/SaleSimulatorCard";
 
@@ -384,13 +388,28 @@ export default function useBudget() {
         accesoriosActuales.map(
           (accesorio) =>
             accesorio.id === id
-              ? {
-                  ...accesorio,
-                  ...cambios,
-                }
+              ? { ...accesorio, ...cambios }
               : accesorio
         )
     );
+  }
+
+  function agregarAccesorioAlPresupuesto(id: string) {
+    const catalogo = obtenerCatalogoAccesorios(config);
+    const opcion = catalogo.find((elemento) => elemento.id === id);
+
+    if (!opcion) return;
+
+    setAccesoriosPresupuesto((actuales) => [
+      ...actuales,
+      {
+        id: opcion.id,
+        nombre: opcion.nombre,
+        activo: true,
+        modo: "porUnidad",
+        cantidad: "1",
+      },
+    ]);
   }
 
   function actualizarAccesorioRapido(
@@ -1019,6 +1038,7 @@ export default function useBudget() {
 
     accesoriosPresupuesto,
     actualizarAccesorio,
+    agregarAccesorioAlPresupuesto,
 
     horasImpresionDiaPedido,
     usarHorasPersonalizadas,
