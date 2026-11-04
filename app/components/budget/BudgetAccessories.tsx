@@ -77,9 +77,13 @@ export default function BudgetAccessoriesSection({
                   type="checkbox"
                   checked={accesorio.activo}
                   onChange={(evento) =>
-                    onActualizarAccesorio(accesorio.id, {
-                      activo: evento.target.checked,
-                    })
+                    onActualizarAccesorio(
+                      accesorio.id,
+                      {
+                        activo:
+                          evento.target.checked,
+                      }
+                    )
                   }
                   className="h-5 w-5 accent-[var(--accent)]"
                 />
@@ -98,9 +102,14 @@ export default function BudgetAccessoriesSection({
                   value={accesorio.modo}
                   disabled={!accesorio.activo}
                   onChange={(evento) =>
-                    onActualizarAccesorio(accesorio.id, {
-                      modo: evento.target.value as ModoAccesorio,
-                    })
+                    onActualizarAccesorio(
+                      accesorio.id,
+                      {
+                        modo:
+                          evento.target
+                            .value as ModoAccesorio,
+                      }
+                    )
                   }
                   className="
                     rounded-xl
@@ -114,8 +123,13 @@ export default function BudgetAccessoriesSection({
                     focus:border-[var(--accent)]
                   "
                 >
-                  <option value="porUnidad">Por unidad</option>
-                  <option value="porPedido">Por pedido</option>
+                  <option value="porUnidad">
+                    Por unidad
+                  </option>
+
+                  <option value="porPedido">
+                    Por pedido
+                  </option>
                 </select>
 
                 <input
@@ -124,9 +138,13 @@ export default function BudgetAccessoriesSection({
                   value={accesorio.cantidad}
                   disabled={!accesorio.activo}
                   onChange={(evento) =>
-                    onActualizarAccesorio(accesorio.id, {
-                      cantidad: evento.target.value,
-                    })
+                    onActualizarAccesorio(
+                      accesorio.id,
+                      {
+                        cantidad:
+                          evento.target.value,
+                      }
+                    )
                   }
                   className="
                     rounded-xl
@@ -198,23 +216,6 @@ export default function BudgetAccessoriesSection({
           </button>
         </div>
       )}
-
-      <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--field)] p-4 text-sm text-[var(--muted)]">
-        <p>
-          <strong className="text-[var(--text)]">Por unidad:</strong>{" "}
-          la cantidad se multiplica por las unidades del pedido.
-        </p>
-
-        <p className="mt-2">
-          <strong className="text-[var(--text)]">Por pedido:</strong>{" "}
-          se utiliza una cantidad fija, por ejemplo una caja y dos bolsas.
-        </p>
-
-        <p className="mt-2">
-          <strong className="text-[var(--text)]">Tip:</strong>{" "}
-          los accesorios personalizados se crean en Configuración → Accesorios personalizados.
-        </p>
-      </div>
     </section>
   );
 }

@@ -42,6 +42,7 @@ export default function PresupuestosPage() {
 
     accesoriosPresupuesto,
     actualizarAccesorio,
+    agregarAccesorioAlPresupuesto,
 
     horasImpresionDiaPedido,
     usarHorasPersonalizadas,
@@ -234,6 +235,7 @@ export default function PresupuestosPage() {
                     onActualizarAccesorio={
                       actualizarAccesorio
                     }
+                      onAgregarAccesorio={agregarAccesorioAlPresupuesto}
                   />
                 </div>
               </details>
