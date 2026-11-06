@@ -21,6 +21,8 @@ export type MovimientoCaja = {
   notas: string;
   creadoEn: string;
   editable: boolean;
+  costoEstimado?: number;
+  ganancia?: number;
 };
 
 export type NuevoMovimientoCaja = Omit<
@@ -50,6 +52,8 @@ function normalizarMovimiento(
   movimiento: Partial<MovimientoCaja>
 ): MovimientoCaja {
   const ahora = new Date().toISOString();
+  const monto = Math.abs(Number(movimiento.monto) || 0);
+  const costo = Math.abs(Number(movimiento.costoEstimado) || 0);
 
   return {
     id: movimiento.id || "MOV-0000",
@@ -61,12 +65,14 @@ function normalizarMovimiento(
     fecha: movimiento.fecha || ahora.slice(0, 10),
     concepto: movimiento.concepto?.trim() || "Movimiento sin concepto",
     categoria: movimiento.categoria?.trim() || "Otros",
-    monto: Math.abs(Number(movimiento.monto) || 0),
+    monto,
     medioPago: movimiento.medioPago?.trim() || "Sin especificar",
     referencia: movimiento.referencia?.trim() || "",
     notas: movimiento.notas?.trim() || "",
     creadoEn: movimiento.creadoEn || ahora,
     editable: movimiento.origen === "manual",
+    costoEstimado: costo > 0 ? costo : undefined,
+    ganancia: costo > 0 && monto > 0 ? monto - costo : undefined,
   };
 }
 

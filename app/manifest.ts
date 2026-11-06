@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Ryuka Manager",
     short_name: "Ryuka",
-    description: "Gestión del taller 3D",
+    description: "Gestión del taller",
     start_url: "/",
     display: "standalone",
     background_color: "#111214",

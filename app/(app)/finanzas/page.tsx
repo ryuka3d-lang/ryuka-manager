@@ -12,10 +12,7 @@ import {
   type MovimientoCaja,
   type TipoMovimientoCaja,
 } from "@/lib/finance-service";
-import { 
-  obtenerConfiguracion, 
-  DEFAULT_RYUKA_CONFIG 
-} from "@/lib/settings-service";
+import { obtenerConfiguracion, DEFAULT_RYUKA_CONFIG } from "@/lib/settings-service";
 import FinancialHealthCard from "@/app/components/finance/FinancialHealthCard";
 
 const CORTE_KEY = "ryuka-fecha-inicio-caja";
@@ -64,9 +61,8 @@ function etiquetaMes(clave: string) {
 }
 
 export default function FinanzasPage() {
-  // 1. Bandera para asegurar que servidor y cliente rendericen igual al inicio
   const [isMounted, setIsMounted] = useState(false);
-  
+
   const [movimientos, setMovimientos] = useState<MovimientoCaja[]>([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [movimientoEditando, setMovimientoEditando] = useState<MovimientoCaja | null>(null);
@@ -74,10 +70,9 @@ export default function FinanzasPage() {
   const [mesFiltro, setMesFiltro] = useState(() => hoy().slice(0, 7));
   const [busqueda, setBusqueda] = useState("");
   const [fechaInicioCaja, setFechaInicioCaja] = useState("");
-  
+
   const filtrosActivos = Boolean(busqueda.trim()) || tipoFiltro !== "todos" || mesFiltro !== hoy().slice(0, 7);
 
-  // 2. Cargar datos reales solo después de que el componente se monta en el cliente
   useEffect(() => {
     setIsMounted(true);
     setMovimientos(obtenerMovimientosCaja());
@@ -123,7 +118,6 @@ export default function FinanzasPage() {
     setFechaInicioCaja("");
   }
 
-  // 3. Usar DEFAULT_RYUKA_CONFIG en el primer render para que coincida con el servidor
   const config = useMemo(() => {
     return isMounted ? obtenerConfiguracion() : DEFAULT_RYUKA_CONFIG;
   }, [isMounted]);
@@ -261,7 +255,6 @@ export default function FinanzasPage() {
           </div>
         </header>
 
-        {/* Solo renderizamos esto cuando isMounted es true para evitar mismatch */}
         {isMounted && (
           <FinancialHealthCard
             centro={centroFinanciero}
@@ -506,6 +499,13 @@ export default function FinanzasPage() {
                     </div>
 
                     <h3 className="mt-2 truncate font-bold">{movimiento.concepto}</h3>
+
+                    {movimiento.tipo === "ingreso" && movimiento.ganancia && movimiento.ganancia > 0 && (
+                      <p className="mt-1 text-xs font-semibold text-emerald-300">
+                        ✅ Ganancia: {moneda(movimiento.ganancia)}
+                      </p>
+                    )}
+
                     <p className="mt-1 text-sm text-[var(--muted)]">
                       {fecha(movimiento.fecha)} · {movimiento.medioPago}
                       {movimiento.referencia ? ` · ${movimiento.referencia}` : ""}
@@ -594,8 +594,15 @@ function MovimientoModal({
   const [medioPago, setMedioPago] = useState(movimiento.medioPago || "Transferencia");
   const [referencia, setReferencia] = useState(movimiento.referencia);
   const [notas, setNotas] = useState(movimiento.notas);
+  const [costoEstimado, setCostoEstimado] = useState(
+    movimiento.costoEstimado ? String(movimiento.costoEstimado) : ""
+  );
 
   const categorias = tipo === "ingreso" ? categoriasIngreso : categoriasEgreso;
+
+  const montoNum = Number(monto) || 0;
+  const costoNum = Number(costoEstimado) || 0;
+  const gananciaCalculada = tipo === "ingreso" && costoNum > 0 ? montoNum - costoNum : 0;
 
   function cambiarTipo(nuevoTipo: TipoMovimientoCaja) {
     setTipo(nuevoTipo);
@@ -612,6 +619,8 @@ function MovimientoModal({
       medioPago,
       referencia,
       notas,
+      costoEstimado: costoNum > 0 ? costoNum : undefined,
+      ganancia: gananciaCalculada > 0 ? gananciaCalculada : undefined,
     };
 
     const resultado = esEdicion
@@ -666,12 +675,35 @@ function MovimientoModal({
           <Campo titulo="Fecha" tipo="date" valor={fechaMovimiento} onChange={setFechaMovimiento} />
           <Campo titulo="Monto *" tipo="number" valor={monto} onChange={setMonto} />
 
+          {tipo === "ingreso" && (
+            <Campo
+              titulo="Costo estimado de productos ($) (Opcional)"
+              tipo="number"
+              valor={costoEstimado}
+              onChange={setCostoEstimado}
+            />
+          )}
+
+          {tipo === "ingreso" && costoNum > 0 && (
+            <div className="sm:col-span-2 rounded-xl bg-emerald-950/30 border border-emerald-900/50 p-4">
+              <p className="text-sm font-semibold text-emerald-300">
+                💰 Ganancia estimada de esta venta
+              </p>
+              <p className="text-2xl font-bold text-emerald-300 mt-1">
+                {moneda(gananciaCalculada)}
+              </p>
+              <p className="text-xs text-[var(--muted)] mt-1">
+                (Monto {moneda(montoNum)} - Costo {moneda(costoNum)})
+              </p>
+            </div>
+          )}
+
           <label className="sm:col-span-2">
             <span className="text-sm font-semibold text-[var(--muted)]">Concepto *</span>
             <input
               value={concepto}
               onChange={(evento) => setConcepto(evento.target.value)}
-              placeholder={tipo === "ingreso" ? "Ej.: Seña pedido de llaveros" : "Ej.: Pago de electricidad"}
+              placeholder={tipo === "ingreso" ? "Ej.: Venta 6 llaveros variados" : "Ej.: Pago de electricidad"}
               className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3"
             />
           </label>
